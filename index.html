@@ -149,13 +149,7 @@
           <span>📱 모바일 뷰</span>
         </button>
 
-        <!-- Web/Mobile Setup & Download Guide Button -->
-        <button id="openSetupGuideBtn" title="웹/모바일 설치 및 파일 다운로드" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-          </svg>
-          <span class="hidden sm:inline">앱 설치·배포</span>
-        </button>
+
 
         <!-- Dark/Light Mode Toggle -->
         <button id="themeToggle" title="화면 모드 변경" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
@@ -736,68 +730,6 @@
       </div>
       <div class="pt-2 text-right">
         <button id="dismissYieldExplainerBtn" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700">확인 완료</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Setup, Mobile App Install & HTML Download Modal -->
-  <div id="setupGuideModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-200">
-    <div class="bg-white dark:bg-[#131b2e] w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          📱 내 PC·스마트폰에서 바로 쓰는 설치 및 배포 가이드
-        </h3>
-        <button id="closeSetupGuideBtn" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg">✕</button>
-      </div>
-
-      <div class="flex flex-wrap items-center justify-between gap-2 bg-indigo-50/70 dark:bg-indigo-950/30 p-3.5 rounded-xl border border-indigo-200 dark:border-indigo-800/60 text-xs">
-        <div>
-          <div class="font-bold text-indigo-900 dark:text-indigo-200">단일 HTML 원본 파일 저장하기</div>
-          <p class="text-slate-600 dark:text-slate-400 mt-0.5">별도 서버 설치 없이 파일 하나만 열면 모든 기능이 그대로 작동합니다.</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="downloadHtmlFileBtn" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm transition flex items-center gap-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-            </svg>
-            HTML 파일 다운로드
-          </button>
-          <button id="copySourceCodeBtn" class="px-3 py-2 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold hover:bg-slate-100 transition">
-            전체 코드 복사
-          </button>
-        </div>
-      </div>
-
-      <div class="text-xs space-y-3 leading-relaxed text-slate-600 dark:text-slate-300">
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-          <strong class="text-slate-900 dark:text-slate-100 text-sm">1. PC 웹브라우저에서 바로 실행 (설치 불필요)</strong>
-          <p class="mt-1">
-            위 <strong>[HTML 파일 다운로드]</strong> 버튼을 눌러 저장된 <code>market_dashboard.html</code> 파일을 크롬(Chrome), 엣지(Edge), 사파리(Safari)에서 더블클릭해 열면 즉시 작동합니다. 브라우저 북마크바에 등록해 두면 언제든 1초 만에 열 수 있습니다.
-          </p>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-          <strong class="text-slate-900 dark:text-slate-100 text-sm">2. 무료 웹 호스팅으로 내 전용 링크(URL) 만들기 (30초 완성)</strong>
-          <ul class="mt-1 space-y-1 list-disc list-inside">
-            <li><strong>Netlify Drop (가장 간편)</strong>: <code>app.netlify.com/drop</code> 접속 후 다운로드한 HTML 파일이 담긴 폴더를 마우스로 끌어다 놓으면 즉시 <code>https://...netlify.app</code> 전용 주소가 발급됩니다.</li>
-            <li><strong>GitHub Pages</strong>: GitHub 저장소 생성 후 파일 이름을 <code>index.html</code>로 올려 Settings &gt; Pages를 켜면 무료 평생 주소가 만들어집니다.</li>
-          </ul>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-          <strong class="text-slate-900 dark:text-slate-100 text-sm">3. 스마트폰(아이폰·갤럭시) 홈 화면에 전용 앱처럼 추가하기</strong>
-          <p class="mt-1 text-emerald-600 dark:text-emerald-400 font-bold">
-            💡 스마트폰 접속 시에는 모바일 전용 주소(<code>/mobile.html</code>)로 접속하시면 훨씬 편리합니다!
-          </p>
-          <ul class="mt-1 space-y-1 list-disc list-inside">
-            <li><strong>아이폰 (Safari)</strong>: 배포된 주소를 사파리로 접속 &gt; 하단 <strong>[공유]</strong> 버튼 &gt; <strong>[홈 화면에 추가]</strong> 터치 (상단 주소창 없이 풀스크린 네이티브 앱처럼 실행됩니다).</li>
-            <li><strong>갤럭시/안드로이드 (Chrome)</strong>: 크롬으로 접속 &gt; 우측 상단 메뉴(⋮) &gt; <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong> 터치.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="pt-2 text-right">
-        <button id="dismissSetupGuideBtn" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700">닫기</button>
       </div>
     </div>
   </div>
@@ -3112,51 +3044,6 @@
           : 'px-2 py-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold border border-amber-500/20 hover:bg-amber-500/20 transition flex items-center gap-1';
         triggerRefresh();
         showToast('데이터 모드 전환', !enableRandomSim ? '임의 변동을 끄고 실제 시장 종가/실시간 API 데이터만 표시합니다.' : '주기적 변동 테스트를 위한 가상 틱 시뮬레이션 모드입니다.', 'info');
-      });
-
-      const setupModal = document.getElementById('setupGuideModal');
-      document.getElementById('openSetupGuideBtn').addEventListener('click', () => {
-        setupModal.classList.remove('hidden');
-        requestAnimationFrame(() => setupModal.classList.remove('opacity-0'));
-      });
-      const closeSetupModal = () => {
-        setupModal.classList.add('opacity-0');
-        setTimeout(() => setupModal.classList.add('hidden'), 200);
-      };
-      document.getElementById('closeSetupGuideBtn').addEventListener('click', closeSetupModal);
-      document.getElementById('dismissSetupGuideBtn').addEventListener('click', closeSetupModal);
-      setupModal.addEventListener('click', (e) => {
-        if (e.target.id === 'setupGuideModal') closeSetupModal();
-      });
-
-      // Download standalone HTML file
-      document.getElementById('downloadHtmlFileBtn').addEventListener('click', () => {
-        const htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-        const blob = new Blob([htmlSource], { type: 'text/html;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'market_dashboard.html';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        showToast('파일 다운로드 완료', 'market_dashboard.html 파일이 저장되었습니다.', 'success');
-      });
-
-      // Copy entire HTML source code to clipboard
-      document.getElementById('copySourceCodeBtn').addEventListener('click', () => {
-        const htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-        const textarea = document.createElement('textarea');
-        textarea.value = htmlSource;
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-          document.execCommand('copy');
-          showToast('코드 복사 완료', '전체 HTML 소스 코드가 클립보드에 복사되었습니다.', 'success');
-        } catch (err) {
-          showToast('복사 실패', 'HTML 파일 다운로드 버튼을 이용해 주세요.', 'alert');
-        }
-        document.body.removeChild(textarea);
       });
 
       // 12. Deep Yield Explainer Modal
