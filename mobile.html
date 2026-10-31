@@ -729,8 +729,14 @@
           TOP_CAROUSEL_ITEMS.forEach(c => {
             const item = macro[c.id] || FALLBACKS[c.id];
             if (item) {
-              c.val = item.isYield ? `${item.price}%` : (c.id === 'usdkrw' ? `${formatNumber(item.price, 1)}원` : (c.id === 'fear_greed' || c.id === 'fng' ? `${item.price}점` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(item.price, 0)}` : (c.id === 'spread' ? '+0.320%p' : formatNumber(item.price)))));
-              c.chg = item.change !== undefined ? `${item.change > 0 ? '+' : ''}${item.change}${item.isYield ? '%p' : ''}` : '정상화';
+              let p = item.price;
+              // 1/10 소수점 밀림 방어: 금리가 1.5% 미만으로 들어온 경우 10을 곱해 정상 비율(예: 4.93%)로 복원
+              if (item.isYield && p < 1.5 && p > 0) p = p * 10;
+              let chgVal = item.change;
+              if (item.isYield && chgVal && Math.abs(chgVal) < 0.02) chgVal = chgVal * 10;
+
+              c.val = item.isYield ? `${formatNumber(p, 3)}%` : (c.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (c.id === 'fear_greed' || c.id === 'fng' ? `${p}점` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(p, 0)}` : (c.id === 'spread' ? '+0.320%p' : formatNumber(p)))));
+              c.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, item.isYield ? 3 : 2)}${item.isYield ? '%p' : ''}` : '정상화';
               c.isUp = (item.change || 0) >= 0;
             }
           });
@@ -741,8 +747,14 @@
             group.items.forEach(target => {
               const mItem = macro[target.id] || FALLBACKS[target.id];
               if (mItem) {
-                target.val = mItem.isYield ? `${mItem.price}%` : (target.id === 'usdkrw' ? `${formatNumber(mItem.price, 1)}원` : (target.id === 'fear_greed' ? `${mItem.price}점 (공포)` : (target.id === 'wti' || target.id === 'gold' || target.id.startsWith('btc') ? `$${formatNumber(mItem.price)}` : (target.id === 'spread' ? '+0.320%p' : formatNumber(mItem.price)))));
-                target.chg = mItem.change !== undefined ? `${mItem.change > 0 ? '+' : ''}${mItem.change}${mItem.isYield ? '%p' : ''}${mItem.changePct ? ` (${mItem.changePct > 0 ? '+' : ''}${mItem.changePct}%)` : ''}` : '정상 곡선';
+                let p = mItem.price;
+                // 1/10 소수점 밀림 방어: 금리가 1.5% 미만으로 들어온 경우 10을 곱해 정상 비율(예: 4.93%)로 복원
+                if (mItem.isYield && p < 1.5 && p > 0) p = p * 10;
+                let chgVal = mItem.change;
+                if (mItem.isYield && chgVal && Math.abs(chgVal) < 0.02) chgVal = chgVal * 10;
+
+                target.val = mItem.isYield ? `${formatNumber(p, 3)}%` : (target.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (target.id === 'fear_greed' ? `${p}점 (공포)` : (target.id === 'wti' || target.id === 'gold' || target.id.startsWith('btc') ? `$${formatNumber(p)}` : (target.id === 'spread' ? '+0.320%p' : formatNumber(p)))));
+                target.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, mItem.isYield ? 3 : 2)}${mItem.isYield ? '%p' : ''}${mItem.changePct ? ` (${mItem.changePct > 0 ? '+' : ''}${mItem.changePct}%)` : ''}` : '정상 곡선';
                 target.isUp = (mItem.change || 0) >= 0;
               }
             });
