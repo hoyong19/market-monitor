@@ -2,12 +2,12 @@ name: Stock Valuation Screener
 
 on:
   schedule:
-    # 10분마다 24시간 연중무휴 자동 실행
+    # 10분마다 자동 실행
     - cron: '*/10 * * * *'
-  workflow_dispatch: # 언제든 'Run workflow' 버튼으로 즉시 수동 실행 가능
+  workflow_dispatch: # 언제든 수동 즉시 실행 가능
 
 permissions:
-  contents: write # 결과 json 파일을 저장소에 자동 Push할 수 있는 쓰기 권한
+  contents: write
 
 jobs:
   run-screener:
@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: 저장소 소스코드 체크아웃
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 전체 커밋 히스토리를 가져와 푸시 충돌 방지
 
       - name: 파이썬 3.10 환경 구성
         uses: actions/setup-python@v5
@@ -34,6 +36,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main # 사용자가 웹에서 수정한 내용과 충돌 방지
           git add screener_results.json
           git commit -m "Auto-update: Screener rankings [$(date +'%Y-%m-%d %H:%M')]" || exit 0
-          git push
+          git push origin main
