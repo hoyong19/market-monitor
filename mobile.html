@@ -196,8 +196,10 @@
         <button id="closeSheetBtn" class="p-2 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">✕</button>
       </div>
 
-      <!-- Sheet Key Metrics Grid -->
-      <div class="grid grid-cols-2 gap-2 text-xs">
+      <!-- Section A: Stock Quant Metrics (Visible only for individual stocks) -->
+      <div id="stockSheetSection" class="space-y-4">
+        <!-- Sheet Key Metrics Grid -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
           <div class="text-slate-400 text-[10px]">월가 평균 목표주가</div>
           <div id="sheetTargetPrice" class="text-sm font-bold font-mono text-slate-900 dark:text-white mt-0.5">--</div>
@@ -233,6 +235,61 @@
           <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 col-span-2">
             <span class="text-slate-400 block text-[10px]">60일 이평 이격도</span>
             <strong id="sheetDisparity" class="font-bold font-mono">--</strong>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Section B: Macro / Index Indicator Detail (Visible for Macro/Treasury/Index items) -->
+      <div id="macroSheetSection" class="hidden space-y-3 text-xs">
+        
+        <!-- Score & Sentiment Gauge Bar (for 0~100 indices like Fear & Greed) -->
+        <div id="macroGaugeBox" class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
+            <span>투자 심리 구간 게이지</span>
+            <span id="macroGaugeScoreText" class="font-mono text-emerald-500 font-black">26점 / 100점</span>
+          </div>
+          <!-- Colored Gauge Gradient Bar -->
+          <div class="w-full h-3 rounded-full bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-500 relative overflow-hidden">
+            <!-- Indicator Pin -->
+            <div id="macroGaugePin" class="absolute top-0 bottom-0 w-1.5 bg-white shadow-md rounded-full transform -translate-x-1/2" style="left: 26%;"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-400 font-semibold px-0.5">
+            <span>0 극단적공포</span>
+            <span>25 공포</span>
+            <span>50 중립</span>
+            <span>75 탐욕</span>
+            <span>100 극단탐욕</span>
+          </div>
+        </div>
+
+        <!-- Metric Details Cards -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">최근 변동폭 / 전일 종가</div>
+            <div id="macroSheetChange" class="text-sm font-bold font-mono text-slate-900 dark:text-white mt-0.5">--</div>
+            <div id="macroSheetDayRange" class="text-[10px] text-slate-400 mt-0.5">--</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">지표 분류 및 단위</div>
+            <div id="macroSheetCategory" class="text-xs font-bold text-slate-900 dark:text-white mt-0.5">핵심 시장 지표</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">글로벌 마켓 모니터</div>
+          </div>
+        </div>
+
+        <!-- Description & Macro Insight -->
+        <div class="p-3.5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-900/40 space-y-2">
+          <div class="font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            지표 정의 및 시장 영향 해설
+          </div>
+          <p id="macroSheetDesc" class="text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]"></p>
+          <div class="pt-2 border-t border-blue-200/50 dark:border-blue-900/50">
+            <strong class="text-slate-800 dark:text-slate-200 block text-[11px] mb-0.5">🎯 투자 전략 포인트</strong>
+            <p id="macroSheetInsight" class="text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]"></p>
           </div>
         </div>
       </div>
@@ -294,7 +351,7 @@
       { id: 'kospi', name: '코스피', val: '5,730.74', chg: '-3.48%', isUp: false },
       { id: 'btc', name: '비트코인', val: '$77,298', chg: '+0.15%', isUp: true },
       { id: 'usdkrw', name: '원/달러', val: '1,333.4원', chg: '-0.12%', isUp: false },
-      { id: 'fng', name: '공포탐욕', val: '36점', chg: '공포', isUp: false }
+      { id: 'fng', name: '공포탐욕', val: '26점', chg: '-10점 (공포)', isUp: false }
     ];
 
     const CATEGORIZED_MACRO = {
@@ -532,14 +589,15 @@
           },
           {
             id: 'fear_greed',
-            name: 'CNN 공포 & 탐욕 지수',
+            name: 'CNN 공포 & 탐욕 지수 (Fear & Greed)',
             ticker: 'F&G:CNN',
-            val: '36점 (공포 Fear)',
-            chg: '-5점',
+            val: '26점 (공포 Fear)',
+            chg: '-10점 (-27.8%)',
             isUp: false,
-            dayRange: '0 (극단적공포) ~ 100 (극단적탐욕)',
-            desc: '미국 주식시장 7대 지표 종합 투자심리 지수',
-            insight: '현재 36점으로 공포 구간에 진입하여 단기 과매도 국면의 반등 기회를 모색하는 자리입니다.'
+            score: 26,
+            dayRange: '당일 25 ~ 36 (전일: 36점)',
+            desc: '미국 주식시장 7대 지표(모멘텀·변동성·옵션수요) 종합 투자심리 지수',
+            insight: '금요일 미국 기술주 급락과 금리 상승 여파로 지수가 26점까지 급락하며 [극단적 공포(25 이하)] 경계선에 진입했습니다. 역사적으로 20~30점대 공포 구간은 비이성적 패닉 투매가 정점에 달해 중장기 분할 매수 관점의 접근이 유효했던 자리입니다.'
           },
           {
             id: 'wti',
@@ -626,11 +684,39 @@
         const data = await res.json();
         if (data && typeof data === 'object' && Object.keys(data).length > 0) {
           screenerDb = data;
-          const first = Object.values(data)[0];
-          if (first?.updated_at) {
-            document.getElementById('topSubStatus').textContent = `최근 갱신: ${first.updated_at}`;
-            document.getElementById('feedUpdateBadge').textContent = `갱신: ${first.updated_at}`;
+          const updateTime = data._meta?.updated_at || Object.values(data)[0]?.updated_at || '';
+          if (updateTime) {
+            document.getElementById('topSubStatus').textContent = `최근 갱신: ${updateTime}`;
+            document.getElementById('feedUpdateBadge').textContent = `갱신: ${updateTime}`;
           }
+
+          // 100% Real-time dynamic sync for Macro Indicators on Mobile!
+          if (data._macro && typeof data._macro === 'object') {
+            const macro = data._macro;
+            // Update Carousel
+            TOP_CAROUSEL_ITEMS.forEach(c => {
+              if (macro[c.id]) {
+                const item = macro[c.id];
+                c.val = item.isYield ? `${item.price}%` : (c.id === 'usdkrw' ? `${item.price}원` : (c.id === 'fear_greed' ? `${item.price}점` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(item.price, 0)}` : formatNumber(item.price))));
+                c.chg = `${item.change > 0 ? '+' : ''}${item.change}${item.isYield ? '%p' : ''}`;
+                c.isUp = item.change >= 0;
+              }
+            });
+            renderMacroCarousel();
+
+            // Update Categorized Feeds
+            Object.values(CATEGORIZED_MACRO).forEach(group => {
+              group.items.forEach(target => {
+                if (macro[target.id]) {
+                  const mItem = macro[target.id];
+                  target.val = mItem.isYield ? `${mItem.price}%` : (target.id === 'usdkrw' ? `${formatNumber(mItem.price, 1)}원` : (target.id === 'fear_greed' ? `${mItem.price}점 (공포)` : (target.id === 'wti' || target.id === 'gold' || target.id.startsWith('btc') ? `$${formatNumber(mItem.price)}` : formatNumber(mItem.price))));
+                  target.chg = `${mItem.change > 0 ? '+' : ''}${mItem.change}${mItem.isYield ? '%p' : ''} (${mItem.changePct > 0 ? '+' : ''}${mItem.changePct}%)`;
+                  target.isUp = mItem.change >= 0;
+                }
+              });
+            });
+          }
+
           renderCurrentFeed();
         }
       } catch (err) {
@@ -804,6 +890,9 @@
        5. BOTTOM SHEET SLIDE-UP MODAL (Mobile Native Feeling)
        ========================================================================== */
     function openMacroBottomSheet(m) {
+      document.getElementById('stockSheetSection').classList.add('hidden');
+      document.getElementById('macroSheetSection').classList.remove('hidden');
+
       document.getElementById('sheetTicker').textContent = m.ticker;
       document.getElementById('sheetName').textContent = m.name;
       document.getElementById('sheetPrice').textContent = m.val;
@@ -811,19 +900,23 @@
       const scoreBadge = document.getElementById('sheetScoreBadge');
       scoreBadge.textContent = m.chg;
       scoreBadge.className = `text-xs px-2 py-0.5 rounded font-black font-mono ${m.isUp ? 'bg-rose-500 text-white' : 'bg-blue-500 text-white'}`;
-
-      document.getElementById('sheetTargetPrice').textContent = m.dayRange;
-      document.getElementById('sheetUpside').textContent = m.desc;
-
-      document.getElementById('sheetPer').textContent = '핵심 거시 지표';
-      document.getElementById('sheetMarketCap').textContent = '글로벌 마켓 모니터';
       document.getElementById('sheetRecoKey').textContent = 'MACRO';
 
-      document.getElementById('sheetMaCheck').textContent = m.desc;
-      document.getElementById('sheetMddCheck').textContent = m.dayRange;
-      document.getElementById('sheetSigmaCheck').textContent = m.chg;
-      document.getElementById('sheetRsi').textContent = '--';
-      document.getElementById('sheetDisparity').textContent = m.insight;
+      // Setup Gauge bar for Fear & Greed or similar 0-100 scores
+      const gaugeBox = document.getElementById('macroGaugeBox');
+      if (m.id === 'fear_greed' || m.id === 'crypto_fng') {
+        gaugeBox.classList.remove('hidden');
+        const numScore = parseInt(m.val, 10) || (m.id === 'fear_greed' ? 26 : 68);
+        document.getElementById('macroGaugeScoreText').textContent = `${numScore}점 (${numScore <= 25 ? '극단적공포' : (numScore <= 45 ? '공포' : (numScore <= 55 ? '중립' : '탐욕'))})`;
+        document.getElementById('macroGaugePin').style.left = `${numScore}%`;
+      } else {
+        gaugeBox.classList.add('hidden');
+      }
+
+      document.getElementById('macroSheetChange').textContent = m.chg;
+      document.getElementById('macroSheetDayRange').textContent = `변동범위: ${m.dayRange}`;
+      document.getElementById('macroSheetDesc').textContent = m.desc;
+      document.getElementById('macroSheetInsight').textContent = m.insight;
 
       const sheet = document.getElementById('bottomSheet');
       const content = document.getElementById('sheetContent');
@@ -835,6 +928,8 @@
     }
 
     function openBottomSheet(ticker) {
+      document.getElementById('macroSheetSection').classList.add('hidden');
+      document.getElementById('stockSheetSection').classList.remove('hidden');
       const item = screenerDb[ticker.toUpperCase()];
       if (!item) return;
 
