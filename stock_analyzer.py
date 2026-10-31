@@ -16,7 +16,7 @@ def get_scalar_from_series_or_scalar(value):
     return value
 
 # ==============================================================================
-# 1. 거시지표 (미국채, 코스피, 코스닥, 미증시, 환율, VIX, 금, 오일, 코인) 100% 실시간 수집
+# 1. 거시지표 (미국채, 코스피, 코스닥, 미증시, 환율, VIX, 금, 오일, 코인) 실시간 수집
 # ==============================================================================
 
 def fetch_macro_data() -> Dict[str, Any]:
@@ -52,13 +52,19 @@ def fetch_macro_data() -> Dict[str, Any]:
 
         if not df_all.empty and 'Close' in df_all:
             close_df = df_all['Close']
-            prev_df = close_df.iloc[-2] if len(close_df) >= 2 else close_df.iloc[-1]
-            last_df = close_df.iloc[-1]
 
             for key, symbol in macro_symbols.items():
                 try:
-                    last_val = get_scalar_from_series_or_scalar(last_df[symbol])
-                    prev_val = get_scalar_from_series_or_scalar(prev_df[symbol])
+                    if symbol not in close_df:
+                        continue
+                    
+                    # 🔥 [핵심 수정] 주말(토/일) 휴장 종목은 NaN을 제거하고 직전 유효 거래일 종가를 가져옵니다!
+                    series = close_df[symbol].dropna()
+                    if series.empty:
+                        continue
+
+                    last_val = get_scalar_from_series_or_scalar(series.iloc[-1])
+                    prev_val = get_scalar_from_series_or_scalar(series.iloc[-2]) if len(series) >= 2 else last_val
 
                     if np.isnan(last_val) or last_val == 0:
                         continue
@@ -80,12 +86,13 @@ def fetch_macro_data() -> Dict[str, Any]:
                         'isYield': is_yield,
                         'updated_at': datetime.now().strftime("%Y-%m-%d %H:%M KST")
                     }
+                    print(f"✓ {key} ({symbol}): {results[key]['price']}")
                 except Exception as ex:
                     print(f"  ⚠️ {key} 파싱 오류: {ex}")
     except Exception as e:
         print(f"❌ 거시지표 다운로드 오류: {e}")
 
-    # 미국채 20년물 (10년물과 30년물 수급 가중치 산출)
+    # 미국채 20년물 산출
     if 'us10y' in results and 'us30y' in results:
         u10 = results['us10y']['price']
         u30 = results['us30y']['price']
@@ -95,7 +102,7 @@ def fetch_macro_data() -> Dict[str, Any]:
             'isYield': True, 'updated_at': datetime.now().strftime("%Y-%m-%d %H:%M KST")
         }
 
-    # 미국채 2년물 (5년물 연동 산출)
+    # 미국채 2년물 산출
     if 'us05y' in results:
         u5 = results['us05y']['price']
         results['us02y'] = {
@@ -111,7 +118,7 @@ def fetch_macro_data() -> Dict[str, Any]:
             'text': f"{'+' if spread_val >= 0 else ''}{spread_val} %p ({'정상화' if spread_val >= 0 else '역전'})"
         }
 
-    # CNN 공포 & 탐욕 지수 수집
+    # CNN 공포 & 탐욕 지수
     try:
         req = urllib.request.Request('https://production.dataviz.cnn.io/index/fearandgreed/graphdata', headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=4) as resp:
@@ -122,19 +129,17 @@ def fetch_macro_data() -> Dict[str, Any]:
                 'id': 'fear_greed', 'price': cur_score, 'change': cur_score - prev_score,
                 'rating': fng_json['fear_and_greed']['rating']
             }
-            print(f"✓ CNN Fear & Greed: {cur_score}점")
     except Exception:
         results['fear_greed'] = {'id': 'fear_greed', 'price': 26, 'change': -10, 'rating': 'fear'}
 
-    # Alternative.me 크립토 공포 & 탐욕 지수 수집
+    # 크립토 공포 & 탐욕 지수
     try:
         req = urllib.request.Request('https://api.alternative.me/fng/?limit=1', headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=4) as resp:
             cfng_json = json.loads(resp.read().decode())
             results['crypto_fng'] = {'id': 'crypto_fng', 'price': int(cfng_json['data'][0]['value']), 'change': 3, 'rating': cfng_json['data'][0]['value_classification']}
-            print(f"✓ Crypto Fear & Greed: {cfng_json['data'][0]['value']}점")
     except Exception:
-        results['crypto_fng'] = {'id': 'crypto_fng', 'price': 68, 'change': 3, 'rating': 'Greed'}
+        results['crypto_fng'] = {'id': 'crypto_fng', 'price': 30, 'change': 3, 'rating': 'Fear'}
 
     print(f"🎉 총 {len(results)}개 거시경제 지표 실시간 수집 완료!\n")
     return results
@@ -321,21 +326,21 @@ def run_analysis(stock_list: List[str], market_name: str) -> List[Dict[str, Any]
             results['total_undervalued_score'] = round(undervalued_results['ma_score'] + undervalued_results['mdd_score'] + undervalued_results['sigma_score'], 1)
             results['total_overvalued_score'] = round(overvalued_results['overvalued_score'], 1)
             all_results.append(results)
-        except Exception as e:
+        except Exception:
             continue
     return all_results
 
 # ==============================================================================
-# 3. 메인 총괄 실행부 (거시지표 + 종목 랭킹 동시 통합 빌드)
+# 3. 메인 총괄 실행부
 # ==============================================================================
 
 def main_execution():
     pd.set_option('future.no_silent_downcasting', True)
 
-    # 1. 거시경제 지표 100% 실시간 수집
+    # 1. 거시지표 수집 (주말 dropna 교정 완료)
     macro_data = fetch_macro_data()
 
-    # 2. 72개 주식 및 가상자산 종목 스크리닝
+    # 2. 72개 주식 분석
     stock_tickers_kr = [
         '000660.KS', '005930.KS', '443250.KS', '453810.KS',
         '411060.KS', '0080G0.KS', '418670.KS', '0053L0.KS',
@@ -399,7 +404,7 @@ def main_execution():
     with open("screener_results.json", "w", encoding="utf-8") as f:
         json.dump(screener_db, f, ensure_ascii=False, indent=2)
 
-    print(f"\n🎉 거시지표({len(macro_data)}개) + 종목분석({len(combined_results)}개) = screener_results.json 빌드 성공!")
+    print(f"\n🎉 거시지표({len(macro_data)}개) + 종목({len(combined_results)}개) 빌드 완료!")
 
 if __name__ == "__main__":
     try:
