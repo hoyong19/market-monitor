@@ -1,4 +1,50 @@
 {
+  "_macro": {
+    "usdkrw": {
+      "id": "usdkrw",
+      "price": 1335.1,
+      "change": -2.88,
+      "changePct": -0.22,
+      "prevClose": 1337.98,
+      "isYield": false,
+      "updated_at": "2026-10-31 06:45 KST"
+    },
+    "btc": {
+      "id": "btc",
+      "price": 77199.99,
+      "change": 0.0,
+      "changePct": 0.0,
+      "prevClose": NaN,
+      "isYield": false,
+      "updated_at": "2026-10-31 06:45 KST"
+    },
+    "eth": {
+      "id": "eth",
+      "price": 2242.35,
+      "change": 0.0,
+      "changePct": 0.0,
+      "prevClose": NaN,
+      "isYield": false,
+      "updated_at": "2026-10-31 06:45 KST"
+    },
+    "fear_greed": {
+      "id": "fear_greed",
+      "price": 26,
+      "change": -10,
+      "rating": "fear"
+    },
+    "crypto_fng": {
+      "id": "crypto_fng",
+      "price": 30,
+      "change": 3,
+      "rating": "Fear"
+    }
+  },
+  "_meta": {
+    "updated_at": "2026-10-31 06:47 KST",
+    "total_stocks": 69,
+    "total_macro": 5
+  },
   "000660.KS": {
     "ticker": "000660.KS",
     "company_name": "SK hynix Inc.",
@@ -22,7 +68,7 @@
       "beta": 2.391,
       "market_cap": 999935763808256
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "005930.KS": {
     "ticker": "005930.KS",
@@ -38,16 +84,16 @@
     "rsi_value": 44.00110114930269,
     "disparity_value_pct": -10.352613055315762,
     "metrics": {
-      "forward_per": 3.0382125,
+      "forward_per": 3.0238793,
       "trailing_per": null,
       "reported_eps_ttm": null,
-      "target_mean_price": 482017.22,
-      "target_upside_pct": 114.22987555555555,
+      "target_mean_price": 480102.94,
+      "target_upside_pct": 113.37908444444444,
       "recommendation_key": "strong_buy",
       "beta": 1.545,
       "market_cap": 1465182593220608
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "443250.KS": {
     "ticker": "443250.KS",
@@ -72,7 +118,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "453810.KS": {
     "ticker": "453810.KS",
@@ -97,7 +143,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "411060.KS": {
     "ticker": "411060.KS",
@@ -122,7 +168,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0080G0.KS": {
     "ticker": "0080G0.KS",
@@ -147,7 +193,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "418670.KS": {
     "ticker": "418670.KS",
@@ -172,7 +218,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0053L0.KS": {
     "ticker": "0053L0.KS",
@@ -197,7 +243,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0183J0.KS": {
     "ticker": "0183J0.KS",
@@ -222,7 +268,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0131V0.KS": {
     "ticker": "0131V0.KS",
@@ -247,7 +293,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0162Y0.KS": {
     "ticker": "0162Y0.KS",
@@ -272,7 +318,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "441640.KS": {
     "ticker": "441640.KS",
@@ -297,7 +343,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "160580.KS": {
     "ticker": "160580.KS",
@@ -322,7 +368,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0163Y0.KS": {
     "ticker": "0163Y0.KS",
@@ -347,7 +393,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "161510.KS": {
     "ticker": "161510.KS",
@@ -372,7 +418,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0052D0.KS": {
     "ticker": "0052D0.KS",
@@ -397,7 +443,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0123G0.KS": {
     "ticker": "0123G0.KS",
@@ -422,7 +468,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "229200.KS": {
     "ticker": "229200.KS",
@@ -447,7 +493,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "245710.KS": {
     "ticker": "245710.KS",
@@ -472,7 +518,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "0023A0.KS": {
     "ticker": "0023A0.KS",
@@ -497,7 +543,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "452360.KS": {
     "ticker": "452360.KS",
@@ -522,7 +568,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "005935.KS": {
     "ticker": "005935.KS",
@@ -538,7 +584,7 @@
     "rsi_value": 46.10801995017749,
     "disparity_value_pct": -7.049171575519219,
     "metrics": {
-      "forward_per": 2.3004193,
+      "forward_per": 2.504326,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 349700.0,
@@ -547,7 +593,7 @@
       "beta": 1.545,
       "market_cap": 1148770070822912
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "487240.KS": {
     "ticker": "487240.KS",
@@ -572,7 +618,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "CRWD": {
     "ticker": "CRWD",
@@ -589,15 +635,15 @@
     "disparity_value_pct": 6.1360687269661485,
     "metrics": {
       "forward_per": 155.42784,
-      "trailing_per": 5008.5996,
-      "reported_eps_ttm": 0.05,
+      "trailing_per": 4173.8335,
+      "reported_eps_ttm": 0.06,
       "target_mean_price": 247.25,
       "target_upside_pct": -1.2698130291039949,
       "recommendation_key": "buy",
       "beta": 1.197,
       "market_cap": 256424001536
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "PANW": {
     "ticker": "PANW",
@@ -614,15 +660,15 @@
     "disparity_value_pct": -1.8517972277695027,
     "metrics": {
       "forward_per": 74.987656,
-      "trailing_per": 962.8158,
-      "reported_eps_ttm": 0.38,
+      "trailing_per": 914.675,
+      "reported_eps_ttm": 0.4,
       "target_mean_price": 398.52,
       "target_upside_pct": 8.923936184587847,
       "recommendation_key": "buy",
       "beta": 0.933,
       "market_cap": 299443781632
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "CRWV": {
     "ticker": "CRWV",
@@ -640,14 +686,14 @@
     "metrics": {
       "forward_per": -27.875572,
       "trailing_per": null,
-      "reported_eps_ttm": -3.33,
+      "reported_eps_ttm": -3.69,
       "target_mean_price": 134.57895,
       "target_upside_pct": 145.26873085429685,
       "recommendation_key": "buy",
       "beta": null,
       "market_cap": 30262810624
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "NBIS": {
     "ticker": "NBIS",
@@ -672,7 +718,7 @@
       "beta": 1.46,
       "market_cap": 41903763456
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "HUT": {
     "ticker": "HUT",
@@ -690,14 +736,14 @@
     "metrics": {
       "forward_per": -11.540345,
       "trailing_per": null,
-      "reported_eps_ttm": -4.85,
+      "reported_eps_ttm": -5.42,
       "target_mean_price": 148.47826,
       "target_upside_pct": 149.96339425229175,
       "recommendation_key": "strong_buy",
       "beta": 5.916,
       "market_cap": 7321612800
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "DELL": {
     "ticker": "DELL",
@@ -714,15 +760,15 @@
     "disparity_value_pct": -16.08510575202944,
     "metrics": {
       "forward_per": 14.020323,
-      "trailing_per": 27.641693,
-      "reported_eps_ttm": 15.35,
+      "trailing_per": 24.668602,
+      "reported_eps_ttm": 17.2,
       "target_mean_price": 595.0,
       "target_upside_pct": 40.23097268867279,
       "recommendation_key": "buy",
       "beta": 1.442,
       "market_cap": 269775339520
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "FIX": {
     "ticker": "FIX",
@@ -739,15 +785,15 @@
     "disparity_value_pct": -22.449818651648425,
     "metrics": {
       "forward_per": 18.382591,
-      "trailing_per": 28.646526,
-      "reported_eps_ttm": 43.03,
+      "trailing_per": 26.623327,
+      "reported_eps_ttm": 46.3,
       "target_mean_price": 1916.875,
       "target_upside_pct": 55.50719150845552,
       "recommendation_key": "strong_buy",
       "beta": 1.659,
       "market_cap": 43382640640
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "VRT": {
     "ticker": "VRT",
@@ -772,7 +818,7 @@
       "beta": 2.048,
       "market_cap": 89526550528
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "GLW": {
     "ticker": "GLW",
@@ -789,15 +835,15 @@
     "disparity_value_pct": -17.85384757091758,
     "metrics": {
       "forward_per": 27.249866,
-      "trailing_per": 52.25,
-      "reported_eps_ttm": 2.36,
+      "trailing_per": 49.923077,
+      "reported_eps_ttm": 2.47,
       "target_mean_price": 182.76471,
       "target_upside_pct": 48.21564643463309,
       "recommendation_key": "strong_buy",
       "beta": 1.123,
       "market_cap": 106219364352
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "INTC": {
     "ticker": "INTC",
@@ -815,14 +861,14 @@
     "metrics": {
       "forward_per": 31.33637,
       "trailing_per": null,
-      "reported_eps_ttm": -2.12,
+      "reported_eps_ttm": -2.42,
       "target_mean_price": 107.21429,
       "target_upside_pct": 63.03875686909429,
       "recommendation_key": "hold",
       "beta": 2.23,
       "market_cap": 349185605632
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "STX": {
     "ticker": "STX",
@@ -847,7 +893,7 @@
       "beta": 2.081,
       "market_cap": 148253409280
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "TEM": {
     "ticker": "TEM",
@@ -865,14 +911,14 @@
     "metrics": {
       "forward_per": -1556.801,
       "trailing_per": null,
-      "reported_eps_ttm": -1.34,
+      "reported_eps_ttm": -1.44,
       "target_mean_price": 75.05556,
       "target_upside_pct": 3.9262790520197504,
       "recommendation_key": "buy",
       "beta": 3.54,
       "market_cap": 13161519104
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "WDC": {
     "ticker": "WDC",
@@ -889,15 +935,15 @@
     "disparity_value_pct": -14.848304349174546,
     "metrics": {
       "forward_per": 9.061043,
-      "trailing_per": 13.909954,
-      "reported_eps_ttm": 26.32,
+      "trailing_per": 12.877593,
+      "reported_eps_ttm": 28.43,
       "target_mean_price": 613.375,
       "target_upside_pct": 67.53845143311172,
       "recommendation_key": "buy",
       "beta": 2.169,
       "market_cap": 137043484672
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "MU": {
     "ticker": "MU",
@@ -914,15 +960,15 @@
     "disparity_value_pct": -8.851192705201328,
     "metrics": {
       "forward_per": 4.2575617,
-      "trailing_per": 12.569115,
-      "reported_eps_ttm": 70.39,
+      "trailing_per": 11.902865,
+      "reported_eps_ttm": 74.33,
       "target_mean_price": 1561.9111,
       "target_upside_pct": 76.53899645547125,
       "recommendation_key": "strong_buy",
       "beta": 2.226,
       "market_cap": 1001015410688
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "SOFI": {
     "ticker": "SOFI",
@@ -947,7 +993,7 @@
       "beta": 2.332,
       "market_cap": 21731307520
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "SLDP": {
     "ticker": "SLDP",
@@ -972,7 +1018,7 @@
       "beta": 2.003,
       "market_cap": 447235200
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "ASTS": {
     "ticker": "ASTS",
@@ -990,14 +1036,14 @@
     "metrics": {
       "forward_per": -28.211592,
       "trailing_per": null,
-      "reported_eps_ttm": -2.03,
+      "reported_eps_ttm": -2.13,
       "target_mean_price": 74.68333,
       "target_upside_pct": 82.28783933318684,
       "recommendation_key": "hold",
       "beta": 2.706,
       "market_cap": 15944192000
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "PLTR": {
     "ticker": "PLTR",
@@ -1022,7 +1068,7 @@
       "beta": 1.602,
       "market_cap": 442427080704
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "META": {
     "ticker": "META",
@@ -1039,29 +1085,29 @@
     "disparity_value_pct": -5.997028108034385,
     "metrics": {
       "forward_per": 17.2809,
-      "trailing_per": 21.309423,
-      "reported_eps_ttm": 28.86,
+      "trailing_per": 20.982258,
+      "reported_eps_ttm": 29.31,
       "target_mean_price": 848.3765,
       "target_upside_pct": 37.949643648131655,
       "recommendation_key": "strong_buy",
       "beta": 1.185,
       "market_cap": 1572426743808
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "ETH-USD": {
     "ticker": "ETH-USD",
     "company_name": "Ethereum USD",
-    "current_price": 2237.72998046875,
-    "total_undervalued_score": 51.9,
+    "current_price": 2242.56005859375,
+    "total_undervalued_score": 51.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 30.079941164548572,
-    "disparity_value_pct": -11.044781278119054,
+    "rsi_value": 30.38283523363674,
+    "disparity_value_pct": -10.855626634161286,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1070,9 +1116,9 @@
       "target_upside_pct": null,
       "recommendation_key": "N/A",
       "beta": null,
-      "market_cap": 273264361472
+      "market_cap": 273965858816
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "ONDS": {
     "ticker": "ONDS",
@@ -1097,7 +1143,7 @@
       "beta": 2.922,
       "market_cap": 3680153344
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "LAES": {
     "ticker": "LAES",
@@ -1118,11 +1164,11 @@
       "reported_eps_ttm": -0.2,
       "target_mean_price": 5.875,
       "target_upside_pct": 299.6598561671019,
-      "recommendation_key": "strong_buy",
+      "recommendation_key": "none",
       "beta": -7.513,
       "market_cap": 330647936
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "ARM": {
     "ticker": "ARM",
@@ -1147,7 +1193,7 @@
       "beta": 3.789,
       "market_cap": 219975663616
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "QS": {
     "ticker": "QS",
@@ -1165,14 +1211,14 @@
     "metrics": {
       "forward_per": -6.361841,
       "trailing_per": null,
-      "reported_eps_ttm": -0.61,
+      "reported_eps_ttm": -0.63,
       "target_mean_price": 5.4125,
       "target_upside_pct": 33.31280976064535,
       "recommendation_key": "hold",
       "beta": 2.838,
       "market_cap": 2513601024
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "PGY": {
     "ticker": "PGY",
@@ -1189,15 +1235,15 @@
     "disparity_value_pct": -3.5941218552646537,
     "metrics": {
       "forward_per": 4.5178065,
-      "trailing_per": 15.141732,
-      "reported_eps_ttm": 1.27,
+      "trailing_per": 13.934782,
+      "reported_eps_ttm": 1.38,
       "target_mean_price": 28.81818,
       "target_upside_pct": 49.86053398859639,
       "recommendation_key": "strong_buy",
       "beta": 5.519,
       "market_cap": 1604278912
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "JOBY": {
     "ticker": "JOBY",
@@ -1222,7 +1268,7 @@
       "beta": 2.662,
       "market_cap": 4881842176
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "MSFT": {
     "ticker": "MSFT",
@@ -1239,15 +1285,15 @@
     "disparity_value_pct": 2.443964937913967,
     "metrics": {
       "forward_per": 21.618698,
-      "trailing_per": 27.239561,
-      "reported_eps_ttm": 19.16,
+      "trailing_per": 26.81963,
+      "reported_eps_ttm": 19.46,
       "target_mean_price": 629.6884,
       "target_upside_pct": 20.65076974982847,
       "recommendation_key": "strong_buy",
       "beta": null,
       "market_cap": 3875804807168
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "CIEN": {
     "ticker": "CIEN",
@@ -1272,7 +1318,7 @@
       "beta": 1.289,
       "market_cap": 45480833024
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "APP": {
     "ticker": "APP",
@@ -1289,15 +1335,15 @@
     "disparity_value_pct": -23.344098182531127,
     "metrics": {
       "forward_per": 11.132407,
-      "trailing_per": 19.596912,
-      "reported_eps_ttm": 11.66,
+      "trailing_per": 17.563412,
+      "reported_eps_ttm": 13.01,
       "target_mean_price": 452.9487,
       "target_upside_pct": 98.2270021881838,
       "recommendation_key": "buy",
       "beta": 2.557,
       "market_cap": 76762177536
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "CLS": {
     "ticker": "CLS",
@@ -1322,21 +1368,21 @@
       "beta": 1.316,
       "market_cap": 33486469120
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "BTC-USD": {
     "ticker": "BTC-USD",
     "company_name": "Bitcoin USD",
-    "current_price": 77101.0,
-    "total_undervalued_score": 33.3,
+    "current_price": 77204.2109375,
+    "total_undervalued_score": 33.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 34.088465729920756,
-    "disparity_value_pct": -5.255395501703807,
+    "rsi_value": 34.346198199252484,
+    "disparity_value_pct": -5.1305713987137676,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1345,9 +1391,9 @@
       "target_upside_pct": null,
       "recommendation_key": "N/A",
       "beta": null,
-      "market_cap": 1548671516672
+      "market_cap": 1552476667904
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "TSLA": {
     "ticker": "TSLA",
@@ -1364,15 +1410,15 @@
     "disparity_value_pct": 9.764736222875037,
     "metrics": {
       "forward_per": 185.5,
-      "trailing_per": 444.23334,
-      "reported_eps_ttm": 0.9,
+      "trailing_per": 439.35162,
+      "reported_eps_ttm": 0.91,
       "target_mean_price": 411.8155,
       "target_upside_pct": 3.0028019596100224,
       "recommendation_key": "buy",
       "beta": 1.916,
       "market_cap": 1580341002240
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "LLY": {
     "ticker": "LLY",
@@ -1389,15 +1435,15 @@
     "disparity_value_pct": 18.074576954652933,
     "metrics": {
       "forward_per": 28.719135,
-      "trailing_per": 46.11386,
-      "reported_eps_ttm": 30.74,
+      "trailing_per": 46.00909,
+      "reported_eps_ttm": 30.81,
       "target_mean_price": 1397.0221,
       "target_upside_pct": -1.4474327706517391,
       "recommendation_key": "buy",
       "beta": null,
       "market_cap": 1262666776576
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "IONQ": {
     "ticker": "IONQ",
@@ -1415,14 +1461,14 @@
     "metrics": {
       "forward_per": -22.348364,
       "trailing_per": null,
-      "reported_eps_ttm": -3.25,
+      "reported_eps_ttm": -3.43,
       "target_mean_price": 64.06071,
       "target_upside_pct": 113.25135834762152,
       "recommendation_key": "strong_buy",
       "beta": 3.361,
       "market_cap": 12899406848
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "IREN": {
     "ticker": "IREN",
@@ -1440,14 +1486,14 @@
     "metrics": {
       "forward_per": -6.0135994,
       "trailing_per": null,
-      "reported_eps_ttm": -2.02,
+      "reported_eps_ttm": -2.22,
       "target_mean_price": 75.41667,
       "target_upside_pct": 214.89214028210282,
       "recommendation_key": "buy",
       "beta": 4.271,
       "market_cap": 9690494976
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "LITE": {
     "ticker": "LITE",
@@ -1465,14 +1511,14 @@
     "metrics": {
       "forward_per": 23.53832,
       "trailing_per": null,
-      "reported_eps_ttm": -84.99,
+      "reported_eps_ttm": -92.96,
       "target_mean_price": 1166.2803,
       "target_upside_pct": 38.72728477049089,
       "recommendation_key": "buy",
       "beta": 1.536,
       "market_cap": 76153012224
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "RKLB": {
     "ticker": "RKLB",
@@ -1490,14 +1536,14 @@
     "metrics": {
       "forward_per": 951.99164,
       "trailing_per": null,
-      "reported_eps_ttm": -0.27,
+      "reported_eps_ttm": -0.25,
       "target_mean_price": 102.15,
       "target_upside_pct": 86.64352430912892,
       "recommendation_key": "none",
       "beta": 2.938,
       "market_cap": 34994962432
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "GEV": {
     "ticker": "GEV",
@@ -1522,7 +1568,7 @@
       "beta": 0.967,
       "market_cap": 227058515968
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "PL": {
     "ticker": "PL",
@@ -1540,14 +1586,14 @@
     "metrics": {
       "forward_per": -10776.0,
       "trailing_per": null,
-      "reported_eps_ttm": -1.04,
+      "reported_eps_ttm": -1.1,
       "target_mean_price": 30.27273,
       "target_upside_pct": 124.74186636877856,
       "recommendation_key": "buy",
       "beta": 2.17,
       "market_cap": 4901032448
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "COHR": {
     "ticker": "COHR",
@@ -1564,15 +1610,15 @@
     "disparity_value_pct": -26.867687236438297,
     "metrics": {
       "forward_per": 15.121983,
-      "trailing_per": 57.621918,
-      "reported_eps_ttm": 3.65,
+      "trailing_per": 51.048546,
+      "reported_eps_ttm": 4.12,
       "target_mean_price": 394.39853,
       "target_upside_pct": 87.52306783254103,
       "recommendation_key": "buy",
       "beta": 2.113,
       "market_cap": 41418563584
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "BE": {
     "ticker": "BE",
@@ -1597,7 +1643,7 @@
       "beta": 3.776,
       "market_cap": 60044296192
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "NVDA": {
     "ticker": "NVDA",
@@ -1614,15 +1660,15 @@
     "disparity_value_pct": -7.682244566502316,
     "metrics": {
       "forward_per": 12.858633,
-      "trailing_per": 26.997362,
-      "reported_eps_ttm": 7.58,
+      "trailing_per": 25.87105,
+      "reported_eps_ttm": 7.91,
       "target_mean_price": 328.95346,
       "target_upside_pct": 60.74739101892309,
       "recommendation_key": "strong_buy",
       "beta": 2.216,
       "market_cap": 4941441662976
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "SOXL": {
     "ticker": "SOXL",
@@ -1647,7 +1693,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "AVGO": {
     "ticker": "AVGO",
@@ -1672,7 +1718,7 @@
       "beta": 1.476,
       "market_cap": 1556585250816
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "GOOGL": {
     "ticker": "GOOGL",
@@ -1689,15 +1735,15 @@
     "disparity_value_pct": -17.769092664674446,
     "metrics": {
       "forward_per": 18.485123,
-      "trailing_per": 14.822035,
-      "reported_eps_ttm": 18.88,
+      "trailing_per": 14.613055,
+      "reported_eps_ttm": 19.15,
       "target_mean_price": 406.54807,
       "target_upside_pct": 45.27875761873463,
       "recommendation_key": "strong_buy",
       "beta": 1.211,
       "market_cap": 3440352690176
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   },
   "AMD": {
     "ticker": "AMD",
@@ -1722,6 +1768,6 @@
       "beta": 2.454,
       "market_cap": 824073388032
     },
-    "updated_at": "2026-10-31 04:02 KST"
+    "updated_at": "2026-10-31 06:47 KST"
   }
 }
