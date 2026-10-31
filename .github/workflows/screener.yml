@@ -2,14 +2,12 @@ name: Stock Valuation Screener
 
 on:
   schedule:
-    # 1) 한국 장 마감 직후: 평일 월~금 16:10 KST (UTC 07:10)
-    - cron: '10 7 * * 1-5'
-    # 2) 미국 장 마감 직후: 평일 화~토 06:10 KST (UTC 21:10)
-    - cron: '10 21 * * 1-5'
-  workflow_dispatch: # 언제든 깃허브 웹에서 'Run workflow' 버튼 눌러 즉시 실행 가능
+    # 10분마다 24시간 연중무휴 자동 실행
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # 언제든 'Run workflow' 버튼으로 즉시 수동 실행 가능
 
 permissions:
-  contents: write # 결과 json 파일을 깃허브에 푸시할 수 있는 쓰기 권한
+  contents: write # 결과 json 파일을 저장소에 자동 Push할 수 있는 쓰기 권한
 
 jobs:
   run-screener:
@@ -23,7 +21,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'pip'
 
       - name: 필수 라이브러리 설치
         run: |
