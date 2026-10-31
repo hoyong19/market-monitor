@@ -758,15 +758,17 @@
     function getFilteredList() {
       const isScreener = currentCategory === 'undervalued' || currentCategory === 'overvalued';
       if (isScreener) {
-        let list = Object.values(screenerDb);
+        // Filter out _macro and _meta so only genuine stocks with .ticker are processed!
+        let list = Object.values(screenerDb).filter(i => i && typeof i === 'object' && i.ticker);
+        
         if (currentMarketFilter === 'kr') {
-          list = list.filter(i => i.ticker.toLowerCase().endsWith('.ks') || i.ticker.toLowerCase().endsWith('.kq'));
+          list = list.filter(i => (i.ticker || '').toLowerCase().endsWith('.ks') || (i.ticker || '').toLowerCase().endsWith('.kq'));
         } else if (currentMarketFilter === 'us') {
-          list = list.filter(i => !i.ticker.toLowerCase().endsWith('.ks') && !i.ticker.toLowerCase().endsWith('.kq'));
+          list = list.filter(i => !(i.ticker || '').toLowerCase().endsWith('.ks') && !(i.ticker || '').toLowerCase().endsWith('.kq'));
         }
         if (currentSearch.trim()) {
           const q = currentSearch.toLowerCase().trim();
-          list = list.filter(i => i.ticker.toLowerCase().includes(q) || (i.company_name && i.company_name.toLowerCase().includes(q)));
+          list = list.filter(i => (i.ticker || '').toLowerCase().includes(q) || (i.company_name && i.company_name.toLowerCase().includes(q)));
         }
 
         if (currentCategory === 'undervalued') {
