@@ -1,0 +1,2688 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Global Market Monitor | 글로벌 금융시장 종합 대시보드</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="마켓모니터">
+  <meta name="theme-color" content="#0b0f19">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+            },
+            stock: {
+              up: '#ef4444',     /* 한국 증시 기준 상승: 빨강 */
+              down: '#3b82f6',   /* 한국 증시 기준 하락: 파랑 */
+              usUp: '#22c55e',   /* 미국 기준 상승: 초록 */
+              usDown: '#ef4444'  /* 미국 기준 하락: 빨강 */
+            },
+            dark: {
+              bg: '#0b0f19',
+              card: '#131b2e',
+              border: '#1e293b',
+              surface: '#182238'
+            }
+          },
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'Helvetica Neue', 'Segoe UI', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes flashGreen {
+      0% { background-color: rgba(34, 197, 94, 0.35); }
+      100% { background-color: transparent; }
+    }
+    @keyframes flashRed {
+      0% { background-color: rgba(239, 68, 68, 0.35); }
+      100% { background-color: transparent; }
+    }
+    .flash-up {
+      animation: flashGreen 1.2s ease-out;
+    }
+    .flash-down {
+      animation: flashRed 1.2s ease-out;
+    }
+    /* Hide scrollbar for clean horizontal tabs on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Custom range slider */
+    input[type=range] {
+      accent-color: #3b82f6;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, Helvetica Neue, Segoe UI, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.right-4{right:1rem}.top-0{top:0px}.top-4{top:1rem}.bottom-0{bottom:0px}.left-3{left:0.75rem}.right-2\.5{right:0.625rem}.top-1\/2{top:50%}.z-30{z-index:30}.z-50{z-index:50}.z-40{z-index:40}.mx-auto{margin-left:auto;margin-right:auto}.my-3{margin-top:0.75rem;margin-bottom:0.75rem}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-2\.5{margin-bottom:0.625rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.ml-1{margin-left:0.25rem}.ml-auto{margin-left:auto}.mr-1{margin-right:0.25rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-auto{margin-top:auto}.mt-2{margin-top:0.5rem}.line-clamp-1{overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-5{height:1.25rem}.h-9{height:2.25rem}.h-1\.5{height:0.375rem}.h-10{height:2.5rem}.h-2{height:0.5rem}.h-3\.5{height:0.875rem}.h-4{height:1rem}.h-64{height:16rem}.h-8{height:2rem}.max-h-\[90vh\]{max-height:90vh}.max-h-\[92vh\]{max-height:92vh}.min-h-screen{min-height:100vh}.w-5{width:1.25rem}.w-9{width:2.25rem}.w-1\.5{width:0.375rem}.w-10{width:2.5rem}.w-2{width:0.5rem}.w-3\.5{width:0.875rem}.w-4{width:1rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-y-8{--tw-translate-y:2rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.rotate-180{--tw-rotate:180deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.list-inside{list-style-position:inside}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.items-baseline{align-items:baseline}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.justify-around{justify-content:space-around}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-0\.5{gap:0.125rem}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-4{gap:1rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-100 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(241 245 249 / var(--tw-divide-opacity, 1))}.self-start{align-self:flex-start}.overflow-hidden{overflow:hidden}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.whitespace-nowrap{white-space:nowrap}.rounded-xl{border-radius:0.75rem}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-t-2xl{border-top-left-radius:1rem;border-top-right-radius:1rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-blue-200\/60{border-color:rgb(191 219 254 / 0.6)}.border-emerald-500\/20{border-color:rgb(16 185 129 / 0.2)}.border-indigo-200{--tw-border-opacity:1;border-color:rgb(199 210 254 / var(--tw-border-opacity, 1))}.border-indigo-500\/20{border-color:rgb(99 102 241 / 0.2)}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-blue-200{--tw-border-opacity:1;border-color:rgb(191 219 254 / var(--tw-border-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.bg-amber-500\/20{background-color:rgb(245 158 11 / 0.2)}.bg-black\/60{background-color:rgb(0 0 0 / 0.6)}.bg-blue-50\/60{background-color:rgb(239 246 255 / 0.6)}.bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity, 1))}.bg-blue-500\/10{background-color:rgb(59 130 246 / 0.1)}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-emerald-500\/10{background-color:rgb(16 185 129 / 0.1)}.bg-indigo-50\/70{background-color:rgb(238 242 255 / 0.7)}.bg-indigo-500\/10{background-color:rgb(99 102 241 / 0.1)}.bg-indigo-600{--tw-bg-opacity:1;background-color:rgb(79 70 229 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-50\/50{background-color:rgb(248 250 252 / 0.5)}.bg-transparent{background-color:transparent}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/95{background-color:rgb(255 255 255 / 0.95)}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-tr{background-image:linear-gradient(to top right, var(--tw-gradient-stops))}.from-blue-600{--tw-gradient-from:#2563eb var(--tw-gradient-from-position);--tw-gradient-to:rgb(37 99 235 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-indigo-600{--tw-gradient-to:rgb(79 70 229 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #4f46e5 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-emerald-500{--tw-gradient-to:#10b981 var(--tw-gradient-to-position)}.p-0{padding:0px}.p-0\.5{padding:0.125rem}.p-1{padding:0.25rem}.p-1\.5{padding:0.375rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-2{padding-bottom:0.5rem}.pb-3{padding-bottom:0.75rem}.pl-9{padding-left:2.25rem}.pr-8{padding-right:2rem}.pt-2{padding-top:0.5rem}.pt-1{padding-top:0.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-sans{font-family:Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, Helvetica Neue, Segoe UI, sans-serif}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.font-black{font-weight:900}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-amber-500{--tw-text-opacity:1;color:rgb(245 158 11 / var(--tw-text-opacity, 1))}.text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-blue-900{--tw-text-opacity:1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-indigo-500{--tw-text-opacity:1;color:rgb(99 102 241 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-indigo-900{--tw-text-opacity:1;color:rgb(49 46 129 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-rose-600{--tw-text-opacity:1;color:rgb(225 29 72 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.placeholder-slate-400::placeholder{--tw-placeholder-opacity:1;color:rgb(148 163 184 / var(--tw-placeholder-opacity, 1))}.opacity-0{opacity:0}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-indigo-500\/20{--tw-shadow-color:rgb(99 102 241 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.duration-500{transition-duration:500ms}.hover\:border-blue-500\/50:hover{border-color:rgb(59 130 246 / 0.5)}.hover\:bg-blue-700:hover{--tw-bg-opacity:1;background-color:rgb(29 78 216 / var(--tw-bg-opacity, 1))}.hover\:bg-emerald-500\/20:hover{background-color:rgb(16 185 129 / 0.2)}.hover\:bg-indigo-700:hover{--tw-bg-opacity:1;background-color:rgb(67 56 202 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-300:hover{--tw-bg-opacity:1;background-color:rgb(203 213 225 / var(--tw-bg-opacity, 1))}.hover\:text-amber-500:hover{--tw-text-opacity:1;color:rgb(245 158 11 / var(--tw-text-opacity, 1))}.hover\:text-blue-600:hover{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.hover\:text-slate-600:hover{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.hover\:text-slate-700:hover{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.hover\:shadow-lg:hover{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.hover\:shadow-md:hover{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-blue-500\/40:focus{--tw-ring-color:rgb(59 130 246 / 0.4)}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.98\]:active{--tw-scale-x:0.98;--tw-scale-y:0.98;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.dark\:block:is(.dark *){display:block}.dark\:hidden:is(.dark *){display:none}.dark\:divide-slate-800\/60:is(.dark *) > :not([hidden]) ~ :not([hidden]){border-color:rgb(30 41 59 / 0.6)}.dark\:border-slate-800:is(.dark *){--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.dark\:border-blue-900\/40:is(.dark *){border-color:rgb(30 58 138 / 0.4)}.dark\:border-indigo-800\/60:is(.dark *){border-color:rgb(55 48 163 / 0.6)}.dark\:border-slate-700:is(.dark *){--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.dark\:border-slate-700\/60:is(.dark *){border-color:rgb(51 65 85 / 0.6)}.dark\:border-slate-800\/50:is(.dark *){border-color:rgb(30 41 59 / 0.5)}.dark\:border-slate-800\/80:is(.dark *){border-color:rgb(30 41 59 / 0.8)}.dark\:bg-\[\#0b0f19\]:is(.dark *){--tw-bg-opacity:1;background-color:rgb(11 15 25 / var(--tw-bg-opacity, 1))}.dark\:bg-\[\#111827\]\/90:is(.dark *){background-color:rgb(17 24 39 / 0.9)}.dark\:bg-\[\#0e1422\]:is(.dark *){--tw-bg-opacity:1;background-color:rgb(14 20 34 / var(--tw-bg-opacity, 1))}.dark\:bg-\[\#111827\]\/95:is(.dark *){background-color:rgb(17 24 39 / 0.95)}.dark\:bg-\[\#131b2e\]:is(.dark *){--tw-bg-opacity:1;background-color:rgb(19 27 46 / var(--tw-bg-opacity, 1))}.dark\:bg-blue-950\/20:is(.dark *){background-color:rgb(23 37 84 / 0.2)}.dark\:bg-indigo-950\/30:is(.dark *){background-color:rgb(30 27 75 / 0.3)}.dark\:bg-slate-700:is(.dark *){--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.dark\:bg-slate-800:is(.dark *){--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.dark\:bg-slate-800\/40:is(.dark *){background-color:rgb(30 41 59 / 0.4)}.dark\:bg-slate-800\/60:is(.dark *){background-color:rgb(30 41 59 / 0.6)}.dark\:bg-slate-800\/80:is(.dark *){background-color:rgb(30 41 59 / 0.8)}.dark\:bg-slate-900\/40:is(.dark *){background-color:rgb(15 23 42 / 0.4)}.dark\:bg-slate-900\/50:is(.dark *){background-color:rgb(15 23 42 / 0.5)}.dark\:bg-blue-950\/40:is(.dark *){background-color:rgb(23 37 84 / 0.4)}.dark\:text-slate-100:is(.dark *){--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.dark\:text-blue-300:is(.dark *){--tw-text-opacity:1;color:rgb(147 197 253 / var(--tw-text-opacity, 1))}.dark\:text-blue-400:is(.dark *){--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.dark\:text-emerald-400:is(.dark *){--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.dark\:text-indigo-200:is(.dark *){--tw-text-opacity:1;color:rgb(199 210 254 / var(--tw-text-opacity, 1))}.dark\:text-indigo-400:is(.dark *){--tw-text-opacity:1;color:rgb(129 140 248 / var(--tw-text-opacity, 1))}.dark\:text-slate-200:is(.dark *){--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.dark\:text-slate-300:is(.dark *){--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.dark\:text-slate-400:is(.dark *){--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.dark\:text-slate-600:is(.dark *){--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.dark\:text-white:is(.dark *){--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.dark\:text-rose-400:is(.dark *){--tw-text-opacity:1;color:rgb(251 113 133 / var(--tw-text-opacity, 1))}.dark\:hover\:bg-slate-700:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.dark\:hover\:bg-slate-800:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.dark\:hover\:text-slate-200:hover:is(.dark *){--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:block{display:block}.sm\:inline{display:inline}.sm\:flex{display:flex}.sm\:table-cell{display:table-cell}.sm\:h-72{height:18rem}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:gap-3{gap:0.75rem}.sm\:gap-4{gap:1rem}.sm\:self-center{align-self:center}.sm\:rounded-2xl{border-radius:1rem}.sm\:p-4{padding:1rem}.sm\:p-5{padding:1.25rem}.sm\:p-3{padding:0.75rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.sm\:py-6{padding-top:1.5rem;padding-bottom:1.5rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}.sm\:text-xs{font-size:0.75rem;line-height:1rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}}@media (min-width: 768px){.md\:inline{display:inline}.md\:table-cell{display:table-cell}.md\:hidden{display:none}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:col-span-3{grid-column:span 3 / span 3}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:grid-cols-6{grid-template-columns:repeat(6, minmax(0, 1fr))}}@media (min-width: 1280px){.xl\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+<body class="bg-slate-50 dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200 antialiased flex flex-col font-sans">
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Top Sticky Navigation & Header -->
+  <header class="sticky top-0 z-30 bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-3 sm:px-6 py-2.5 shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Status -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">마켓 모니터</h1>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1"></span>LIVE
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">미국채(10·20·30Y) · 미 증시 · 코스피/코스닥 · 비트코인/이더리움 보드</p>
+        </div>
+      </div>
+
+      <!-- Controls: Refresh Interval, Manual Sync, Theme Toggle -->
+      <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+        
+        <!-- Refresh Interval Selector -->
+        <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2 sm:px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="hidden md:inline text-slate-500 dark:text-slate-400">주기:</span>
+          <select id="refreshIntervalSelect" class="bg-transparent font-medium text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
+            <option value="10">10초</option>
+            <option value="30" selected="">30초</option>
+            <option value="60">1분</option>
+            <option value="300">5분</option>
+            <option value="0">정지</option>
+          </select>
+          <!-- Countdown Ring / Number -->
+          <span id="countdownBadge" class="ml-1 w-5 h-5 flex items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold">24</span>
+        </div>
+
+        <!-- Live Data Mode Toggle -->
+        <button id="dataSourceToggle" title="실시간 시세 연동 모드 전환" class="px-2 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/20 hover:bg-emerald-500/20 transition flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="dataSourceText">실시간연동</span>
+        </button>
+
+        <!-- Manual Refresh Button -->
+        <button id="refreshBtn" title="지금 새로고침" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-semibold shadow-sm transition-all">
+          <svg id="refreshIcon" class="w-3.5 h-3.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span class="hidden sm:inline">새로고침</span>
+        </button>
+
+        <!-- Color Mode Standard Toggle (Korean Red=Up vs US Green=Up) -->
+        <button id="colorModeToggle" title="상승 색상 기준 전환 (한국식 빨강 / 미국식 초록)" class="px-2 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+          <span id="colorModeText">🇰🇷 상승:빨강</span>
+        </button>
+
+        <!-- Web/Mobile Setup & Download Guide Button -->
+        <button id="openSetupGuideBtn" title="웹/모바일 설치 및 파일 다운로드" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+          <span class="hidden sm:inline">앱 설치·배포</span>
+        </button>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button id="themeToggle" title="화면 모드 변경" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+          <svg id="sunIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <svg id="moonIcon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Market Status Banner & Marquee (Auto-scrolling or condensed info) -->
+  <section class="bg-slate-100 dark:bg-[#0e1422] border-b border-slate-200 dark:border-slate-800/80 px-3 sm:px-6 py-1.5 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-4 text-[11px] sm:text-xs">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="font-semibold text-slate-700 dark:text-slate-300">미국 증시:</span>
+          <span id="usMarketState" class="text-slate-500 dark:text-slate-400">정규장 마감 (애프터마켓)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span class="font-semibold text-slate-700 dark:text-slate-300">국내 증시:</span>
+          <span id="krMarketState" class="text-slate-500 dark:text-slate-400">주말 휴장</span>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2">
+        <span>최근 갱신: <strong id="lastUpdatedTime" class="font-mono text-slate-700 dark:text-slate-300">12시 3분 41초 (실제종가 고정)</strong></span>
+        <span class="hidden md:inline text-slate-300 dark:text-slate-600">|</span>
+        <span class="hidden md:inline">기준시각: KST (한국표준시)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-6">
+
+    <!-- KPI Top Highlight Cards (KOSPI, KOSDAQ, S&P500, NASDAQ, US 10Y, USD/KRW) -->
+    <section>
+      <div class="flex items-center justify-between mb-2.5">
+        <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+          </svg>
+          핵심 시장 나침반 (Key Pulse)
+        </h2>
+        <span class="text-[11px] text-slate-400">카드를 누르면 상세 차트가 열립니다</span>
+      </div>
+      
+      <div id="kpiGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+          <div data-id="kospi" class="kpi-card cursor-pointer group bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 hover:border-blue-500/50 hover:shadow-md transition-all active:scale-[0.98]">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="font-semibold truncate group-hover:text-blue-500 transition">코스피 (KOSPI)</span>
+              <span class="font-mono text-[10px] text-slate-400">KS11</span>
+            </div>
+            <div class="mt-1 flex items-baseline justify-between gap-1">
+              <div class="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white truncate">
+                5,730.74
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px]">
+              <span class="font-mono font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                <span>▼</span>
+                <span>-3.48%</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                -206.92
+              </span>
+            </div>
+          </div>
+        
+          <div data-id="sp500" class="kpi-card cursor-pointer group bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 hover:border-blue-500/50 hover:shadow-md transition-all active:scale-[0.98]">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="font-semibold truncate group-hover:text-blue-500 transition">S&amp;P 500</span>
+              <span class="font-mono text-[10px] text-slate-400">^GSPC</span>
+            </div>
+            <div class="mt-1 flex items-baseline justify-between gap-1">
+              <div class="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white truncate">
+                7,580.07
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px]">
+              <span class="font-mono font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                <span>▼</span>
+                <span>-1.82%</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                -140.32
+              </span>
+            </div>
+          </div>
+        
+          <div data-id="nasdaq" class="kpi-card cursor-pointer group bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 hover:border-blue-500/50 hover:shadow-md transition-all active:scale-[0.98]">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="font-semibold truncate group-hover:text-blue-500 transition">나스닥 종합 (NASDAQ)</span>
+              <span class="font-mono text-[10px] text-slate-400">^IXIC</span>
+            </div>
+            <div class="mt-1 flex items-baseline justify-between gap-1">
+              <div class="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white truncate">
+                25,437.00
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px]">
+              <span class="font-mono font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                <span>▼</span>
+                <span>-2.86%</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                -747.73
+              </span>
+            </div>
+          </div>
+        
+          <div data-id="us10y" class="kpi-card cursor-pointer group bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 hover:border-blue-500/50 hover:shadow-md transition-all active:scale-[0.98]">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="font-semibold truncate group-hover:text-blue-500 transition">미국채 10년물 금리</span>
+              <span class="font-mono text-[10px] text-slate-400">US10Y</span>
+            </div>
+            <div class="mt-1 flex items-baseline justify-between gap-1">
+              <div class="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white truncate">
+                4.940%
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px]">
+              <span class="font-mono font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                <span>▼</span>
+                <span>-0.80%</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                -0.040%p
+              </span>
+            </div>
+          </div>
+        
+          <div data-id="btc" class="kpi-card cursor-pointer group bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 hover:border-blue-500/50 hover:shadow-md transition-all active:scale-[0.98]">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="font-semibold truncate group-hover:text-blue-500 transition">비트코인 (Bitcoin)</span>
+              <span class="font-mono text-[10px] text-slate-400">BTC/USD</span>
+            </div>
+            <div class="mt-1 flex items-baseline justify-between gap-1">
+              <div class="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white truncate">
+                $77,437.42
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px]">
+              <span class="font-mono font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                <span>▼</span>
+                <span>-0.12%</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                -94.24$
+              </span>
+            </div>
+          </div>
+        
+          <div data-id="usdkrw" class="kpi-card cursor-pointer group bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 hover:border-blue-500/50 hover:shadow-md transition-all active:scale-[0.98]">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="font-semibold truncate group-hover:text-blue-500 transition">원/달러 환율 (USD/KRW)</span>
+              <span class="font-mono text-[10px] text-slate-400">KRW=X</span>
+            </div>
+            <div class="mt-1 flex items-baseline justify-between gap-1">
+              <div class="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white truncate">
+                1,333.4원
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px]">
+              <span class="font-mono font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                <span>▼</span>
+                <span>-0.12%</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                -1.58원
+              </span>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <!-- Yield Curve Feature Box (미국 국채 수익률 곡선 분석) -->
+    <section class="bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-100 dark:border-slate-800/80 pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">SPECIAL FOCUS</span>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">미국 국채 수익률 곡선 (US Treasury Yield Curve)</h2>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            미국채 10년, 20년, 30년 장기물과 단기물(3M, 2Y)의 금리 구조 및 장단기 금리차(10Y-2Y) 경기 선행 지표
+          </p>
+        </div>
+        
+        <!-- Spread Badge -->
+        <div class="flex items-center gap-2 self-start sm:self-center bg-slate-50 dark:bg-slate-800/60 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
+          <div class="text-right">
+            <div class="text-[10px] text-slate-400">10Y - 2Y 스프레드</div>
+            <div id="yieldSpreadValue" class="text-sm font-bold font-mono text-emerald-500">+0.320 %p</div>
+          </div>
+          <div id="inversionStatusBadge" class="px-2 py-1 rounded text-[11px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">정상 곡선 (우상향)</div>
+        </div>
+      </div>
+
+      <!-- Yield Curve Chart Container & Quick Stats -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-center">
+        <!-- Chart Canvas -->
+        <div class="lg:col-span-3 relative h-64 sm:h-72 w-full bg-slate-50/50 dark:bg-slate-900/40 rounded-lg p-2 border border-slate-100 dark:border-slate-800/50">
+          <canvas id="yieldCurveCanvas" width="870" height="270" style="display: block; box-sizing: border-box; height: 270px; width: 870px;"></canvas>
+        </div>
+
+        <!-- Macro Insights Side Card -->
+        <div class="space-y-3 text-xs bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-lg border border-slate-100 dark:border-slate-800">
+          <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            국채 금리가 주식에 미치는 영향
+          </h3>
+          <ul class="space-y-2 text-slate-600 dark:text-slate-400">
+            <li class="flex items-start gap-1.5">
+              <span class="font-bold text-blue-500">•</span>
+              <span><strong>10년물(4.94%)</strong>: 글로벌 무위험 벤치마크. 급등 시 성장주 밸류에이션(할인율) 부담 가중.</span>
+            </li>
+            <li class="flex items-start gap-1.5">
+              <span class="font-bold text-indigo-500">•</span>
+              <span><strong>20년·30년물</strong>: 연기금 및 기관의 장기 수급 척도. 30년물 금리 상승은 장기 경기 확장 또는 국채 발행 부담 반영.</span>
+            </li>
+            <li class="flex items-start gap-1.5">
+              <span class="font-bold text-emerald-500">•</span>
+              <span><strong>10Y-2Y 역전 해소</strong>: 장기 역전 후 정상화 국면은 통상 연준의 금리 인하 사이클과 맞물립니다.</span>
+            </li>
+          </ul>
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">기준금리(Fed Funds): 4.75~5.00%</span>
+            <button id="openYieldModalBtn" class="text-[11px] font-semibold text-blue-500 hover:text-blue-600 dark:text-blue-400 underline">국채 심층 분석 &gt;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter, Search, Tab, and Display Controls -->
+    <section class="space-y-3">
+      
+      <!-- Category Tabs (Horizontal Scrollable on Mobile) -->
+      <div class="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="categoryTabs">
+          <button data-cat="all" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            전체 지표 (All)
+          </button>
+          <button data-cat="treasury" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all hover:bg-slate-200 dark:hover:bg-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            🏛️ 미국 국채 (10·20·30Y)
+          </button>
+          <button data-cat="us" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all hover:bg-slate-200 dark:hover:bg-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            🇺🇸 미국 지수 (S&amp;P·나스닥)
+          </button>
+          <button data-cat="kr" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all hover:bg-slate-200 dark:hover:bg-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            🇰🇷 국내 증시 (코스피·코스닥)
+          </button>
+          <button data-cat="crypto" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all hover:bg-slate-200 dark:hover:bg-slate-700 active bg-blue-600 text-white shadow-sm">
+            🪙 가상자산 (BTC·ETH)
+          </button>
+          <button data-cat="macro" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+            💵 환율·원자재·VIX
+          </button>
+          <button data-cat="watchlist" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center gap-1">
+            ⭐ 관심지표 <span id="watchlistCountBadge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/20 text-amber-500 font-bold">0</span>
+          </button>
+        </div>
+
+        <!-- View Mode Switch: Grid vs Table -->
+        <div class="hidden sm:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+          <button id="viewGridBtn" class="p-1.5 rounded bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm" title="카드 그리드 뷰">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+            </svg>
+          </button>
+          <button id="viewTableBtn" class="p-1.5 rounded text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" title="테이블 리스트 뷰">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-Bar: Search & Sort & Actions -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+        <!-- Search Input -->
+        <div class="relative flex-1 max-w-md">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input id="searchInput" type="text" placeholder="지표명 검색 (예: 10년, 코스피, 나스닥, 환율, VIX...)" class="w-full pl-9 pr-8 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40">
+          <button id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">✕</button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Sort Dropdown -->
+          <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
+            <span class="text-slate-400">정렬:</span>
+            <select id="sortSelect" class="bg-transparent font-medium text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
+              <option value="default">기본 순서</option>
+              <option value="changeDesc">등락률 높은순 (▲)</option>
+              <option value="changeAsc">등락률 낮은순 (▼)</option>
+              <option value="name">가나다/알파벳순</option>
+            </select>
+          </div>
+
+          <!-- Export CSV Button -->
+          <button id="exportCsvBtn" title="현재 지표 CSV 다운로드" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span class="hidden sm:inline">CSV 내보내기</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Indicators Display Area: Grid View -->
+    <section id="indicatorsGridView" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+          <div id="card-btc" class="indicator-card group relative bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-blue-500/50 hover:shadow-lg transition-all flex flex-col justify-between">
+            
+            <!-- Card Header: Category, Ticker, Watchlist Star -->
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                    가상자산 24H
+                  </span>
+                  <span class="font-mono text-xs text-slate-400 font-bold">BTC/USD</span>
+                  
+                </div>
+                <button data-star-id="btc" class="star-toggle-btn p-1 text-slate-300 dark:text-slate-600 hover:text-amber-500 transition" title="관심 등록">
+                  <svg class="w-4 h-4 " stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Name -->
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 mt-2 truncate group-hover:text-blue-500 transition">
+                비트코인 (Bitcoin)
+              </h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                가상자산 대장주 · 디지털 골드 및 글로벌 유동성 선행 지표 (24시간 실시간 연동).
+              </p>
+            </div>
+
+            <!-- Price & Change -->
+            <div class="my-3">
+              <div class="text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 dark:text-white">
+                $77,437.42
+              </div>
+              <div class="mt-1 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1 font-mono font-bold text-blue-600 dark:text-blue-400">
+                  <span>▼</span>
+                  <span>-94.24$</span>
+                  <span>(-0.12%)</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Mini Sparkline -->
+            <div class="pt-1 border-t border-slate-100 dark:border-slate-800/80">
+              
+        <svg viewBox="0 0 100 32" class="w-full h-8 overflow-visible">
+          <polyline fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0.0,3.0 9.1,3.0 18.2,3.0 27.3,3.0 36.4,7.4 45.5,7.4 54.5,29.0 63.6,19.5 72.7,19.5 81.8,4.6 90.9,13.3 100.0,13.3"></polyline>
+        </svg>
+      
+            </div>
+
+            <!-- Card Footer: Day Range & Detail Click -->
+            <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+              <span>당일: 76,325.98 ~ 78,804.01</span>
+              <button data-detail-id="btc" class="detail-link font-semibold text-blue-500 hover:text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                차트분석 &gt;
+              </button>
+            </div>
+
+          </div>
+        
+          <div id="card-eth" class="indicator-card group relative bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-blue-500/50 hover:shadow-lg transition-all flex flex-col justify-between">
+            
+            <!-- Card Header: Category, Ticker, Watchlist Star -->
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                    가상자산 24H
+                  </span>
+                  <span class="font-mono text-xs text-slate-400 font-bold">ETH/USD</span>
+                  
+                </div>
+                <button data-star-id="eth" class="star-toggle-btn p-1 text-slate-300 dark:text-slate-600 hover:text-amber-500 transition" title="관심 등록">
+                  <svg class="w-4 h-4 " stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Name -->
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 mt-2 truncate group-hover:text-blue-500 transition">
+                이더리움 (Ethereum)
+              </h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                스마트 컨트랙트·DeFi·RWA(실물연계자산) 생태계 대표 플랫폼 코인 (24시간 실시간 연동).
+              </p>
+            </div>
+
+            <!-- Price & Change -->
+            <div class="my-3">
+              <div class="text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 dark:text-white">
+                $2,245.64
+              </div>
+              <div class="mt-1 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1 font-mono font-bold text-rose-600 dark:text-rose-400">
+                  <span>▲</span>
+                  <span>+29.96$</span>
+                  <span>(+1.35%)</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Mini Sparkline -->
+            <div class="pt-1 border-t border-slate-100 dark:border-slate-800/80">
+              
+        <svg viewBox="0 0 100 32" class="w-full h-8 overflow-visible">
+          <polyline fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0.0,3.3 9.1,3.0 18.2,3.0 27.3,7.8 36.4,10.1 45.5,10.1 54.5,29.0 63.6,16.8 72.7,12.3 81.8,11.4 90.9,28.0 100.0,25.2"></polyline>
+        </svg>
+      
+            </div>
+
+            <!-- Card Footer: Day Range & Detail Click -->
+            <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+              <span>당일: 2,208.40 ~ 2,262.49</span>
+              <button data-detail-id="eth" class="detail-link font-semibold text-blue-500 hover:text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                차트분석 &gt;
+              </button>
+            </div>
+
+          </div>
+        </section>
+
+    <!-- Indicators Display Area: Table View (Hidden by default, switched via toggle) -->
+    <section id="indicatorsTableView" class="hidden bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 font-semibold">
+            <tr>
+              <th class="p-3 w-10 text-center">관심</th>
+              <th class="p-3">지표 / 종목</th>
+              <th class="p-3 text-right">현재가 / 금리</th>
+              <th class="p-3 text-right">전일대비</th>
+              <th class="p-3 text-right">등락률</th>
+              <th class="p-3 text-center hidden md:table-cell">당일 변동 범위</th>
+              <th class="p-3 text-center hidden sm:table-cell">미니 추세</th>
+              <th class="p-3 text-center">상세</th>
+            </tr>
+          </thead>
+          <tbody id="indicatorsTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60">
+            <!-- Generated Dynamically by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Macro Indicators Reference & Interpretation Guide (Educational / Practical) -->
+    <section class="bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 text-xs shadow-sm">
+      <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        스마트 투자자를 위한 핵심 지표 체크포인트 가이드
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-slate-600 dark:text-slate-400">
+        <div class="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-100 dark:border-slate-800/50">
+          <div class="font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            미국채 금리 만기별 특징
+          </div>
+          <p class="leading-relaxed">
+            <strong>10년물</strong>은 주식 시장의 모든 할인율 기준으로 활용되며, <strong>20년·30년물</strong>은 장기 인플레이션 및 재정적자 우려를 가장 먼저 반영합니다. 금리가 예상보다 빠르게 오르면 기술주·성장주에 하방 압력으로 작용합니다.
+          </p>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-100 dark:border-slate-800/50">
+          <div class="font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            환율(USD/KRW)과 외국인 수급
+          </div>
+          <p class="leading-relaxed">
+            원/달러 환율이 상승(원화 약세)하면 외국인 투자자의 환차손 우려로 코스피 대형주 매도세가 출회되기 쉽습니다. 환율 안정화와 달러 인덱스(DXY) 하락 여부를 동시 체크해야 합니다.
+          </p>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-100 dark:border-slate-800/50">
+          <div class="font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            VIX(변동성)와 시장 심리
+          </div>
+          <p class="leading-relaxed">
+            VIX가 20 이하이면 시장 안정 국면, 25 이상이면 경계, 30을 돌파하면 패닉 매도 국면입니다. 코스피와 S&amp;P 500의 단기 바닥 타이밍 포착에 핵심 보조지표로 활용됩니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Mobile Bottom Floating Navigation Bar (Optimized for Mobile Smartphones) -->
+  <nav class="md:hidden sticky bottom-0 z-40 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-3 py-2 flex items-center justify-around text-[10px]">
+    <button class="mobile-nav-btn active flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400" data-cat="all">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+      </svg>
+      <span>전체</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400" data-cat="treasury">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+      </svg>
+      <span>미국채</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400" data-cat="us">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+      </svg>
+      <span>미국증시</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400" data-cat="kr">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+      </svg>
+      <span>국내증시</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center gap-0.5 text-blue-600 dark:text-blue-400 font-semibold" data-cat="crypto">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>가상자산</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400" data-cat="watchlist">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+      </svg>
+      <span>관심</span>
+    </button>
+  </nav>
+
+  <!-- Interactive Detail Modal (Full Screen on Mobile, Centered Modal on Desktop) -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity duration-200 opacity-0 hidden">
+    <div id="modalContent" class="bg-white dark:bg-[#131b2e] w-full max-w-3xl rounded-t-2xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden transition-transform duration-200 translate-y-8">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div id="modalBadgeIcon" class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm">US</div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="modalTitle" class="text-lg font-bold text-slate-900 dark:text-white">나스닥 종합 (NASDAQ)</h3>
+              <span id="modalTicker" class="text-xs px-2 py-0.5 rounded font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">^IXIC</span>
+              <button id="modalWatchlistToggle" class="p-1 rounded-md text-slate-400 hover:text-amber-500 transition" title="관심지표 추가/제거">
+                <svg id="modalStarIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+              </button>
+            </div>
+            <p id="modalCategoryDesc" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">AI 혁신, 반도체, 빅테크 중심의 글로벌 기술주 시장 지수.</p>
+          </div>
+        </div>
+
+        <button id="closeModalBtn" class="p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-4">
+        
+        <!-- Current Price & Change Header -->
+        <div class="flex flex-wrap items-baseline justify-between gap-2 bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-100 dark:border-slate-800">
+          <div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">실시간 현재가 / 수익률</div>
+            <div class="flex items-baseline gap-2 mt-0.5">
+              <span id="modalCurrentPrice" class="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 dark:text-white">25,437.00</span>
+              <span id="modalChangeBadge" class="text-sm font-bold font-mono px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/40 text-blue-600 dark:text-blue-400">▼ -747.73 (-2.86%)</span>
+            </div>
+          </div>
+          <div class="text-right text-xs text-slate-500 dark:text-slate-400">
+            <div>52주 최고: <span id="modal52High" class="font-mono font-semibold text-slate-800 dark:text-slate-200">26,850.00</span></div>
+            <div>52주 최저: <span id="modal52Low" class="font-mono font-semibold text-slate-800 dark:text-slate-200">18,400.00</span></div>
+          </div>
+        </div>
+
+        <!-- Timeframe Selector Tabs -->
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-1" id="modalTimeframeTabs">
+            <button data-tf="1D" class="modal-tf-btn px-2.5 py-1 rounded text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">1일</button>
+            <button data-tf="1W" class="modal-tf-btn px-2.5 py-1 rounded text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">1주</button>
+            <button data-tf="1M" class="modal-tf-btn px-2.5 py-1 rounded text-xs font-semibold bg-blue-600 text-white">1개월</button>
+            <button data-tf="3M" class="modal-tf-btn px-2.5 py-1 rounded text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">3개월</button>
+            <button data-tf="1Y" class="modal-tf-btn px-2.5 py-1 rounded text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">1년</button>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <label class="flex items-center gap-1 cursor-pointer text-slate-600 dark:text-slate-300">
+              <input type="checkbox" id="modalMaToggle" checked="" class="rounded text-blue-600">
+              <span>이동평균(MA20)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Modal Chart Container -->
+        <div class="relative h-64 sm:h-72 w-full bg-slate-50/50 dark:bg-slate-900/50 rounded-xl p-2 border border-slate-100 dark:border-slate-800">
+          <canvas id="modalChartCanvas" style="box-sizing: border-box; display: block; height: 270px; width: 693px;" width="693" height="270"></canvas>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+          <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">당일 고가 (High)</div>
+            <div id="modalDayHigh" class="font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">25,673.00</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">당일 저가 (Low)</div>
+            <div id="modalDayLow" class="font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">25,177.33</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">전일 종가 (Prev Close)</div>
+            <div id="modalPrevClose" class="font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">26,184.73</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">연간 변동폭 (Range)</div>
+            <div id="modalYearRange" class="font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">18,400.00 ~ 26,850.00</div>
+          </div>
+        </div>
+
+        <!-- Macro / Fundamental Analysis Insight -->
+        <div class="bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-900/40 rounded-xl p-3.5 text-xs">
+          <div class="font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5 mb-1">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            지표 해설 및 전략적 포인트
+          </div>
+          <p id="modalInsightText" class="text-slate-600 dark:text-slate-300 leading-relaxed">반도체 및 빅테크 차익실현 매물이 출회되며 전일 대비 2.86%(-747.73pt) 조정받은 25,437.00에 마감했습니다.</p>
+        </div>
+
+        <!-- Custom Target Alert Setting Box -->
+        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-3.5 border border-slate-200 dark:border-slate-700/60 text-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+              </svg>
+              목표 알림 설정 (Target Price/Yield Alert)
+            </span>
+            <span id="currentAlertTag" class="text-[10px] text-slate-400">알림 없음</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="number" step="any" id="alertThresholdInput" placeholder="알림 도달 기준 수치 입력" class="flex-1 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40">
+            <button id="setAlertBtn" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-95 transition">알림 저장</button>
+            <button id="clearAlertBtn" class="px-2.5 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 transition">해제</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Deep Yield Explainer Modal -->
+  <div id="yieldExplainerModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-200">
+    <div class="bg-white dark:bg-[#131b2e] w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          🏛️ 미국 국채 만기별 역할 및 수익률 곡선(Yield Curve) 심층 가이드
+        </h3>
+        <button id="closeYieldExplainerBtn" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg">✕</button>
+      </div>
+      <div class="text-xs space-y-3 leading-relaxed text-slate-600 dark:text-slate-300">
+        <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+          <strong class="text-slate-900 dark:text-slate-100 text-sm">1. 미국채 10년물 (Benchmark)</strong>
+          <p class="mt-1">
+            전 세계 자산시장의 무위험 할인율 기준입니다. 주식 평가 모델(DCF)에서 미래 현금흐름을 현재 가치로 할인할 때 사용되므로, 10년물 금리가 상승하면 주가수익비율(PER)이 높은 고밸류 기술성장주에 직접적인 하방 압력이 됩니다.
+          </p>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+          <strong class="text-slate-900 dark:text-slate-100 text-sm">2. 미국채 20년물 &amp; 30년물 (Ultra-Long)</strong>
+          <p class="mt-1">
+            연기금, 보험사 등 초장기 기관투자자의 자산-부채 매칭(LDI) 핵심 자산입니다. 20년물은 재정증권 발행 물량 부담(수급)에 민감하며, 30년물은 미국의 10년 이상 초장기 잠재성장률과 기저 인플레이션 신뢰도를 반영합니다.
+          </p>
+        </div>
+        <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+          <strong class="text-slate-900 dark:text-slate-100 text-sm">3. 10Y-2Y 장단기 금리차 (경기 침체 선행지표)</strong>
+          <p class="mt-1">
+            통상 단기금리(2Y)가 장기금리(10Y)보다 높은 현상을 <strong>'수익률 곡선 역전(Inversion)'</strong>이라 부르며, 역사적으로 12~18개월 내 경기 침체의 가장 강력한 선행 지표였습니다. 현재 역전 해소 단계는 연준의 통화정책 전환(피벗) 및 경기 연착륙 여부의 분기점입니다.
+          </p>
+        </div>
+      </div>
+      <div class="pt-2 text-right">
+        <button id="dismissYieldExplainerBtn" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700">확인 완료</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup, Mobile App Install & HTML Download Modal -->
+  <div id="setupGuideModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-200">
+    <div class="bg-white dark:bg-[#131b2e] w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          📱 내 PC·스마트폰에서 바로 쓰는 설치 및 배포 가이드
+        </h3>
+        <button id="closeSetupGuideBtn" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg">✕</button>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 bg-indigo-50/70 dark:bg-indigo-950/30 p-3.5 rounded-xl border border-indigo-200 dark:border-indigo-800/60 text-xs">
+        <div>
+          <div class="font-bold text-indigo-900 dark:text-indigo-200">단일 HTML 원본 파일 저장하기</div>
+          <p class="text-slate-600 dark:text-slate-400 mt-0.5">별도 서버 설치 없이 파일 하나만 열면 모든 기능이 그대로 작동합니다.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="downloadHtmlFileBtn" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm transition flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            HTML 파일 다운로드
+          </button>
+          <button id="copySourceCodeBtn" class="px-3 py-2 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold hover:bg-slate-100 transition">
+            전체 코드 복사
+          </button>
+        </div>
+      </div>
+
+      <div class="text-xs space-y-3 leading-relaxed text-slate-600 dark:text-slate-300">
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+          <strong class="text-slate-900 dark:text-slate-100 text-sm">1. PC 웹브라우저에서 바로 실행 (설치 불필요)</strong>
+          <p class="mt-1">
+            위 <strong>[HTML 파일 다운로드]</strong> 버튼을 눌러 저장된 <code>market_dashboard.html</code> 파일을 크롬(Chrome), 엣지(Edge), 사파리(Safari)에서 더블클릭해 열면 즉시 작동합니다. 브라우저 북마크바에 등록해 두면 언제든 1초 만에 열 수 있습니다.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+          <strong class="text-slate-900 dark:text-slate-100 text-sm">2. 무료 웹 호스팅으로 내 전용 링크(URL) 만들기 (30초 완성)</strong>
+          <ul class="mt-1 space-y-1 list-disc list-inside">
+            <li><strong>Netlify Drop (가장 간편)</strong>: <code>app.netlify.com/drop</code> 접속 후 다운로드한 HTML 파일이 담긴 폴더를 마우스로 끌어다 놓으면 즉시 <code>https://...netlify.app</code> 전용 주소가 발급됩니다.</li>
+            <li><strong>GitHub Pages</strong>: GitHub 저장소 생성 후 파일 이름을 <code>index.html</code>로 올려 Settings &gt; Pages를 켜면 무료 평생 주소가 만들어집니다.</li>
+          </ul>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+          <strong class="text-slate-900 dark:text-slate-100 text-sm">3. 스마트폰(아이폰·갤럭시) 홈 화면에 전용 앱처럼 추가하기</strong>
+          <ul class="mt-1 space-y-1 list-disc list-inside">
+            <li><strong>아이폰 (Safari)</strong>: 배포된 주소를 사파리로 접속 &gt; 하단 <strong>[공유]</strong> 버튼 &gt; <strong>[홈 화면에 추가]</strong> 터치 (상단 주소창 없이 풀스크린 네이티브 앱처럼 실행됩니다).</li>
+            <li><strong>갤럭시/안드로이드 (Chrome)</strong>: 크롬으로 접속 &gt; 우측 상단 메뉴(⋮) &gt; <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong> 터치.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-2 text-right">
+        <button id="dismissSetupGuideBtn" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0e1422] py-4 px-3 sm:px-6 text-center text-xs text-slate-500 dark:text-slate-400">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-slate-700 dark:text-slate-300">글로벌 마켓 대시보드</span>
+        <span>•</span>
+        <span>웹 및 모바일 반응형 최적화</span>
+      </div>
+      <div class="text-[11px] text-slate-400">
+        제공 지표: 미국채 10Y/20Y/30Y/2Y · S&amp;P500 · 나스닥 · 다우 · 반도체(SOX) · 코스피 · 코스닥 · 비트코인(BTC) · 이더리움(ETH) · 환율 · VIX · 원유 · 금
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    /* ==========================================================================
+       1. DATA DEFINITIONS & INITIAL STATE
+       ========================================================================== */
+    const INDICATORS = [
+      // US Treasury Yields (Verified Federal Reserve / TradingEconomics / YCharts 2026-10-30 Data)
+      {
+        id: 'us10y',
+        name: '미국채 10년물 금리',
+        ticker: 'US10Y',
+        tvSymbol: 'TVC:US10Y',
+        category: 'treasury',
+        unit: '%',
+        price: 4.940,
+        change: -0.040,
+        changePct: -0.80,
+        high52: 5.250,
+        low52: 4.050,
+        dayHigh: 4.980,
+        dayLow: 4.920,
+        prevClose: 4.980,
+        isYield: true,
+        desc: '글로벌 자산시장 벤치마크 무위험 금리 (2026.10.30 마감 기준).',
+        insight: '미국채 10년물 금리가 4.94%로 5%대에 육박하며 기술성장주와 글로벌 증시 전반에 강한 할인율 부담을 주고 있습니다.',
+        sparkline: [5.02, 5.01, 5.00, 4.99, 4.98, 4.96, 4.95, 4.94]
+      },
+      {
+        id: 'us20y',
+        name: '미국채 20년물 금리',
+        ticker: 'US20Y',
+        tvSymbol: 'TVC:US20Y',
+        category: 'treasury',
+        unit: '%',
+        price: 5.340,
+        change: -0.010,
+        changePct: -0.19,
+        high52: 5.580,
+        low52: 4.420,
+        dayHigh: 5.360,
+        dayLow: 5.320,
+        prevClose: 5.350,
+        isYield: true,
+        desc: '미 재무부 장기채 입찰 수급 및 장기 자금 조달 척도.',
+        insight: '20년물 금리는 5.34%로 만기 구간 중 가장 높은 수준을 기록하며 장기 국채 발행 물량 부담을 반영하고 있습니다.',
+        sparkline: [5.39, 5.38, 5.37, 5.37, 5.36, 5.35, 5.35, 5.34]
+      },
+      {
+        id: 'us30y',
+        name: '미국채 30년물 금리',
+        ticker: 'US30Y',
+        tvSymbol: 'TVC:US30Y',
+        category: 'treasury',
+        unit: '%',
+        price: 5.310,
+        change: 0.010,
+        changePct: 0.19,
+        high52: 5.520,
+        low52: 4.350,
+        dayHigh: 5.330,
+        dayLow: 5.290,
+        prevClose: 5.300,
+        isYield: true,
+        desc: '초장기 연기금·보험사 수요 및 미국의 잠재 성장률·인플레이션 기대 반영.',
+        insight: '30년물 금리가 5.31%를 기록하며 10년물(4.94%) 대비 +0.37%p 높은 우상향 장기 스프레드를 형성하고 있습니다.',
+        sparkline: [5.34, 5.33, 5.33, 5.32, 5.31, 5.30, 5.30, 5.31]
+      },
+      {
+        id: 'us02y',
+        name: '미국채 2년물 금리',
+        ticker: 'US02Y',
+        tvSymbol: 'TVC:US02Y',
+        category: 'treasury',
+        unit: '%',
+        price: 4.620,
+        change: 0.020,
+        changePct: 0.43,
+        high52: 5.150,
+        low52: 3.850,
+        dayHigh: 4.640,
+        dayLow: 4.590,
+        prevClose: 4.600,
+        isYield: true,
+        desc: '연준(Fed) 기준금리 통화정책 경로에 가장 민감한 단기 지표.',
+        insight: '2년물 금리는 4.62%로 10년물(4.94%)과의 장단기 금리차가 +0.32%p 정상 우상향 곡선을 유지하고 있습니다.',
+        sparkline: [4.58, 4.59, 4.58, 4.60, 4.61, 4.60, 4.61, 4.62]
+      },
+
+      // US Indices (Verified Google Finance 2026-10-30 Close Data)
+      {
+        id: 'sp500',
+        name: 'S&P 500',
+        ticker: '^GSPC',
+        tvSymbol: 'SP:SPX',
+        category: 'us',
+        unit: 'pt',
+        price: 7580.07,
+        change: -140.32,
+        changePct: -1.82,
+        high52: 7850.00,
+        low52: 5820.00,
+        dayHigh: 7637.48,
+        dayLow: 7527.56,
+        prevClose: 7720.39,
+        isYield: false,
+        desc: '미국 대형 우량주 500개를 대표하는 글로벌 자본시장의 기둥.',
+        insight: '국채 금리 상승(10Y 4.94%) 및 고유가(WTI $104.82) 부담 속에 전일 대비 1.82% 하락한 7,580.07로 마감했습니다.',
+        sparkline: [7622.26, 7635.75, 7608.47, 7599.77, 7579.30, 7547.82, 7544.20, 7580.07]
+      },
+      {
+        id: 'nasdaq',
+        name: '나스닥 종합 (NASDAQ)',
+        ticker: '^IXIC',
+        tvSymbol: 'NASDAQ:IXIC',
+        category: 'us',
+        unit: 'pt',
+        price: 25437.00,
+        change: -747.73,
+        changePct: -2.86,
+        high52: 26850.00,
+        low52: 18400.00,
+        dayHigh: 25673.00,
+        dayLow: 25177.33,
+        prevClose: 26184.73,
+        isYield: false,
+        desc: 'AI 혁신, 반도체, 빅테크 중심의 글로벌 기술주 시장 지수.',
+        insight: '반도체 및 빅테크 차익실현 매물이 출회되며 전일 대비 2.86%(-747.73pt) 조정받은 25,437.00에 마감했습니다.',
+        sparkline: [25532.36, 25657.19, 25569.51, 25502.44, 25391.55, 25260.84, 25254.98, 25437.00]
+      },
+      {
+        id: 'dow',
+        name: '다우존스 산업평균',
+        ticker: '^DJI',
+        tvSymbol: 'DJ:DJI',
+        category: 'us',
+        unit: 'pt',
+        price: 51770.31,
+        change: -572.25,
+        changePct: -1.09,
+        high52: 52980.00,
+        low52: 41800.00,
+        dayHigh: 52180.40,
+        dayLow: 51520.10,
+        prevClose: 52342.56,
+        isYield: false,
+        desc: '미국 30대 대표 우량 블루칩 산업 기업 지수.',
+        insight: '전통 가치주 및 에너지 섹터 방어력에 힘입어 나스닥 대비 상대적으로 낙폭이 제한된 -1.09%(51,770.31)로 마감했습니다.',
+        sparkline: [52150.0, 52080.5, 51990.2, 51910.0, 51820.4, 51690.8, 51720.1, 51770.31]
+      },
+      {
+        id: 'sox',
+        name: '필라델피아 반도체 지수',
+        ticker: '^SOX',
+        tvSymbol: 'NASDAQ:SOX',
+        category: 'us',
+        unit: 'pt',
+        price: 10688.80,
+        change: -829.40,
+        changePct: -7.20,
+        high52: 11850.00,
+        low52: 5200.00,
+        dayHigh: 10957.32,
+        dayLow: 10439.01,
+        prevClose: 11518.20,
+        isYield: false,
+        desc: '엔비디아, TSMC, ASML 등 글로벌 반도체 밸류체인 핵심 지표.',
+        insight: '단기 급등에 따른 밸류에이션 부담으로 당일 -7.20%(10,688.80) 급락하며 국내 반도체 투심에도 직접적인 영향을 주었습니다.',
+        sparkline: [10864.93, 10909.45, 10729.21, 10656.28, 10583.83, 10490.05, 10505.72, 10688.80]
+      },
+      {
+        id: 'russell',
+        name: '러셀 2000 (중소형주)',
+        ticker: '^RUT',
+        tvSymbol: 'TVC:RUT',
+        category: 'us',
+        unit: 'pt',
+        price: 2811.84,
+        change: -47.37,
+        changePct: -1.66,
+        high52: 2945.00,
+        low52: 2150.00,
+        dayHigh: 2843.00,
+        dayLow: 2787.12,
+        prevClose: 2859.22,
+        isYield: false,
+        desc: '미국 내수 중심 2,000개 중소형 기업 지수. 경기 회복 탄력성 척도.',
+        insight: '장기 국채 금리가 5% 근처로 상승하면서 중소형주 조달 금리 부담이 부각되어 -1.66% 하락 마감했습니다.',
+        sparkline: [2839.16, 2832.81, 2815.06, 2810.49, 2801.43, 2793.15, 2792.33, 2811.84]
+      },
+
+      // Korean Indices (Verified Google Finance / KRX 2026-10-30 Close Data)
+      {
+        id: 'kospi',
+        name: '코스피 (KOSPI)',
+        ticker: 'KS11',
+        tvSymbol: 'KRX:KOSPI',
+        category: 'kr',
+        unit: 'pt',
+        price: 5730.74,
+        change: -206.92,
+        changePct: -3.48,
+        high52: 9385.59,
+        low52: 3833.35,
+        dayHigh: 5784.98,
+        dayLow: 5599.42,
+        prevClose: 5937.66,
+        isYield: false,
+        desc: '한국 유가증권시장 대표 종합주가지수 (2026.10.30 종가 기준).',
+        insight: '글로벌 반도체 조정 여파로 장중 5,599.42까지 밀렸으나 오후장 낙폭을 일부 만회하며 5,730.74(-3.48%)에 거래를 마쳤습니다.',
+        sparkline: [5737.29, 5686.24, 5632.46, 5622.47, 5670.87, 5756.12, 5665.80, 5730.74]
+      },
+      {
+        id: 'kosdaq',
+        name: '코스닥 (KOSDAQ)',
+        ticker: 'KQ11',
+        tvSymbol: 'KRX:KOSDAQ',
+        category: 'kr',
+        unit: 'pt',
+        price: 724.38,
+        change: -28.85,
+        changePct: -3.83,
+        high52: 920.20,
+        low52: 685.10,
+        dayHigh: 751.40,
+        dayLow: 718.20,
+        prevClose: 753.23,
+        isYield: false,
+        desc: '국내 2차전지, 바이오, 엔터, IT 중소벤처 중심 성장주 시장.',
+        insight: '미국 고금리 장기화 우려와 성장주 투자심리 위축으로 전일 대비 -3.83% 하락한 724.38로 마감했습니다.',
+        sparkline: [748.5, 742.1, 735.0, 729.4, 731.2, 728.0, 722.5, 724.38]
+      },
+      {
+        id: 'kospi200',
+        name: '코스피 200 (KOSPI 200)',
+        ticker: 'KPI200',
+        tvSymbol: 'KRX:KOSPI200',
+        category: 'kr',
+        unit: 'pt',
+        price: 768.45,
+        change: -28.15,
+        changePct: -3.53,
+        high52: 1240.00,
+        low52: 510.00,
+        dayHigh: 776.20,
+        dayLow: 750.80,
+        prevClose: 796.60,
+        isYield: false,
+        desc: '선물·옵션 및 ETF 파생상품의 기초자산이 되는 대형 우량주 200선.',
+        insight: '외국인 선물 매도세와 대형 IT 종목 조정으로 코스피 종합지수와 연동되어 -3.53% 하락 마감했습니다.',
+        sparkline: [772.1, 765.4, 758.2, 755.0, 761.8, 770.5, 760.2, 768.45]
+      },
+
+      // Macro, FX & Commodities (Verified 2026-10-30/31 Data)
+      {
+        id: 'usdkrw',
+        name: '원/달러 환율 (USD/KRW)',
+        ticker: 'KRW=X',
+        tvSymbol: 'FX_IDC:USDKRW',
+        category: 'macro',
+        unit: '원',
+        price: 1333.42,
+        change: -1.58,
+        changePct: -0.12,
+        high52: 1402.50,
+        low52: 1285.00,
+        dayHigh: 1338.20,
+        dayLow: 1331.10,
+        prevClose: 1335.00,
+        isYield: false,
+        desc: '달러 대비 원화 가치 (Google Finance 실시간 기준환율).',
+        insight: '달러 인덱스(101.64) 약세 흐름에 힘입어 원/달러 환율은 1,333.42원 수준에서 비교적 안정적인 흐름을 유지하고 있습니다.',
+        sparkline: [1336.5, 1335.8, 1334.9, 1334.2, 1335.0, 1333.8, 1333.5, 1333.42]
+      },
+      {
+        id: 'dxy',
+        name: '달러 인덱스 (DXY)',
+        ticker: 'DX-Y.NYB',
+        tvSymbol: 'TVC:DXY',
+        category: 'macro',
+        unit: 'pt',
+        price: 101.64,
+        change: -0.22,
+        changePct: -0.22,
+        high52: 106.50,
+        low52: 99.80,
+        dayHigh: 101.95,
+        dayLow: 101.40,
+        prevClose: 101.86,
+        isYield: false,
+        desc: '유로, 엔 등 주요 6개국 통화 대비 달러의 상대적 가치.',
+        insight: '주요국 통화정책 회의를 앞두고 달러 인덱스는 101.64 부근에서 횡보하며 신흥국 환율 부담을 덜어주고 있습니다.',
+        sparkline: [101.95, 101.88, 101.80, 101.75, 101.70, 101.68, 101.62, 101.64]
+      },
+      {
+        id: 'vix',
+        name: 'VIX 변동성 지수 (공포지수)',
+        ticker: '^VIX',
+        tvSymbol: 'TVC:VIX',
+        category: 'macro',
+        unit: 'pt',
+        price: 19.42,
+        change: 2.22,
+        changePct: 12.91,
+        high52: 38.50,
+        low52: 12.10,
+        dayHigh: 23.93,
+        dayLow: 18.03,
+        prevClose: 17.20,
+        isYield: false,
+        desc: 'S&P 500 옵션 가격 기반 30일간의 예상 변동성. 공포 지수.',
+        insight: '미국 기술주 급락 여파로 장중 한때 23.93까지 치솟았으나 장 막판 19.42(+12.91%)로 내려오며 경계 구간에 위치해 있습니다.',
+        sparkline: [18.71, 19.81, 20.02, 20.99, 23.86, 21.74, 20.13, 19.42]
+      },
+      {
+        id: 'wti',
+        name: 'WTI 원유 선물',
+        ticker: 'CL=F',
+        tvSymbol: 'NYMEX:CL1!',
+        category: 'macro',
+        unit: '$',
+        price: 104.82,
+        change: 2.82,
+        changePct: 2.76,
+        high52: 106.75,
+        low52: 55.52,
+        dayHigh: 104.98,
+        dayLow: 102.45,
+        prevClose: 102.00,
+        isYield: false,
+        desc: '글로벌 제조업 생산비용 및 인플레이션 압력의 핵심 원자재.',
+        insight: '중동 지정학적 공급 우려로 배럴당 $104.82(+2.76%)까지 상승하며 인플레이션 재점화 및 국채 금리 상승의 원인이 되고 있습니다.',
+        sparkline: [99.90, 101.76, 102.78, 102.00, 102.87, 103.50, 104.20, 104.82]
+      },
+      {
+        id: 'gold',
+        name: '국제 금 시세 (Gold)',
+        ticker: 'GC=F',
+        tvSymbol: 'TVC:GOLD',
+        category: 'macro',
+        unit: '$',
+        price: 3875.84,
+        change: -145.57,
+        changePct: -3.62,
+        high52: 4595.00,
+        low52: 2650.00,
+        dayHigh: 4024.61,
+        dayLow: 3860.10,
+        prevClose: 4021.41,
+        isYield: false,
+        desc: '궁극의 안전자산이자 통화가치 하락 헷지 수단.',
+        insight: '온스당 $4,000 돌파 이후 실질금리 상승 압력에 따른 차익실현 매물로 전일 대비 -3.62% 조정받은 $3,875.84를 기록했습니다.',
+        sparkline: [4050.0, 4024.61, 4010.0, 3980.5, 3940.2, 3910.0, 3890.5, 3875.84]
+      },
+
+      // Cryptocurrencies (24/7 Live via Binance/CoinGecko REST API + Verified 2026-10-31 Google Finance Baseline)
+      {
+        id: 'btc',
+        name: '비트코인 (Bitcoin)',
+        ticker: 'BTC/USD',
+        tvSymbol: 'BINANCE:BTCUSDT',
+        category: 'crypto',
+        unit: '$',
+        price: 77298.96,
+        change: 118.54,
+        changePct: 0.15,
+        high52: 108500.00,
+        low52: 58200.00,
+        dayHigh: 77477.08,
+        dayLow: 77129.84,
+        prevClose: 77180.42,
+        isYield: false,
+        desc: '가상자산 대장주 · 디지털 골드 및 글로벌 유동성 선행 지표 (24시간 실시간 연동).',
+        insight: '주말 및 24시간 연중무휴 거래되는 비트코인은 글로벌 위험자산 선호도와 달러 유동성 변화를 가장 먼저 반영합니다. 현재 $77,298 부근에서 지지력을 테스트 중입니다.',
+        sparkline: [77180.42, 77152.30, 77251.13, 77353.07, 77477.08, 77284.30, 77240.00, 77298.96]
+      },
+      {
+        id: 'eth',
+        name: '이더리움 (Ethereum)',
+        ticker: 'ETH/USD',
+        tvSymbol: 'BINANCE:ETHUSDT',
+        category: 'crypto',
+        unit: '$',
+        price: 2243.08,
+        change: 2.30,
+        changePct: 0.10,
+        high52: 4120.00,
+        low52: 1950.00,
+        dayHigh: 2246.79,
+        dayLow: 2239.39,
+        prevClose: 2240.78,
+        isYield: false,
+        desc: '스마트 컨트랙트·DeFi·RWA(실물연계자산) 생태계 대표 플랫폼 코인 (24시간 실시간 연동).',
+        insight: '이더리움은 알트코인 전반의 투자심리와 온체인 네트워크 활성도를 대변하며 현재 $2,243 선에서 움직이고 있습니다.',
+        sparkline: [2240.78, 2242.40, 2244.99, 2246.79, 2244.67, 2241.07, 2240.94, 2243.08]
+      }
+    ];
+
+    // State Variables
+    let currentCategory = 'all';
+    let currentSearch = '';
+    let currentSort = 'default';
+    let currentViewMode = 'grid'; // 'grid' | 'table'
+    let colorMode = 'kr'; // 'kr': Red=Up, Blue=Down | 'us': Green=Up, Red=Down
+    let refreshSeconds = 30;
+    let countdownRemaining = 30;
+    let timerId = null;
+    let countdownTimerId = null;
+    let activeModalItem = null;
+    let activeModalTimeframe = '1D';
+    let useLiveApi = true;
+    let enableRandomSim = false;
+
+    // LocalStorage Persistent Settings (wrapped in try/catch)
+    let watchlist = new Set();
+    let priceAlerts = {}; // { id: thresholdNumber }
+
+    try {
+      const savedWatch = localStorage.getItem('mm_watchlist');
+      if (savedWatch) watchlist = new Set(JSON.parse(savedWatch));
+      const savedAlerts = localStorage.getItem('mm_alerts');
+      if (savedAlerts) priceAlerts = JSON.parse(savedAlerts);
+      const savedColor = localStorage.getItem('mm_colormode');
+      if (savedColor) colorMode = savedColor;
+    } catch (e) {
+      console.warn('LocalStorage not available in sandboxed frame:', e);
+    }
+
+    /* ==========================================================================
+       2. CHART INSTANCES & HELPERS
+       ========================================================================== */
+    let yieldCurveChart = null;
+    let modalDetailChart = null;
+
+    function formatNumber(val, decimals = 2) {
+      if (typeof val !== 'number' || isNaN(val)) return '--';
+      return val.toLocaleString('ko-KR', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function formatPrice(item) {
+      if (item.isYield) return formatNumber(item.price, 3) + '%';
+      if (item.unit === '$') return '$' + formatNumber(item.price, 2);
+      if (item.unit === '원') return formatNumber(item.price, 1) + '원';
+      return formatNumber(item.price, 2);
+    }
+
+    function formatChange(item) {
+      const sign = item.change > 0 ? '+' : '';
+      const unit = item.isYield ? '%p' : (item.unit === '$' ? '$' : (item.unit === '원' ? '원' : ''));
+      return `${sign}${formatNumber(item.change, item.isYield ? 3 : 2)}${unit}`;
+    }
+
+    function formatChangePct(item) {
+      const sign = item.changePct > 0 ? '+' : '';
+      return `${sign}${formatNumber(item.changePct, 2)}%`;
+    }
+
+    // Color determination based on user choice
+    function getColorClasses(change) {
+      if (change === 0) return { text: 'text-slate-500 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800' };
+      const isPositive = change > 0;
+      if (colorMode === 'kr') {
+        // 한국식: 상승 = 빨강, 하락 = 파랑
+        return isPositive
+          ? { text: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40' }
+          : { text: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/40' };
+      } else {
+        // 미국식: 상승 = 초록, 하락 = 빨강
+        return isPositive
+          ? { text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/40' }
+          : { text: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40' };
+      }
+    }
+
+    function getArrowIcon(change) {
+      if (change > 0) return '▲';
+      if (change < 0) return '▼';
+      return '―';
+    }
+
+    /* ==========================================================================
+       3. TOAST NOTIFICATIONS (No alert() used)
+       ========================================================================== */
+    function showToast(title, message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto flex items-start gap-2.5 p-3 rounded-xl shadow-lg border text-xs max-w-sm transition-all duration-300 transform translate-x-full ${
+        type === 'success' ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800' :
+        type === 'alert' ? 'bg-amber-50 dark:bg-amber-950 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-800' :
+        'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-slate-700 dark:border-slate-200'
+      }`;
+      toast.innerHTML = `
+        <div class="mt-0.5 font-bold">${type === 'alert' ? '⚠️' : 'ℹ️'}</div>
+        <div class="flex-1">
+          <div class="font-bold">${title}</div>
+          <div class="mt-0.5 opacity-90">${message}</div>
+        </div>
+      `;
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-x-full');
+      });
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-x-full');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    /* ==========================================================================
+       4. RENDERING FUNCTIONS
+       ========================================================================== */
+    // Top 6 Highlight KPI Cards
+    function renderKpis() {
+      const kpiContainer = document.getElementById('kpiGrid');
+      const kpiIds = ['kospi', 'sp500', 'nasdaq', 'us10y', 'btc', 'usdkrw'];
+      const kpis = kpiIds.map(id => INDICATORS.find(i => i.id === id)).filter(Boolean);
+
+      kpiContainer.innerHTML = kpis.map(item => {
+        const color = getColorClasses(item.change);
+        const arrow = getArrowIcon(item.change);
+        return `
+          <div data-id="${item.id}" class="kpi-card cursor-pointer group bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 hover:border-blue-500/50 hover:shadow-md transition-all active:scale-[0.98]">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="font-semibold truncate group-hover:text-blue-500 transition">${item.name}</span>
+              <span class="font-mono text-[10px] text-slate-400">${item.ticker}</span>
+            </div>
+            <div class="mt-1 flex items-baseline justify-between gap-1">
+              <div class="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white truncate">
+                ${formatPrice(item)}
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px]">
+              <span class="font-mono font-bold ${color.text} flex items-center gap-0.5">
+                <span>${arrow}</span>
+                <span>${formatChangePct(item)}</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                ${formatChange(item)}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Attach click events
+      kpiContainer.querySelectorAll('.kpi-card').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = el.getAttribute('data-id');
+          openDetailModal(id);
+        });
+      });
+    }
+
+    // Mini Sparkline SVG Generator
+    function createSparklineSvg(data, isUp) {
+      if (!data || data.length < 2) return '';
+      const min = Math.min(...data);
+      const max = Math.max(...data);
+      const range = (max - min) || 1;
+      const w = 100;
+      const h = 32;
+      const points = data.map((d, i) => {
+        const x = (i / (data.length - 1)) * w;
+        const y = h - ((d - min) / range) * (h - 6) - 3;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+
+      const strokeColor = colorMode === 'kr'
+        ? (isUp ? '#f43f5e' : '#3b82f6')
+        : (isUp ? '#10b981' : '#f43f5e');
+
+      return `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-8 overflow-visible">
+          <polyline fill="none" stroke="${strokeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points}" />
+        </svg>
+      `;
+    }
+
+    // Filter & Sort Indicators
+    function getFilteredIndicators() {
+      let list = INDICATORS.filter(item => {
+        // Category filter
+        if (currentCategory === 'watchlist') {
+          if (!watchlist.has(item.id)) return false;
+        } else if (currentCategory !== 'all') {
+          if (item.category !== currentCategory) return false;
+        }
+        // Search filter
+        if (currentSearch.trim()) {
+          const q = currentSearch.toLowerCase().trim();
+          const matchName = item.name.toLowerCase().includes(q);
+          const matchTicker = item.ticker.toLowerCase().includes(q);
+          const matchDesc = item.desc.toLowerCase().includes(q);
+          if (!matchName && !matchTicker && !matchDesc) return false;
+        }
+        return true;
+      });
+
+      // Sorting
+      if (currentSort === 'changeDesc') {
+        list.sort((a, b) => b.changePct - a.changePct);
+      } else if (currentSort === 'changeAsc') {
+        list.sort((a, b) => a.changePct - b.changePct);
+      } else if (currentSort === 'name') {
+        list.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+      }
+
+      return list;
+    }
+
+    // Render Grid View
+    function renderGrid() {
+      const container = document.getElementById('indicatorsGridView');
+      const items = getFilteredIndicators();
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400 bg-white dark:bg-[#131b2e] rounded-xl border border-dashed border-slate-300 dark:border-slate-800">
+            <svg class="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="font-semibold text-sm">해당 조건에 일치하는 지표가 없습니다.</p>
+            <p class="text-xs text-slate-500 mt-1">검색어를 지우거나 다른 카테고리를 선택해보세요.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const color = getColorClasses(item.change);
+        const arrow = getArrowIcon(item.change);
+        const isStarred = watchlist.has(item.id);
+        const hasAlert = priceAlerts[item.id] !== undefined;
+
+        // Category Tag Text
+        const catMap = {
+          treasury: '미국 국채',
+          us: '미국 증시',
+          kr: '국내 증시',
+          crypto: '가상자산 24H',
+          macro: '환율·원자재'
+        };
+
+        return `
+          <div id="card-${item.id}" class="indicator-card group relative bg-white dark:bg-[#131b2e] rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-blue-500/50 hover:shadow-lg transition-all flex flex-col justify-between">
+            
+            <!-- Card Header: Category, Ticker, Watchlist Star -->
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                    ${catMap[item.category] || '지표'}
+                  </span>
+                  <span class="font-mono text-xs text-slate-400 font-bold">${item.ticker}</span>
+                  ${hasAlert ? '<span title="목표 알림 활성" class="w-2 h-2 rounded-full bg-amber-500"></span>' : ''}
+                </div>
+                <button data-star-id="${item.id}" class="star-toggle-btn p-1 text-slate-300 dark:text-slate-600 hover:text-amber-500 transition" title="관심 등록">
+                  <svg class="w-4 h-4 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Name -->
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 mt-2 truncate group-hover:text-blue-500 transition">
+                ${item.name}
+              </h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                ${item.desc}
+              </p>
+            </div>
+
+            <!-- Price & Change -->
+            <div class="my-3">
+              <div class="text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 dark:text-white">
+                ${formatPrice(item)}
+              </div>
+              <div class="mt-1 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1 font-mono font-bold ${color.text}">
+                  <span>${arrow}</span>
+                  <span>${formatChange(item)}</span>
+                  <span>(${formatChangePct(item)})</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Mini Sparkline -->
+            <div class="pt-1 border-t border-slate-100 dark:border-slate-800/80">
+              ${createSparklineSvg(item.sparkline, item.change >= 0)}
+            </div>
+
+            <!-- Card Footer: Day Range & Detail Click -->
+            <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+              <span>당일: ${formatNumber(item.dayLow)} ~ ${formatNumber(item.dayHigh)}</span>
+              <button data-detail-id="${item.id}" class="detail-link font-semibold text-blue-500 hover:text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                차트분석 &gt;
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+
+      // Wire up card buttons
+      container.querySelectorAll('.star-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-star-id');
+          toggleWatchlist(id);
+        });
+      });
+
+      container.querySelectorAll('.detail-link').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-detail-id');
+          openDetailModal(id);
+        });
+      });
+
+      container.querySelectorAll('.indicator-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          // If clicked directly on the card
+          const id = card.id.replace('card-', '');
+          openDetailModal(id);
+        });
+      });
+    }
+
+    // Render Table View
+    function renderTable() {
+      const tbody = document.getElementById('indicatorsTableBody');
+      const items = getFilteredIndicators();
+
+      if (items.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="p-8 text-center text-slate-400">일치하는 지표가 없습니다.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = items.map(item => {
+        const color = getColorClasses(item.change);
+        const arrow = getArrowIcon(item.change);
+        const isStarred = watchlist.has(item.id);
+
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition cursor-pointer" data-row-id="${item.id}">
+            <td class="p-3 text-center" onclick="event.stopPropagation()">
+              <button data-star-id="${item.id}" class="star-toggle-btn text-slate-300 dark:text-slate-600 hover:text-amber-500">
+                <svg class="w-4 h-4 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+              </button>
+            </td>
+            <td class="p-3">
+              <div class="font-bold text-slate-900 dark:text-white">${item.name}</div>
+              <div class="text-[10px] text-slate-400 font-mono">${item.ticker}</div>
+            </td>
+            <td class="p-3 text-right font-mono font-bold text-slate-900 dark:text-white">
+              ${formatPrice(item)}
+            </td>
+            <td class="p-3 text-right font-mono ${color.text}">
+              ${formatChange(item)}
+            </td>
+            <td class="p-3 text-right font-mono font-bold ${color.text}">
+              ${arrow} ${formatChangePct(item)}
+            </td>
+            <td class="p-3 text-center font-mono text-slate-400 hidden md:table-cell">
+              ${formatNumber(item.dayLow)} ~ ${formatNumber(item.dayHigh)}
+            </td>
+            <td class="p-3 text-center hidden sm:table-cell w-28">
+              ${createSparklineSvg(item.sparkline, item.change >= 0)}
+            </td>
+            <td class="p-3 text-center">
+              <button class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 hover:bg-blue-500 hover:text-white transition text-[11px] font-semibold">
+                상세
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.querySelectorAll('tr').forEach(row => {
+        row.addEventListener('click', () => {
+          const id = row.getAttribute('data-row-id');
+          openDetailModal(id);
+        });
+      });
+
+      tbody.querySelectorAll('.star-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-star-id');
+          toggleWatchlist(id);
+        });
+      });
+    }
+
+    // Refresh all views
+    function renderAll() {
+      renderKpis();
+      if (currentViewMode === 'grid') {
+        renderGrid();
+      } else {
+        renderTable();
+      }
+      updateWatchlistBadge();
+      updateYieldCurveChart();
+    }
+
+    function toggleWatchlist(id) {
+      if (watchlist.has(id)) {
+        watchlist.delete(id);
+        showToast('관심지표 해제', '관심 목록에서 제거되었습니다.', 'info');
+      } else {
+        watchlist.add(id);
+        showToast('관심지표 등록', '관심 목록에 추가되었습니다.', 'success');
+      }
+      try {
+        localStorage.setItem('mm_watchlist', JSON.stringify(Array.from(watchlist)));
+      } catch (e) {}
+      renderAll();
+      if (activeModalItem && activeModalItem.id === id) {
+        updateModalWatchlistState();
+      }
+    }
+
+    function updateWatchlistBadge() {
+      const badge = document.getElementById('watchlistCountBadge');
+      if (badge) badge.textContent = watchlist.size;
+    }
+
+    /* ==========================================================================
+       5. YIELD CURVE CHART RENDERING
+       ========================================================================== */
+    function updateYieldCurveChart() {
+      const canvas = document.getElementById('yieldCurveCanvas');
+      if (!canvas) return;
+
+      // Extract Yields: 3M (fixed estimate), 2Y, 5Y (est), 10Y, 20Y, 30Y
+      const us10 = INDICATORS.find(i => i.id === 'us10y')?.price || 4.28;
+      const us20 = INDICATORS.find(i => i.id === 'us20y')?.price || 4.56;
+      const us30 = INDICATORS.find(i => i.id === 'us30y')?.price || 4.50;
+      const us02 = INDICATORS.find(i => i.id === 'us02y')?.price || 4.15;
+      const us3m = 4.16;
+      const us5y = 4.75;
+
+      const labels = ['3M (3개월)', '2Y (2년)', '5Y (5년)', '10Y (10년)', '20Y (20년)', '30Y (30년)'];
+      const currentYields = [us3m, us02, us5y, us10, us20, us30];
+      const oneMonthAgo = [4.35, 4.72, 4.88, 5.25, 5.52, 5.48]; // Historical comparison
+      const oneYearAgo = [4.85, 4.35, 4.05, 4.11, 4.45, 4.38];  // Inversion peak
+
+      // Update Spread
+      const spread = (us10 - us02).toFixed(3);
+      const spreadEl = document.getElementById('yieldSpreadValue');
+      const badgeEl = document.getElementById('inversionStatusBadge');
+      if (spreadEl && badgeEl) {
+        const isNormal = us10 >= us02;
+        spreadEl.textContent = (isNormal ? '+' : '') + spread + ' %p';
+        spreadEl.className = `text-sm font-bold font-mono ${isNormal ? 'text-emerald-500' : 'text-rose-500'}`;
+        badgeEl.textContent = isNormal ? '정상 곡선 (우상향)' : '역전 상태 (경기침체 경고)';
+        badgeEl.className = `px-2 py-1 rounded text-[11px] font-bold ${
+          isNormal
+            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+            : 'bg-rose-500/10 text-rose-500 border border-rose-500/20 animate-pulse'
+        }`;
+      }
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#94a3b8' : '#64748b';
+      const gridColor = isDark ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.8)';
+
+      if (yieldCurveChart) {
+        yieldCurveChart.data.datasets[0].data = currentYields;
+        yieldCurveChart.options.scales.x.ticks.color = textColor;
+        yieldCurveChart.options.scales.y.ticks.color = textColor;
+        yieldCurveChart.options.scales.x.grid.color = gridColor;
+        yieldCurveChart.options.scales.y.grid.color = gridColor;
+        yieldCurveChart.update();
+        return;
+      }
+
+      yieldCurveChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: '현재 수익률 (Current)',
+              data: currentYields,
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.12)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.35,
+              pointBackgroundColor: '#3b82f6',
+              pointRadius: 4,
+              pointHoverRadius: 6
+            },
+            {
+              label: '1개월 전 (1 Month Ago)',
+              data: oneMonthAgo,
+              borderColor: '#94a3b8',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0.35,
+              pointRadius: 2
+            },
+            {
+              label: '1년 전 (1 Year Ago, 역전 극심)',
+              data: oneYearAgo,
+              borderColor: '#ef4444',
+              borderWidth: 1.5,
+              borderDash: [3, 3],
+              fill: false,
+              tension: 0.35,
+              pointRadius: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: textColor,
+                boxWidth: 12,
+                font: { size: 11, weight: 'bold' }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}%`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { size: 10 } }
+            },
+            y: {
+              grid: { color: gridColor },
+              ticks: {
+                color: textColor,
+                font: { size: 10 },
+                callback: function(v) { return v + '%'; }
+              },
+              min: 3.5,
+              max: 5.6
+            }
+          }
+        }
+      });
+    }
+
+    /* ==========================================================================
+       6. DETAIL MODAL & INTERACTIVE TIMEFRAME CHARTS
+       ========================================================================== */
+    function openDetailModal(indicatorId) {
+      const item = INDICATORS.find(i => i.id === indicatorId);
+      if (!item) return;
+      activeModalItem = item;
+
+      // Populate Modal Fields
+      document.getElementById('modalTitle').textContent = item.name;
+      document.getElementById('modalTicker').textContent = item.ticker;
+      document.getElementById('modalCategoryDesc').textContent = item.desc;
+      document.getElementById('modalCurrentPrice').textContent = formatPrice(item);
+
+      const color = getColorClasses(item.change);
+      const arrow = getArrowIcon(item.change);
+      const changeBadge = document.getElementById('modalChangeBadge');
+      changeBadge.textContent = `${arrow} ${formatChange(item)} (${formatChangePct(item)})`;
+      changeBadge.className = `text-sm font-bold font-mono px-2 py-0.5 rounded ${color.bg} ${color.text}`;
+
+      document.getElementById('modal52High').textContent = formatNumber(item.high52) + (item.isYield ? '%' : '');
+      document.getElementById('modal52Low').textContent = formatNumber(item.low52) + (item.isYield ? '%' : '');
+      document.getElementById('modalDayHigh').textContent = formatNumber(item.dayHigh) + (item.isYield ? '%' : '');
+      document.getElementById('modalDayLow').textContent = formatNumber(item.dayLow) + (item.isYield ? '%' : '');
+      document.getElementById('modalPrevClose').textContent = formatNumber(item.prevClose) + (item.isYield ? '%' : '');
+      document.getElementById('modalYearRange').textContent = `${formatNumber(item.low52)} ~ ${formatNumber(item.high52)}`;
+
+      document.getElementById('modalInsightText').textContent = item.insight;
+      document.getElementById('modalBadgeIcon').textContent = item.category.toUpperCase().slice(0, 3);
+
+      updateModalWatchlistState();
+      updateModalAlertState();
+
+      // Show Modal with animation
+      const modal = document.getElementById('detailModal');
+      const content = document.getElementById('modalContent');
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        modal.classList.remove('opacity-0');
+        content.classList.remove('translate-y-8');
+      });
+
+      // Render Modal Chart
+      renderModalChart();
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detailModal');
+      const content = document.getElementById('modalContent');
+      modal.classList.add('opacity-0');
+      content.classList.add('translate-y-8');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        activeModalItem = null;
+      }, 200);
+    }
+
+    function updateModalWatchlistState() {
+      if (!activeModalItem) return;
+      const star = document.getElementById('modalStarIcon');
+      if (watchlist.has(activeModalItem.id)) {
+        star.classList.add('fill-amber-400', 'text-amber-400');
+      } else {
+        star.classList.remove('fill-amber-400', 'text-amber-400');
+      }
+    }
+
+    function updateModalAlertState() {
+      if (!activeModalItem) return;
+      const tag = document.getElementById('currentAlertTag');
+      const input = document.getElementById('alertThresholdInput');
+      const saved = priceAlerts[activeModalItem.id];
+      if (saved !== undefined) {
+        tag.textContent = `설정됨: ${saved}${activeModalItem.isYield ? '%' : ''}`;
+        tag.className = 'text-[10px] text-amber-500 font-bold';
+        input.value = saved;
+      } else {
+        tag.textContent = '알림 없음';
+        tag.className = 'text-[10px] text-slate-400';
+        input.value = '';
+      }
+    }
+
+    // Generate Mock Historical Data based on Timeframe
+    function generateMockHistory(item, timeframe) {
+      if (timeframe === '1D' && item.sparkline && item.sparkline.length >= 8) {
+        const times = ['09:30', '10:30', '11:30', '12:30', '13:30', '14:30', '15:00', '마감/현재'];
+        return {
+          labels: times.slice(0, item.sparkline.length),
+          values: [...item.sparkline]
+        };
+      }
+      const count = timeframe === '1D' ? 24 : timeframe === '1W' ? 30 : timeframe === '1M' ? 30 : timeframe === '3M' ? 45 : 60;
+      const base = item.price;
+      const variance = item.isYield ? 0.05 : base * 0.015;
+      const labels = [];
+      const values = [];
+
+      let current = base - (count * variance * 0.2);
+      for (let i = 0; i < count; i++) {
+        current += (Math.random() - 0.48) * variance;
+        if (timeframe === '1D') {
+          const hour = (9 + Math.floor(i / 3)).toString().padStart(2, '0');
+          const min = ((i % 3) * 20).toString().padStart(2, '0');
+          labels.push(`${hour}:${min}`);
+        } else if (timeframe === '1W' || timeframe === '1M') {
+          labels.push(`${i + 1}일`);
+        } else if (timeframe === '3M') {
+          labels.push(`W${Math.floor(i / 3) + 1}`);
+        } else {
+          labels.push(`M${Math.floor(i / 5) + 1}`);
+        }
+        values.push(parseFloat(current.toFixed(item.isYield ? 3 : 2)));
+      }
+      // Ensure the last value matches current price
+      values[values.length - 1] = item.price;
+      return { labels, values };
+    }
+
+    function renderModalChart() {
+      if (!activeModalItem) return;
+      const canvas = document.getElementById('modalChartCanvas');
+      const { labels, values } = generateMockHistory(activeModalItem, activeModalTimeframe);
+
+      // Compute Moving Average (MA20)
+      const maValues = [];
+      const maPeriod = 5;
+      for (let i = 0; i < values.length; i++) {
+        if (i < maPeriod - 1) {
+          maValues.push(null);
+        } else {
+          let sum = 0;
+          for (let j = 0; j < maPeriod; j++) sum += values[i - j];
+          maValues.push(parseFloat((sum / maPeriod).toFixed(activeModalItem.isYield ? 3 : 2)));
+        }
+      }
+
+      const isMaActive = document.getElementById('modalMaToggle').checked;
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#94a3b8' : '#64748b';
+      const gridColor = isDark ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.8)';
+      const isUp = activeModalItem.change >= 0;
+      const mainColor = colorMode === 'kr'
+        ? (isUp ? '#f43f5e' : '#3b82f6')
+        : (isUp ? '#10b981' : '#f43f5e');
+
+      if (modalDetailChart) {
+        modalDetailChart.destroy();
+      }
+
+      modalDetailChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: activeModalItem.name,
+              data: values,
+              borderColor: mainColor,
+              backgroundColor: isUp ? 'rgba(244, 63, 94, 0.08)' : 'rgba(59, 130, 246, 0.08)',
+              borderWidth: 2.5,
+              fill: true,
+              tension: 0.25,
+              pointRadius: 2,
+              pointHoverRadius: 5
+            },
+            {
+              label: '이동평균선 (MA)',
+              data: maValues,
+              borderColor: '#f59e0b',
+              borderWidth: 1.5,
+              borderDash: [4, 4],
+              fill: false,
+              tension: 0.25,
+              pointRadius: 0,
+              hidden: !isMaActive
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                color: textColor,
+                boxWidth: 12,
+                font: { size: 10 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return `${ctx.dataset.label}: ${ctx.parsed.y} ${activeModalItem.isYield ? '%' : activeModalItem.unit}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { size: 10 } }
+            },
+            y: {
+              grid: { color: gridColor },
+              ticks: {
+                color: textColor,
+                font: { size: 10 },
+                callback: function(v) {
+                  return v + (activeModalItem.isYield ? '%' : '');
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    /* ==========================================================================
+       7. SIMULATION & PERIODIC REFRESH ENGINE
+       ========================================================================== */
+    // Yahoo Finance Ticker Mapping for Real-Time Fetch (via CORS proxy fallback to live simulation)
+    const YAHOO_MAP = {
+      us10y: '^TNX',
+      us20y: '^TYX', // 30Y/20Y proxy
+      us30y: '^TYX',
+      us02y: '^IRX',
+      sp500: '^GSPC',
+      nasdaq: '^IXIC',
+      dow: '^DJI',
+      sox: '^SOX',
+      russell: '^RUT',
+      kospi: '^KS11',
+      kosdaq: '^KQ11',
+      kospi200: '^KS200',
+      usdkrw: 'KRW=X',
+      dxy: 'DX-Y.NYB',
+      vix: '^VIX',
+      wti: 'CL=F',
+      gold: 'GC=F',
+      btc: 'BTC-USD',
+      eth: 'ETH-USD'
+    };
+
+    // Direct CORS-friendly 24/7 Live Crypto Fetch (Binance Public REST API)
+    async function fetchLiveCryptoDirect() {
+      if (!useLiveApi) return false;
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22%5D', {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) return false;
+        const data = await res.json();
+        if (!Array.isArray(data)) return false;
+
+        const mapSym = { BTCUSDT: 'btc', ETHUSDT: 'eth' };
+        data.forEach(t => {
+          const targetId = mapSym[t.symbol];
+          const item = INDICATORS.find(i => i.id === targetId);
+          if (item && t.lastPrice) {
+            const oldPrice = item.price;
+            item.price = parseFloat(parseFloat(t.lastPrice).toFixed(2));
+            item.change = parseFloat(parseFloat(t.priceChange).toFixed(2));
+            item.changePct = parseFloat(parseFloat(t.priceChangePercent).toFixed(2));
+            item.dayHigh = parseFloat(parseFloat(t.highPrice).toFixed(2));
+            item.dayLow = parseFloat(parseFloat(t.lowPrice).toFixed(2));
+            item.prevClose = parseFloat(parseFloat(t.prevClosePrice).toFixed(2));
+            item.sparkline.push(item.price);
+            if (item.sparkline.length > 12) item.sparkline.shift();
+
+            const cardEl = document.getElementById(`card-${item.id}`);
+            if (cardEl && item.price !== oldPrice) {
+              cardEl.classList.remove('flash-up', 'flash-down');
+              void cardEl.offsetWidth;
+              cardEl.classList.add(item.price >= oldPrice ? 'flash-up' : 'flash-down');
+            }
+          }
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    async function fetchLiveQuotesIfAvailable() {
+      if (!useLiveApi) return false;
+      try {
+        const symbols = Object.values(YAHOO_MAP).join(',');
+        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols)}`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const res = await fetch(proxyUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!res.ok) return false;
+        const wrapper = await res.json();
+        const data = JSON.parse(wrapper.contents);
+        const results = data?.quoteResponse?.result;
+        if (!results || !Array.isArray(results)) return false;
+
+        results.forEach(q => {
+          INDICATORS.forEach(item => {
+            if (YAHOO_MAP[item.id] === q.symbol && q.regularMarketPrice) {
+              const oldPrice = item.price;
+              item.price = parseFloat(q.regularMarketPrice.toFixed(item.isYield ? 3 : 2));
+              item.change = parseFloat((q.regularMarketChange || 0).toFixed(item.isYield ? 3 : 2));
+              item.changePct = parseFloat((q.regularMarketChangePercent || 0).toFixed(2));
+              if (q.regularMarketDayHigh) item.dayHigh = parseFloat(q.regularMarketDayHigh.toFixed(item.isYield ? 3 : 2));
+              if (q.regularMarketDayLow) item.dayLow = parseFloat(q.regularMarketDayLow.toFixed(item.isYield ? 3 : 2));
+              if (q.regularMarketPreviousClose) item.prevClose = parseFloat(q.regularMarketPreviousClose.toFixed(item.isYield ? 3 : 2));
+              item.sparkline.push(item.price);
+              if (item.sparkline.length > 12) item.sparkline.shift();
+
+              const cardEl = document.getElementById(`card-${item.id}`);
+              if (cardEl && item.price !== oldPrice) {
+                cardEl.classList.remove('flash-up', 'flash-down');
+                void cardEl.offsetWidth;
+                cardEl.classList.add(item.price >= oldPrice ? 'flash-up' : 'flash-down');
+              }
+            }
+          });
+        });
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    async function simulatePriceTicks() {
+      const [cryptoLive, liveSuccess] = await Promise.all([
+        fetchLiveCryptoDirect(),
+        fetchLiveQuotesIfAvailable()
+      ]);
+      if (liveSuccess) {
+        const now = new Date();
+        const lastEl = document.getElementById('lastUpdatedTime');
+        if (lastEl) lastEl.textContent = now.toLocaleTimeString('ko-KR', { hour12: false }) + ' (실시간)';
+        renderAll();
+        return;
+      }
+      if (!enableRandomSim) {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false });
+        const lastEl = document.getElementById('lastUpdatedTime');
+        if (lastEl) lastEl.textContent = timeStr + ' (실제종가 고정)';
+        renderAll();
+        return;
+      }
+      INDICATORS.forEach(item => {
+        // Stochastic random fluctuation
+        const pctChange = (Math.random() - 0.49) * (item.isYield ? 0.008 : 0.004);
+        const diff = item.price * pctChange;
+        const oldPrice = item.price;
+        item.price = parseFloat((item.price + diff).toFixed(item.isYield ? 3 : 2));
+        item.change = parseFloat((item.price - item.prevClose).toFixed(item.isYield ? 3 : 2));
+        item.changePct = parseFloat(((item.change / item.prevClose) * 100).toFixed(2));
+
+        // Update day high / low
+        if (item.price > item.dayHigh) item.dayHigh = item.price;
+        if (item.price < item.dayLow) item.dayLow = item.price;
+
+        // Push to sparkline
+        item.sparkline.push(item.price);
+        if (item.sparkline.length > 12) item.sparkline.shift();
+
+        // Check Price Alerts
+        if (priceAlerts[item.id] !== undefined) {
+          const threshold = priceAlerts[item.id];
+          if ((oldPrice < threshold && item.price >= threshold) || (oldPrice > threshold && item.price <= threshold)) {
+            showToast('목표가 도달 알림!', `${item.name} (${item.ticker})이(가) 설정 목표치 ${threshold}에 도달했습니다!`, 'alert');
+          }
+        }
+
+        // Card Flash animation
+        const cardEl = document.getElementById(`card-${item.id}`);
+        if (cardEl) {
+          const isHigher = item.price >= oldPrice;
+          cardEl.classList.remove('flash-up', 'flash-down');
+          void cardEl.offsetWidth; // trigger reflow
+          cardEl.classList.add(isHigher ? 'flash-up' : 'flash-down');
+        }
+      });
+
+      // Update timestamp
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false });
+      const lastEl = document.getElementById('lastUpdatedTime');
+      if (lastEl) lastEl.textContent = timeStr;
+
+      // Re-render
+      renderAll();
+
+      if (activeModalItem) {
+        // Refresh modal fields
+        const updated = INDICATORS.find(i => i.id === activeModalItem.id);
+        if (updated) {
+          activeModalItem = updated;
+          document.getElementById('modalCurrentPrice').textContent = formatPrice(updated);
+          const color = getColorClasses(updated.change);
+          const arrow = getArrowIcon(updated.change);
+          const changeBadge = document.getElementById('modalChangeBadge');
+          changeBadge.textContent = `${arrow} ${formatChange(updated)} (${formatChangePct(updated)})`;
+          changeBadge.className = `text-sm font-bold font-mono px-2 py-0.5 rounded ${color.bg} ${color.text}`;
+        }
+      }
+    }
+
+    function resetCountdown() {
+      countdownRemaining = refreshSeconds;
+      updateCountdownDisplay();
+    }
+
+    function updateCountdownDisplay() {
+      const badge = document.getElementById('countdownBadge');
+      if (!badge) return;
+      if (refreshSeconds === 0) {
+        badge.textContent = 'OFF';
+        badge.className = 'ml-1 px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 text-[10px] font-bold';
+      } else {
+        badge.textContent = countdownRemaining;
+        badge.className = 'ml-1 w-5 h-5 flex items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold';
+      }
+    }
+
+    function startAutoRefresh() {
+      if (timerId) clearInterval(timerId);
+      if (countdownTimerId) clearInterval(countdownTimerId);
+
+      if (refreshSeconds === 0) {
+        resetCountdown();
+        return;
+      }
+
+      resetCountdown();
+
+      // Countdown tick every 1 second
+      countdownTimerId = setInterval(() => {
+        countdownRemaining--;
+        if (countdownRemaining <= 0) {
+          triggerRefresh();
+        } else {
+          updateCountdownDisplay();
+        }
+      }, 1000);
+    }
+
+    function triggerRefresh() {
+      const icon = document.getElementById('refreshIcon');
+      if (icon) icon.classList.add('rotate-180');
+      setTimeout(() => {
+        if (icon) icon.classList.remove('rotate-180');
+      }, 500);
+
+      simulatePriceTicks();
+      resetCountdown();
+    }
+
+    /* ==========================================================================
+       8. CSV EXPORT UTILITY
+       ========================================================================== */
+    function exportToCsv() {
+      const items = getFilteredIndicators();
+      const headers = ['지표명', '티커', '분류', '현재가/금리', '전일대비', '등락률(%)', '당일저가', '당일고가', '52주저가', '52주고가'];
+      const rows = items.map(item => [
+        `"${item.name}"`,
+        `"${item.ticker}"`,
+        `"${item.category}"`,
+        item.price,
+        item.change,
+        item.changePct,
+        item.dayLow,
+        item.dayHigh,
+        item.low52,
+        item.high52
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `market_indicators_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV 다운로드 완료', `${items.length}개 지표 데이터가 저장되었습니다.`, 'success');
+    }
+
+    /* ==========================================================================
+       9. INITIALIZATION & EVENT LISTENERS
+       ========================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initial Render
+      renderAll();
+      triggerRefresh();
+      startAutoRefresh();
+
+      // 2. Refresh Interval Selector
+      const intervalSelect = document.getElementById('refreshIntervalSelect');
+      intervalSelect.addEventListener('change', (e) => {
+        refreshSeconds = parseInt(e.target.value, 10);
+        startAutoRefresh();
+        showToast('갱신 주기 변경', refreshSeconds === 0 ? '자동 갱신이 중지되었습니다.' : `${refreshSeconds}초 단위로 자동 갱신됩니다.`, 'info');
+      });
+
+      // 3. Refresh Button
+      document.getElementById('refreshBtn').addEventListener('click', () => {
+        triggerRefresh();
+        showToast('새로고침 완료', '최신 시장 시세가 갱신되었습니다.', 'success');
+      });
+
+      // 4. Color Mode Toggle (한국식 빨강=상승 vs 미국식 초록=상승)
+      const colorToggleBtn = document.getElementById('colorModeToggle');
+      const colorText = document.getElementById('colorModeText');
+      function updateColorBtnUI() {
+        if (colorMode === 'kr') {
+          colorText.textContent = '🇰🇷 상승:빨강';
+        } else {
+          colorText.textContent = '🇺🇸 상승:초록';
+        }
+      }
+      updateColorBtnUI();
+
+      colorToggleBtn.addEventListener('click', () => {
+        colorMode = colorMode === 'kr' ? 'us' : 'kr';
+        try { localStorage.setItem('mm_colormode', colorMode); } catch (e) {}
+        updateColorBtnUI();
+        renderAll();
+        if (activeModalItem) renderModalChart();
+        showToast('상승 색상 변경', colorMode === 'kr' ? '한국 기준(상승 빨강 / 하락 파랑) 적용' : '미국 기준(상승 초록 / 하락 빨강) 적용', 'info');
+      });
+
+      // 5. Dark / Light Theme Toggle
+      const themeToggle = document.getElementById('themeToggle');
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        try { localStorage.setItem('mm_theme', isDark ? 'dark' : 'light'); } catch (e) {}
+        updateYieldCurveChart();
+        if (activeModalItem) renderModalChart();
+      });
+
+      // 6. Category Tabs Navigation (Desktop & Mobile)
+      const catButtons = document.querySelectorAll('.cat-btn');
+      catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          catButtons.forEach(b => {
+            b.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-sm');
+            b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+          });
+          btn.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-sm');
+          btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+
+          currentCategory = btn.getAttribute('data-cat');
+          syncMobileNav(currentCategory);
+          if (currentViewMode === 'grid') renderGrid(); else renderTable();
+        });
+      });
+
+      // Mobile Bottom Nav Buttons
+      const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+      function syncMobileNav(cat) {
+        mobileNavBtns.forEach(btn => {
+          if (btn.getAttribute('data-cat') === cat) {
+            btn.classList.add('text-blue-600', 'dark:text-blue-400', 'font-semibold');
+            btn.classList.remove('text-slate-500', 'dark:text-slate-400');
+          } else {
+            btn.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-semibold');
+            btn.classList.add('text-slate-500', 'dark:text-slate-400');
+          }
+        });
+      }
+
+      mobileNavBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = btn.getAttribute('data-cat');
+          currentCategory = cat;
+          syncMobileNav(cat);
+
+          // Sync desktop tab buttons
+          catButtons.forEach(b => {
+            if (b.getAttribute('data-cat') === cat) {
+              b.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-sm');
+              b.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+            } else {
+              b.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-sm');
+              b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+            }
+          });
+
+          if (currentViewMode === 'grid') renderGrid(); else renderTable();
+        });
+      });
+
+      // 7. Grid vs Table View Switch
+      const gridBtn = document.getElementById('viewGridBtn');
+      const tableBtn = document.getElementById('viewTableBtn');
+      const gridView = document.getElementById('indicatorsGridView');
+      const tableView = document.getElementById('indicatorsTableView');
+
+      gridBtn.addEventListener('click', () => {
+        currentViewMode = 'grid';
+        gridBtn.className = 'p-1.5 rounded bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm';
+        tableBtn.className = 'p-1.5 rounded text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+        gridView.classList.remove('hidden');
+        tableView.classList.add('hidden');
+        renderGrid();
+      });
+
+      tableBtn.addEventListener('click', () => {
+        currentViewMode = 'table';
+        tableBtn.className = 'p-1.5 rounded bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm';
+        gridBtn.className = 'p-1.5 rounded text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+        tableView.classList.remove('hidden');
+        gridView.classList.add('hidden');
+        renderTable();
+      });
+
+      // 8. Search Input & Clear
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        if (currentSearch.trim()) {
+          clearSearchBtn.classList.remove('hidden');
+        } else {
+          clearSearchBtn.classList.add('hidden');
+        }
+        if (currentViewMode === 'grid') renderGrid(); else renderTable();
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentSearch = '';
+        clearSearchBtn.classList.add('hidden');
+        if (currentViewMode === 'grid') renderGrid(); else renderTable();
+      });
+
+      // 9. Sort Select
+      document.getElementById('sortSelect').addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        if (currentViewMode === 'grid') renderGrid(); else renderTable();
+      });
+
+      // 10. CSV Export Button
+      document.getElementById('exportCsvBtn').addEventListener('click', exportToCsv);
+
+      // 11. Modal Controls
+      document.getElementById('closeModalBtn').addEventListener('click', closeDetailModal);
+      document.getElementById('detailModal').addEventListener('click', (e) => {
+        if (e.target.id === 'detailModal') closeDetailModal();
+      });
+
+      // Modal Watchlist Toggle
+      document.getElementById('modalWatchlistToggle').addEventListener('click', () => {
+        if (activeModalItem) {
+          toggleWatchlist(activeModalItem.id);
+        }
+      });
+
+      // Modal Timeframe Buttons
+      const tfButtons = document.querySelectorAll('.modal-tf-btn');
+      tfButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tfButtons.forEach(b => {
+            b.className = 'modal-tf-btn px-2.5 py-1 rounded text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+          });
+          btn.className = 'modal-tf-btn px-2.5 py-1 rounded text-xs font-semibold bg-blue-600 text-white';
+          activeModalTimeframe = btn.getAttribute('data-tf');
+          renderModalChart();
+        });
+      });
+
+      // Modal Moving Average Toggle
+      document.getElementById('modalMaToggle').addEventListener('change', () => {
+        renderModalChart();
+      });
+
+      // Modal Alert Threshold Save / Clear
+      document.getElementById('setAlertBtn').addEventListener('click', () => {
+        if (!activeModalItem) return;
+        const val = parseFloat(document.getElementById('alertThresholdInput').value);
+        if (isNaN(val)) {
+          showToast('입력 오류', '올바른 목표 수치를 입력해주세요.', 'alert');
+          return;
+        }
+        priceAlerts[activeModalItem.id] = val;
+        try { localStorage.setItem('mm_alerts', JSON.stringify(priceAlerts)); } catch (e) {}
+        updateModalAlertState();
+        renderAll();
+        showToast('알림 등록 완료', `${activeModalItem.name} 목표치(${val}) 도달 시 알림이 발송됩니다.`, 'success');
+      });
+
+      document.getElementById('clearAlertBtn').addEventListener('click', () => {
+        if (!activeModalItem) return;
+        delete priceAlerts[activeModalItem.id];
+        try { localStorage.setItem('mm_alerts', JSON.stringify(priceAlerts)); } catch (e) {}
+        updateModalAlertState();
+        renderAll();
+        showToast('알림 해제', `${activeModalItem.name} 목표 알림이 삭제되었습니다.`, 'info');
+      });
+
+      // 11-B. Live Data Source Toggle & Setup Guide Modal
+      const dataSourceToggle = document.getElementById('dataSourceToggle');
+      const dataSourceText = document.getElementById('dataSourceText');
+      dataSourceToggle.addEventListener('click', () => {
+        enableRandomSim = !enableRandomSim;
+        dataSourceText.textContent = enableRandomSim ? '시뮬레이션' : '실시간연동';
+        dataSourceToggle.className = !enableRandomSim
+          ? 'px-2 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/20 hover:bg-emerald-500/20 transition flex items-center gap-1'
+          : 'px-2 py-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold border border-amber-500/20 hover:bg-amber-500/20 transition flex items-center gap-1';
+        triggerRefresh();
+        showToast('데이터 모드 전환', !enableRandomSim ? '임의 변동을 끄고 실제 시장 종가/실시간 API 데이터만 표시합니다.' : '주기적 변동 테스트를 위한 가상 틱 시뮬레이션 모드입니다.', 'info');
+      });
+
+      const setupModal = document.getElementById('setupGuideModal');
+      document.getElementById('openSetupGuideBtn').addEventListener('click', () => {
+        setupModal.classList.remove('hidden');
+        requestAnimationFrame(() => setupModal.classList.remove('opacity-0'));
+      });
+      const closeSetupModal = () => {
+        setupModal.classList.add('opacity-0');
+        setTimeout(() => setupModal.classList.add('hidden'), 200);
+      };
+      document.getElementById('closeSetupGuideBtn').addEventListener('click', closeSetupModal);
+      document.getElementById('dismissSetupGuideBtn').addEventListener('click', closeSetupModal);
+      setupModal.addEventListener('click', (e) => {
+        if (e.target.id === 'setupGuideModal') closeSetupModal();
+      });
+
+      // Download standalone HTML file
+      document.getElementById('downloadHtmlFileBtn').addEventListener('click', () => {
+        const htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([htmlSource], { type: 'text/html;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'market_dashboard.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast('파일 다운로드 완료', 'market_dashboard.html 파일이 저장되었습니다.', 'success');
+      });
+
+      // Copy entire HTML source code to clipboard
+      document.getElementById('copySourceCodeBtn').addEventListener('click', () => {
+        const htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const textarea = document.createElement('textarea');
+        textarea.value = htmlSource;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast('코드 복사 완료', '전체 HTML 소스 코드가 클립보드에 복사되었습니다.', 'success');
+        } catch (err) {
+          showToast('복사 실패', 'HTML 파일 다운로드 버튼을 이용해 주세요.', 'alert');
+        }
+        document.body.removeChild(textarea);
+      });
+
+      // 12. Deep Yield Explainer Modal
+      const yieldModal = document.getElementById('yieldExplainerModal');
+      document.getElementById('openYieldModalBtn').addEventListener('click', () => {
+        yieldModal.classList.remove('hidden');
+        requestAnimationFrame(() => yieldModal.classList.remove('opacity-0'));
+      });
+      document.getElementById('closeYieldExplainerBtn').addEventListener('click', () => {
+        yieldModal.classList.add('opacity-0');
+        setTimeout(() => yieldModal.classList.add('hidden'), 200);
+      });
+      document.getElementById('dismissYieldExplainerBtn').addEventListener('click', () => {
+        yieldModal.classList.add('opacity-0');
+        setTimeout(() => yieldModal.classList.add('hidden'), 200);
+      });
+      yieldModal.addEventListener('click', (e) => {
+        if (e.target.id === 'yieldExplainerModal') {
+          yieldModal.classList.add('opacity-0');
+          setTimeout(() => yieldModal.classList.add('hidden'), 200);
+        }
+      });
+    });
+  </script>
+
+</body></html>
