@@ -72,7 +72,7 @@
             <span class="text-sm font-black tracking-tight text-slate-900 dark:text-white">마켓모니터</span>
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           </div>
-          <p id="topSubStatus" class="text-[10px] text-slate-400 font-mono">10분 자동 갱신 • 2026.10.30 마감</p>
+          <p id="topSubStatus" class="text-[10px] text-slate-400 font-mono flex items-center gap-1"><span>데이터 생성:</span> <strong id="jsonUpdateTimeHeader" class="text-amber-500 dark:text-amber-400 font-bold font-mono">---</strong></p>
         </div>
       </div>
 
@@ -343,15 +343,16 @@
     /* ==========================================================================
        1. DATA DEFINITIONS (Verified 2026-10-30/31 Market Data)
        ========================================================================== */
+    // Initial default values are set to '---' so missing data vs actual loaded data is 100% distinguishable
     const TOP_CAROUSEL_ITEMS = [
-      { id: 'us10y', name: '미국채 10Y', val: '4.940%', chg: '-0.040%p', isUp: false },
-      { id: 'spread', name: '10Y-2Y차', val: '+0.320%p', chg: '정상화', isUp: true },
-      { id: 'sp500', name: 'S&P 500', val: '7,580.07', chg: '-1.82%', isUp: false },
-      { id: 'nasdaq', name: '나스닥', val: '25,437.00', chg: '-2.86%', isUp: false },
-      { id: 'kospi', name: '코스피', val: '5,730.74', chg: '-3.48%', isUp: false },
-      { id: 'btc', name: '비트코인', val: '$77,298', chg: '+0.15%', isUp: true },
-      { id: 'usdkrw', name: '원/달러', val: '1,333.4원', chg: '-0.12%', isUp: false },
-      { id: 'fng', name: '공포탐욕', val: '26점', chg: '-10점 (공포)', isUp: false }
+      { id: 'us10y', name: '미국채 10Y', val: '---', chg: '---', isUp: false },
+      { id: 'spread', name: '10Y-2Y차', val: '---', chg: '---', isUp: false },
+      { id: 'sp500', name: 'S&P 500', val: '---', chg: '---', isUp: false },
+      { id: 'nasdaq', name: '나스닥', val: '---', chg: '---', isUp: false },
+      { id: 'kospi', name: '코스피', val: '---', chg: '---', isUp: false },
+      { id: 'btc', name: '비트코인', val: '---', chg: '---', isUp: false },
+      { id: 'usdkrw', name: '원/달러', val: '---', chg: '---', isUp: false },
+      { id: 'fng', name: '공포탐욕', val: '---', chg: '---', isUp: false }
     ];
 
     const CATEGORIZED_MACRO = {
@@ -362,10 +363,10 @@
             id: 'us10y',
             name: '미국채 10년물 금리 (Benchmark)',
             ticker: 'US10Y',
-            val: '4.940%',
-            chg: '-0.040%p (-0.80%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '4.920% ~ 4.980%',
+            dayRange: '---',
             desc: '글로벌 무위험 벤치마크. 주식시장 미래현금흐름 할인율의 기준',
             insight: '10년물 금리가 4.94%로 5%선 바로 아래에서 움직이며 글로벌 성장주 밸류에이션 부담 완화 여부를 가늠 중입니다.'
           },
@@ -373,10 +374,10 @@
             id: 'us20y',
             name: '미국채 20년물 금리',
             ticker: 'US20Y',
-            val: '5.340%',
-            chg: '-0.010%p (-0.19%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '5.320% ~ 5.360%',
+            dayRange: '---',
             desc: '미 재무부 장기채 입찰 수급 및 장기 자금 조달 척도',
             insight: '만기물 중 가장 높은 5.34%를 기록하며 장기 국채 발행 물량 부담을 가장 직접적으로 반영하고 있습니다.'
           },
@@ -384,10 +385,10 @@
             id: 'us30y',
             name: '미국채 30년물 금리',
             ticker: 'US30Y',
-            val: '5.310%',
-            chg: '+0.010%p (+0.19%)',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '5.290% ~ 5.330%',
+            dayRange: '---',
             desc: '초장기 연기금·보험사 수요 및 미국의 잠재 성장률 기대 반영',
             insight: '10년물 대비 +0.37%p 높은 정상 우상향 곡선을 유지하며 장기 경제 신뢰도를 나타냅니다.'
           },
@@ -395,10 +396,10 @@
             id: 'us02y',
             name: '미국채 2년물 금리 (연준 통화정책)',
             ticker: 'US02Y',
-            val: '4.620%',
-            chg: '+0.020%p (+0.43%)',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '4.590% ~ 4.640%',
+            dayRange: '---',
             desc: '연준(Fed) 기준금리 방향성에 가장 민감한 단기 지표',
             insight: '연준의 금리 인하 속도 조절 전망에 연동되어 4.62% 수준에서 지지되고 있습니다.'
           },
@@ -406,10 +407,10 @@
             id: 'spread',
             name: '10Y - 2Y 장단기 금리차 (Spread)',
             ticker: '10Y-2Y',
-            val: '+0.320%p',
-            chg: '우상향 정상화 완료',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '정상 곡선 (+0.320%p)',
+            dayRange: '---',
             desc: '역사적인 장단기 금리 역전 해소 및 경기 침체 선행 지표',
             insight: '10년물 금리가 2년물보다 0.32%p 높아 침체 경고 신호였던 역전(Inversion)이 해소된 상태입니다.'
           }
@@ -422,10 +423,10 @@
             id: 'sp500',
             name: 'S&P 500',
             ticker: '^GSPC',
-            val: '7,580.07',
-            chg: '-140.32 (-1.82%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '7,527.56 ~ 7,637.48',
+            dayRange: '---',
             desc: '미국 대형 우량주 500개 대표 지수',
             insight: '국채 금리 상승과 고유가 부담 속에 전일 대비 -1.82% 하락한 7,580.07로 마감했습니다.'
           },
@@ -433,10 +434,10 @@
             id: 'nasdaq',
             name: '나스닥 종합 (NASDAQ)',
             ticker: '^IXIC',
-            val: '25,437.00',
-            chg: '-747.73 (-2.86%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '25,177.33 ~ 25,673.00',
+            dayRange: '---',
             desc: 'AI 혁신, 반도체, 빅테크 중심의 글로벌 기술주 지수',
             insight: '반도체 차익실현 매물 출회로 -2.86% 조정받은 25,437.00에 마감했습니다.'
           },
@@ -444,10 +445,10 @@
             id: 'dow',
             name: '다우존스 산업평균 (DJIA)',
             ticker: '^DJI',
-            val: '51,770.31',
-            chg: '-572.25 (-1.09%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '51,520.10 ~ 52,180.40',
+            dayRange: '---',
             desc: '미국 30대 대표 전통 우량 블루칩 지수',
             insight: '전통 가치주 및 에너지 섹터 선방으로 나스닥 대비 상대적으로 양호하게 마감했습니다.'
           },
@@ -455,10 +456,10 @@
             id: 'sox',
             name: '필라델피아 반도체 (SOX)',
             ticker: '^SOX',
-            val: '10,688.80',
-            chg: '-829.40 (-7.20%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '10,439.01 ~ 10,957.32',
+            dayRange: '---',
             desc: '엔비디아, TSMC 등 글로벌 반도체 핵심 지수',
             insight: '단기 급등에 따른 차익 매물로 -7.20% 급락하며 국내 반도체 투심에도 큰 영향을 미쳤습니다.'
           },
@@ -466,10 +467,10 @@
             id: 'russell',
             name: '러셀 2000 (중소형주)',
             ticker: '^RUT',
-            val: '2,811.84',
-            chg: '-47.37 (-1.66%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '2,787.12 ~ 2,843.00',
+            dayRange: '---',
             desc: '미국 내수 중심 2,000개 중소형 기업 지수',
             insight: '장기 국채 금리 상승에 따른 조달 비용 부담으로 -1.66% 하락 마감했습니다.'
           }
@@ -482,10 +483,10 @@
             id: 'kospi',
             name: '코스피 (KOSPI)',
             ticker: 'KS11',
-            val: '5,730.74',
-            chg: '-206.92 (-3.48%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '5,599.42 ~ 5,784.98',
+            dayRange: '---',
             desc: '한국 유가증권시장 대표 종합주가지수',
             insight: '반도체 조정 여파로 장중 5,599선까지 밀렸으나 오후장 낙폭을 일부 만회하며 마감했습니다.'
           },
@@ -493,10 +494,10 @@
             id: 'kosdaq',
             name: '코스닥 (KOSDAQ)',
             ticker: 'KQ11',
-            val: '724.38',
-            chg: '-28.85 (-3.83%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '718.20 ~ 751.40',
+            dayRange: '---',
             desc: '국내 2차전지·바이오·IT 성장주 시장',
             insight: '고금리 장기화 우려와 성장주 투자심리 위축으로 -3.83% 하락한 724.38로 마감했습니다.'
           },
@@ -504,10 +505,10 @@
             id: 'kospi200',
             name: '코스피 200 (KOSPI 200)',
             ticker: 'KPI200',
-            val: '768.45',
-            chg: '-28.15 (-3.53%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '750.80 ~ 776.20',
+            dayRange: '---',
             desc: '선물·옵션 파생상품 기초자산 대형 우량주 200선',
             insight: '외국인 선물 매도와 대형 IT 종목 조정으로 코스피와 연동되어 -3.53% 하락 마감했습니다.'
           }
@@ -520,10 +521,10 @@
             id: 'btc',
             name: '비트코인 (Bitcoin)',
             ticker: 'BTC/USD',
-            val: '$77,298.96',
-            chg: '+$118.54 (+0.15%)',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '$77,129.84 ~ $77,477.08',
+            dayRange: '---',
             desc: '가상자산 대장주 · 디지털 골드 (Binance 실시간 연동)',
             insight: '글로벌 위험자산 선호도와 유동성을 선행하며 $77,000선 위에서 안정적으로 지지력을 시험 중입니다.'
           },
@@ -531,10 +532,10 @@
             id: 'eth',
             name: '이더리움 (Ethereum)',
             ticker: 'ETH/USD',
-            val: '$2,243.08',
-            chg: '+$2.30 (+0.10%)',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '$2,239.39 ~ $2,246.79',
+            dayRange: '---',
             desc: '스마트 컨트랙트 및 온체인 생태계 대표 코인',
             insight: '알트코인 전반의 투자심리를 대변하며 $2,243 선에서 강보합세를 유지하고 있습니다.'
           },
@@ -542,10 +543,10 @@
             id: 'crypto_fng',
             name: '가상자산 공포 & 탐욕 지수',
             ticker: 'F&G:CRYPTO',
-            val: '68점 (탐욕 Greed)',
-            chg: '+3점',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '0 (극단적공포) ~ 100 (극단적탐욕)',
+            dayRange: '---',
             desc: '비트코인 변동성, 소셜 버즈 종합 심리지수 (Alternative.me 연동)',
             insight: '비트코인의 $77,000선 안착으로 크립토 시장은 매수 우위의 탐욕 국면을 유지하고 있습니다.'
           }
@@ -558,10 +559,10 @@
             id: 'usdkrw',
             name: '원/달러 환율 (USD/KRW)',
             ticker: 'KRW=X',
-            val: '1,333.42원',
-            chg: '-1.58원 (-0.12%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '1,331.10 ~ 1,338.20원',
+            dayRange: '---',
             desc: '달러 대비 원화 가치. 외국인 수급 직결 지표',
             insight: '달러 인덱스 약세 흐름에 힘입어 1,333원 선에서 비교적 안정적인 흐름을 유지하고 있습니다.'
           },
@@ -569,10 +570,10 @@
             id: 'dxy',
             name: '달러 인덱스 (DXY)',
             ticker: 'DX-Y.NYB',
-            val: '101.64',
-            chg: '-0.22 (-0.22%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '101.40 ~ 101.95',
+            dayRange: '---',
             desc: '주요 6개국 통화 대비 미국 달러 상대 가치',
             insight: '101.64선에서 횡보하며 신흥국 환율 및 외환시장 부담을 덜어주고 있습니다.'
           },
@@ -580,10 +581,10 @@
             id: 'vix',
             name: 'VIX 변동성 지수 (공포지수)',
             ticker: '^VIX',
-            val: '19.42',
-            chg: '+2.22 (+12.91%)',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '18.03 ~ 23.93',
+            dayRange: '---',
             desc: 'S&P 500 옵션 가격 기반 30일간의 예상 변동성',
             insight: '기술주 조정으로 장중 23선까지 치솟았으나 장 막판 19.42로 내려오며 경계 구간에 머물러 있습니다.'
           },
@@ -591,11 +592,11 @@
             id: 'fear_greed',
             name: 'CNN 공포 & 탐욕 지수 (Fear & Greed)',
             ticker: 'F&G:CNN',
-            val: '26점 (공포 Fear)',
-            chg: '-10점 (-27.8%)',
+            val: '---',
+            chg: '---',
             isUp: false,
             score: 26,
-            dayRange: '당일 25 ~ 36 (전일: 36점)',
+            dayRange: '---',
             desc: '미국 주식시장 7대 지표(모멘텀·변동성·옵션수요) 종합 투자심리 지수',
             insight: '금요일 미국 기술주 급락과 금리 상승 여파로 지수가 26점까지 급락하며 [극단적 공포(25 이하)] 경계선에 진입했습니다. 역사적으로 20~30점대 공포 구간은 비이성적 패닉 투매가 정점에 달해 중장기 분할 매수 관점의 접근이 유효했던 자리입니다.'
           },
@@ -603,10 +604,10 @@
             id: 'wti',
             name: 'WTI 원유 선물',
             ticker: 'CL=F',
-            val: '$104.82',
-            chg: '+$2.82 (+2.76%)',
+            val: '---',
+            chg: '---',
             isUp: true,
-            dayRange: '$102.45 ~ $104.98',
+            dayRange: '---',
             desc: '글로벌 제조업 생산비용 및 인플레이션 압력 핵심 원자재',
             insight: '중동 지정학적 공급 우려로 배럴당 $104.82까지 상승하며 국채 금리 상승 압력으로 작용 중입니다.'
           },
@@ -614,10 +615,10 @@
             id: 'gold',
             name: '국제 금 시세 (Gold)',
             ticker: 'GC=F',
-            val: '$3,875.84',
-            chg: '-$145.57 (-3.62%)',
+            val: '---',
+            chg: '---',
             isUp: false,
-            dayRange: '$3,860.10 ~ $4,024.61',
+            dayRange: '---',
             desc: '궁극의 안전자산이자 통화가치 하락 헷지 수단',
             insight: '온스당 $4,000 돌파 이후 실질금리 상승에 따른 차익실현 매물로 $3,875선에 머물고 있습니다.'
           }
@@ -625,8 +626,8 @@
       }
     };
 
-    // User's Real 69 Stocks Screener Database (Embedded as default)
-    let screenerDb = {"000660.KS": {"ticker": "000660.KS", "company_name": "SK hynix Inc.", "current_price": 1418000.0, "total_undervalued_score": 79.4, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 45.484141208984155, "disparity_value_pct": -11.796721923304199, "metrics": {"forward_per": 2.6899023, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": 3157408.8, "target_upside_pct": 122.66634696755993, "recommendation_key": "strong_buy", "beta": 2.391, "market_cap": 999935763808256}, "updated_at": "2026-10-31 04:02 KST"}, "005930.KS": {"ticker": "005930.KS", "company_name": "Samsung Electronics Co., Ltd.", "current_price": 225000.0, "total_undervalued_score": 59.4, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 44.00110114930269, "disparity_value_pct": -10.352613055315762, "metrics": {"forward_per": 3.0382125, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": 482017.22, "target_upside_pct": 114.22987555555555, "recommendation_key": "strong_buy", "beta": 1.545, "market_cap": 1465182593220608}, "updated_at": "2026-10-31 04:02 KST"}, "443250.KS": {"ticker": "443250.KS", "company_name": "Revu Corporation Inc", "current_price": 5410.0, "total_undervalued_score": 55.7, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 52.56239512603992, "disparity_value_pct": -3.2243638477706726, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "453810.KS": {"ticker": "453810.KS", "company_name": "Samsung Kodex India Nifty 50 ETF", "current_price": 10810.0, "total_undervalued_score": 53.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 50.06709458839226, "disparity_value_pct": -4.240240949624985, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "411060.KS": {"ticker": "411060.KS", "company_name": "Korea Investment Trust Management Co, Ltd - KIM KINDEX KRX Physical Gold ETF", "current_price": 23840.0, "total_undervalued_score": 69.8, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 31.231083961744773, "disparity_value_pct": -9.476089068339089, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0080G0.KS": {"ticker": "0080G0.KS", "company_name": "Samsung Kodex K-Defense Top10 ETF", "current_price": 6955.0, "total_undervalued_score": 84, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 29.114961697210248, "disparity_value_pct": -28.827261563651252, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "418670.KS": {"ticker": "418670.KS", "company_name": "Mirae Asset Tiger Global Cybersecurity Indxx ETF", "current_price": 20440.0, "total_undervalued_score": 4.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 58.54811479206462, "disparity_value_pct": 11.613176252167158, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0053L0.KS": {"ticker": "0053L0.KS", "company_name": "Mirae Asset Tiger China Humanoid Robot ETF", "current_price": 8170.0, "total_undervalued_score": 80.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 44.04692180083945, "disparity_value_pct": -10.8143512117022, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0183J0.KS": {"ticker": "0183J0.KS", "company_name": "DBS Bank LTD - Mirae Asset Tiger US SPAC Fund", "current_price": 6240.0, "total_undervalued_score": 63.2, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 40.27285799494419, "disparity_value_pct": -15.857605177993527, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0131V0.KS": {"ticker": "0131V0.KS", "company_name": "Hana 1Q U.S. Aerospace Tech ETF", "current_price": 9690.0, "total_undervalued_score": 62.0, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 41.24396473179488, "disparity_value_pct": -10.727584009581348, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0162Y0.KS": {"ticker": "0162Y0.KS", "company_name": "Timefolio Time Kosdaq Active Etf", "current_price": 6035.0, "total_undervalued_score": 79.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 34.9368066633665, "disparity_value_pct": -18.547761244390458, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "441640.KS": {"ticker": "441640.KS", "company_name": "Samsung Kodex US Dividend Premium Active ETF", "current_price": 12080.0, "total_undervalued_score": 86.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 43.582826903480324, "disparity_value_pct": -3.139804488871367, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "160580.KS": {"ticker": "160580.KS", "company_name": "Mirae Asset TIGER Physical Copper ETF", "current_price": 15635.0, "total_undervalued_score": 80.8, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 43.03819381045688, "disparity_value_pct": -3.3559121230071876, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0163Y0.KS": {"ticker": "0163Y0.KS", "company_name": "Samsungactive Koact Kosdaq Active Etf", "current_price": 8550.0, "total_undervalued_score": 72.8, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 40.71669683800399, "disparity_value_pct": -7.321259202384711, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "161510.KS": {"ticker": "161510.KS", "company_name": "ARIRANG Dividend ETF", "current_price": 22240.0, "total_undervalued_score": 67.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 31.251374841233854, "disparity_value_pct": -9.15527476716954, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0052D0.KS": {"ticker": "0052D0.KS", "company_name": "Mirae Asset Tiger Korea Dividend Dow Jones Etf", "current_price": 14200.0, "total_undervalued_score": 59.4, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 38.45022875204702, "disparity_value_pct": -6.618880084174528, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0123G0.KS": {"ticker": "0123G0.KS", "company_name": "Mirae Asset Tiger Us Ai Electricity Smr ETF", "current_price": 4695.0, "total_undervalued_score": 62.6, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 34.51319255230784, "disparity_value_pct": -22.19199270808877, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "229200.KS": {"ticker": "229200.KS", "company_name": "KODEX KOSDAQ 150", "current_price": 11910.0, "total_undervalued_score": 85.0, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 36.416437677945176, "disparity_value_pct": -14.298563847330081, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "245710.KS": {"ticker": "245710.KS", "company_name": "KINDEX Vietnam VN30 ETF(Synth)", "current_price": 26770.0, "total_undervalued_score": 65.5, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 42.21772561415917, "disparity_value_pct": -4.497171244503773, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "0023A0.KS": {"ticker": "0023A0.KS", "company_name": "Shinhan Sol US Quantum Computing Top10 ETF", "current_price": 18065.0, "total_undervalued_score": 90, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 32.99909822222381, "disparity_value_pct": -21.76040884679794, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "452360.KS": {"ticker": "452360.KS", "company_name": "Shinhan SOL US Dividend US Bond Mix 50 ETF [Bond Mix]", "current_price": 13985.0, "total_undervalued_score": 0, "total_overvalued_score": 30.8, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 70.78980397585363, "disparity_value_pct": 4.450115142839373, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "005935.KS": {"ticker": "005935.KS", "company_name": "Samsung Electronics Co., Ltd.", "current_price": 174100.0, "total_undervalued_score": 73.0, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 46.10801995017749, "disparity_value_pct": -7.049171575519219, "metrics": {"forward_per": 2.3004193, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": 349700.0, "target_upside_pct": 100.86157380815624, "recommendation_key": "strong_buy", "beta": 1.545, "market_cap": 1148770070822912}, "updated_at": "2026-10-31 04:02 KST"}, "487240.KS": {"ticker": "487240.KS", "company_name": "Samsung Kodex Ai Electric Power Core Facilities Etf", "current_price": 24540.0, "total_undervalued_score": 90, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 30.252145300408287, "disparity_value_pct": -27.270392223207374, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "CRWD": {"ticker": "CRWD", "company_name": "CrowdStrike Holdings, Inc.", "current_price": 250.43, "total_undervalued_score": 43.0, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 49.86640674404402, "disparity_value_pct": 6.1360687269661485, "metrics": {"forward_per": 155.42784, "trailing_per": 5008.5996, "reported_eps_ttm": 0.05, "target_mean_price": 247.25, "target_upside_pct": -1.2698130291039949, "recommendation_key": "buy", "beta": 1.197, "market_cap": 256424001536}, "updated_at": "2026-10-31 04:02 KST"}, "PANW": {"ticker": "PANW", "company_name": "Palo Alto Networks, Inc.", "current_price": 365.87, "total_undervalued_score": 52.4, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 46.18618513543519, "disparity_value_pct": -1.8517972277695027, "metrics": {"forward_per": 74.987656, "trailing_per": 962.8158, "reported_eps_ttm": 0.38, "target_mean_price": 398.52, "target_upside_pct": 8.923936184587847, "recommendation_key": "buy", "beta": 0.933, "market_cap": 299443781632}, "updated_at": "2026-10-31 04:02 KST"}, "CRWV": {"ticker": "CRWV", "company_name": "CoreWeave, Inc.", "current_price": 54.87, "total_undervalued_score": 89.7, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 33.362999757218745, "disparity_value_pct": -33.36807777385648, "metrics": {"forward_per": -27.875572, "trailing_per": null, "reported_eps_ttm": -3.33, "target_mean_price": 134.57895, "target_upside_pct": 145.26873085429685, "recommendation_key": "buy", "beta": null, "market_cap": 30262810624}, "updated_at": "2026-10-31 04:02 KST"}, "NBIS": {"ticker": "NBIS", "company_name": "Nebius Group N.V.", "current_price": 154.14, "total_undervalued_score": 82.3, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 35.58282259772099, "disparity_value_pct": -27.766880264014947, "metrics": {"forward_per": -42.84249, "trailing_per": 120.421875, "reported_eps_ttm": 1.28, "target_mean_price": 281.0, "target_upside_pct": 82.30180427707403, "recommendation_key": "buy", "beta": 1.46, "market_cap": 41903763456}, "updated_at": "2026-10-31 04:02 KST"}, "HUT": {"ticker": "HUT", "company_name": "Hut 8 Corp.", "current_price": 59.4, "total_undervalued_score": 90, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": true, "sigma_check": false, "rsi_value": 33.610775214151786, "disparity_value_pct": -29.571410621636176, "metrics": {"forward_per": -11.540345, "trailing_per": null, "reported_eps_ttm": -4.85, "target_mean_price": 148.47826, "target_upside_pct": 149.96339425229175, "recommendation_key": "strong_buy", "beta": 5.916, "market_cap": 7321612800}, "updated_at": "2026-10-31 04:02 KST"}, "DELL": {"ticker": "DELL", "company_name": "Dell Technologies Inc.", "current_price": 424.3, "total_undervalued_score": 99.5, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": true, "rsi_value": 35.65436571742926, "disparity_value_pct": -16.08510575202944, "metrics": {"forward_per": 14.020323, "trailing_per": 27.641693, "reported_eps_ttm": 15.35, "target_mean_price": 595.0, "target_upside_pct": 40.23097268867279, "recommendation_key": "buy", "beta": 1.442, "market_cap": 269775339520}, "updated_at": "2026-10-31 04:02 KST"}, "FIX": {"ticker": "FIX", "company_name": "Comfort Systems USA, Inc.", "current_price": 1232.66, "total_undervalued_score": 86.8, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 33.46525952476381, "disparity_value_pct": -22.449818651648425, "metrics": {"forward_per": 18.382591, "trailing_per": 28.646526, "reported_eps_ttm": 43.03, "target_mean_price": 1916.875, "target_upside_pct": 55.50719150845552, "recommendation_key": "strong_buy", "beta": 1.659, "market_cap": 43382640640}, "updated_at": "2026-10-31 04:02 KST"}, "VRT": {"ticker": "VRT", "company_name": "Vertiv Holdings Co", "current_price": 232.5, "total_undervalued_score": 69.6, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 51.456840083705316, "disparity_value_pct": -6.4665473322948035, "metrics": {"forward_per": 23.864634, "trailing_per": 43.457943, "reported_eps_ttm": 5.35, "target_mean_price": 339.07144, "target_upside_pct": 45.83717849462366, "recommendation_key": "strong_buy", "beta": 2.048, "market_cap": 89526550528}, "updated_at": "2026-10-31 04:02 KST"}, "GLW": {"ticker": "GLW", "company_name": "Corning Incorporated", "current_price": 123.31, "total_undervalued_score": 64.0, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 35.93866087083735, "disparity_value_pct": -17.85384757091758, "metrics": {"forward_per": 27.249866, "trailing_per": 52.25, "reported_eps_ttm": 2.36, "target_mean_price": 182.76471, "target_upside_pct": 48.21564643463309, "recommendation_key": "strong_buy", "beta": 1.123, "market_cap": 106219364352}, "updated_at": "2026-10-31 04:02 KST"}, "INTC": {"ticker": "INTC", "company_name": "Intel Corporation", "current_price": 65.76, "total_undervalued_score": 104, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": true, "sigma_check": true, "rsi_value": 25.09848906014726, "disparity_value_pct": -34.73276771990294, "metrics": {"forward_per": 31.33637, "trailing_per": null, "reported_eps_ttm": -2.12, "target_mean_price": 107.21429, "target_upside_pct": 63.03875686909429, "recommendation_key": "hold", "beta": 2.23, "market_cap": 349185605632}, "updated_at": "2026-10-31 04:02 KST"}, "STX": {"ticker": "STX", "company_name": "Seagate Technology Holdings plc", "current_price": 644.58, "total_undervalued_score": 82.8, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 37.39684173987771, "disparity_value_pct": -20.65573287436847, "metrics": {"forward_per": 9.8162365, "trailing_per": 33.800735, "reported_eps_ttm": 19.07, "target_mean_price": 1032.5416, "target_upside_pct": 60.18827339105687, "recommendation_key": "strong_buy", "beta": 2.081, "market_cap": 148253409280}, "updated_at": "2026-10-31 04:02 KST"}, "TEM": {"ticker": "TEM", "company_name": "Tempus AI, Inc.", "current_price": 72.22, "total_undervalued_score": 40.6, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 51.88769248536881, "disparity_value_pct": 6.022291920443568, "metrics": {"forward_per": -1556.801, "trailing_per": null, "reported_eps_ttm": -1.34, "target_mean_price": 75.05556, "target_upside_pct": 3.9262790520197504, "recommendation_key": "buy", "beta": 3.54, "market_cap": 13161519104}, "updated_at": "2026-10-31 04:02 KST"}, "WDC": {"ticker": "WDC", "company_name": "Western Digital Corporation", "current_price": 366.11, "total_undervalued_score": 80.7, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 43.42549040751506, "disparity_value_pct": -14.848304349174546, "metrics": {"forward_per": 9.061043, "trailing_per": 13.909954, "reported_eps_ttm": 26.32, "target_mean_price": 613.375, "target_upside_pct": 67.53845143311172, "recommendation_key": "buy", "beta": 2.169, "market_cap": 137043484672}, "updated_at": "2026-10-31 04:02 KST"}, "MU": {"ticker": "MU", "company_name": "Micron Technology, Inc.", "current_price": 884.74, "total_undervalued_score": 71.7, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 41.97760910276364, "disparity_value_pct": -8.851192705201328, "metrics": {"forward_per": 4.2575617, "trailing_per": 12.569115, "reported_eps_ttm": 70.39, "target_mean_price": 1561.9111, "target_upside_pct": 76.53899645547125, "recommendation_key": "strong_buy", "beta": 2.226, "market_cap": 1001015410688}, "updated_at": "2026-10-31 04:02 KST"}, "SOFI": {"ticker": "SOFI", "company_name": "SoFi Technologies, Inc.", "current_price": 16.76, "total_undervalued_score": 72.4, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 56.96887593387573, "disparity_value_pct": -0.4597888819393936, "metrics": {"forward_per": 18.797457, "trailing_per": 30.472727, "reported_eps_ttm": 0.55, "target_mean_price": 20.75217, "target_upside_pct": 23.819628380664444, "recommendation_key": "hold", "beta": 2.332, "market_cap": 21731307520}, "updated_at": "2026-10-31 04:02 KST"}, "SLDP": {"ticker": "SLDP", "company_name": "Solid Power, Inc.", "current_price": 1.96, "total_undervalued_score": 69.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 36.346918108910856, "disparity_value_pct": -14.87205441951679, "metrics": {"forward_per": -4.3555555, "trailing_per": null, "reported_eps_ttm": -0.45, "target_mean_price": 6.875, "target_upside_pct": 250.76529929559476, "recommendation_key": "none", "beta": 2.003, "market_cap": 447235200}, "updated_at": "2026-10-31 04:02 KST"}, "ASTS": {"ticker": "ASTS", "company_name": "AST SpaceMobile, Inc.", "current_price": 40.97, "total_undervalued_score": 69.1, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 35.98493092395806, "disparity_value_pct": -28.74410838196034, "metrics": {"forward_per": -28.211592, "trailing_per": null, "reported_eps_ttm": -2.03, "target_mean_price": 74.68333, "target_upside_pct": 82.28783933318684, "recommendation_key": "hold", "beta": 2.706, "market_cap": 15944192000}, "updated_at": "2026-10-31 04:02 KST"}, "PLTR": {"ticker": "PLTR", "company_name": "Palantir Technologies Inc.", "current_price": 184.11, "total_undervalued_score": 47.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 41.85618944078613, "disparity_value_pct": -0.34416598637683204, "metrics": {"forward_per": 78.33468, "trailing_per": 158.71552, "reported_eps_ttm": 1.16, "target_mean_price": 212.50357, "target_upside_pct": 15.422067946075499, "recommendation_key": "buy", "beta": 1.602, "market_cap": 442427080704}, "updated_at": "2026-10-31 04:02 KST"}, "META": {"ticker": "META", "company_name": "Meta Platforms, Inc.", "current_price": 614.99, "total_undervalued_score": 59.0, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 33.21256136855958, "disparity_value_pct": -5.997028108034385, "metrics": {"forward_per": 17.2809, "trailing_per": 21.309423, "reported_eps_ttm": 28.86, "target_mean_price": 848.3765, "target_upside_pct": 37.949643648131655, "recommendation_key": "strong_buy", "beta": 1.185, "market_cap": 1572426743808}, "updated_at": "2026-10-31 04:02 KST"}, "ETH-USD": {"ticker": "ETH-USD", "company_name": "Ethereum USD", "current_price": 2237.72998046875, "total_undervalued_score": 51.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 30.079941164548572, "disparity_value_pct": -11.044781278119054, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": 273264361472}, "updated_at": "2026-10-31 04:02 KST"}, "ONDS": {"ticker": "ONDS", "company_name": "Ondas Inc.", "current_price": 6.32, "total_undervalued_score": 88.5, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 42.41798436991132, "disparity_value_pct": -15.825924527364466, "metrics": {"forward_per": -316.00003, "trailing_per": null, "reported_eps_ttm": -0.06, "target_mean_price": 18.875, "target_upside_pct": 198.65505517918703, "recommendation_key": "none", "beta": 2.922, "market_cap": 3680153344}, "updated_at": "2026-10-31 04:02 KST"}, "LAES": {"ticker": "LAES", "company_name": "SEALSQ Corp", "current_price": 1.47, "total_undervalued_score": 90, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": true, "sigma_check": false, "rsi_value": 24.80466103274709, "disparity_value_pct": -34.83561093024039, "metrics": {"forward_per": -5.444444, "trailing_per": null, "reported_eps_ttm": -0.2, "target_mean_price": 5.875, "target_upside_pct": 299.6598561671019, "recommendation_key": "strong_buy", "beta": -7.513, "market_cap": 330647936}, "updated_at": "2026-10-31 04:02 KST"}, "ARM": {"ticker": "ARM", "company_name": "Arm Holdings plc", "current_price": 205.97, "total_undervalued_score": 84, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": true, "sigma_check": false, "rsi_value": 34.86421794792447, "disparity_value_pct": -20.834510400317185, "metrics": {"forward_per": 67.167564, "trailing_per": 212.3402, "reported_eps_ttm": 0.97, "target_mean_price": 290.705, "target_upside_pct": 41.13948549648292, "recommendation_key": "buy", "beta": 3.789, "market_cap": 219975663616}, "updated_at": "2026-10-31 04:02 KST"}, "QS": {"ticker": "QS", "company_name": "QuantumScape Corporation", "current_price": 4.06, "total_undervalued_score": 69.5, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 40.605733895727056, "disparity_value_pct": -19.261554755548005, "metrics": {"forward_per": -6.361841, "trailing_per": null, "reported_eps_ttm": -0.61, "target_mean_price": 5.4125, "target_upside_pct": 33.31280976064535, "recommendation_key": "hold", "beta": 2.838, "market_cap": 2513601024}, "updated_at": "2026-10-31 04:02 KST"}, "PGY": {"ticker": "PGY", "company_name": "Pagaya Technologies Ltd.", "current_price": 19.23, "total_undervalued_score": 51.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 51.43518756965011, "disparity_value_pct": -3.5941218552646537, "metrics": {"forward_per": 4.5178065, "trailing_per": 15.141732, "reported_eps_ttm": 1.27, "target_mean_price": 28.81818, "target_upside_pct": 49.86053398859639, "recommendation_key": "strong_buy", "beta": 5.519, "market_cap": 1604278912}, "updated_at": "2026-10-31 04:02 KST"}, "JOBY": {"ticker": "JOBY", "company_name": "Joby Aviation, Inc.", "current_price": 4.9, "total_undervalued_score": 69.1, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 37.49400615095097, "disparity_value_pct": -22.096505308004676, "metrics": {"forward_per": -7.5968995, "trailing_per": null, "reported_eps_ttm": -0.97, "target_mean_price": 10.00889, "target_upside_pct": 104.26305724897075, "recommendation_key": "none", "beta": 2.662, "market_cap": 4881842176}, "updated_at": "2026-10-31 04:02 KST"}, "MSFT": {"ticker": "MSFT", "company_name": "Microsoft Corporation", "current_price": 521.91, "total_undervalued_score": 16.8, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 49.016448706230385, "disparity_value_pct": 2.443964937913967, "metrics": {"forward_per": 21.618698, "trailing_per": 27.239561, "reported_eps_ttm": 19.16, "target_mean_price": 629.6884, "target_upside_pct": 20.65076974982847, "recommendation_key": "strong_buy", "beta": null, "market_cap": 3875804807168}, "updated_at": "2026-10-31 04:02 KST"}, "CIEN": {"ticker": "CIEN", "company_name": "Ciena Corporation", "current_price": 320.72, "total_undervalued_score": 83.6, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 41.151425286455655, "disparity_value_pct": -13.731067148906572, "metrics": {"forward_per": 27.035707, "trailing_per": 71.74944, "reported_eps_ttm": 4.47, "target_mean_price": 512.9907, "target_upside_pct": 59.949706300663784, "recommendation_key": "buy", "beta": 1.289, "market_cap": 45480833024}, "updated_at": "2026-10-31 04:02 KST"}, "APP": {"ticker": "APP", "company_name": "AppLovin Corporation", "current_price": 228.5, "total_undervalued_score": 110, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": true, "rsi_value": 25.04042164892175, "disparity_value_pct": -23.344098182531127, "metrics": {"forward_per": 11.132407, "trailing_per": 19.596912, "reported_eps_ttm": 11.66, "target_mean_price": 452.9487, "target_upside_pct": 98.2270021881838, "recommendation_key": "buy", "beta": 2.557, "market_cap": 76762177536}, "updated_at": "2026-10-31 04:02 KST"}, "CLS": {"ticker": "CLS", "company_name": "Celestica Inc.", "current_price": 265.53, "total_undervalued_score": 86.7, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 37.92035942870344, "disparity_value_pct": -18.075247692792818, "metrics": {"forward_per": 11.936834, "trailing_per": 25.05, "reported_eps_ttm": 10.6, "target_mean_price": 464.7811, "target_upside_pct": 75.03901711170367, "recommendation_key": "strong_buy", "beta": 1.316, "market_cap": 33486469120}, "updated_at": "2026-10-31 04:02 KST"}, "BTC-USD": {"ticker": "BTC-USD", "company_name": "Bitcoin USD", "current_price": 77101.0, "total_undervalued_score": 33.3, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 34.088465729920756, "disparity_value_pct": -5.255395501703807, "metrics": {"forward_per": null, "trailing_per": null, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": 1548671516672}, "updated_at": "2026-10-31 04:02 KST"}, "TSLA": {"ticker": "TSLA", "company_name": "Tesla, Inc.", "current_price": 399.81, "total_undervalued_score": 18.8, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 60.862964411933305, "disparity_value_pct": 9.764736222875037, "metrics": {"forward_per": 185.5, "trailing_per": 444.23334, "reported_eps_ttm": 0.9, "target_mean_price": 411.8155, "target_upside_pct": 3.0028019596100224, "recommendation_key": "buy", "beta": 1.916, "market_cap": 1580341002240}, "updated_at": "2026-10-31 04:02 KST"}, "LLY": {"ticker": "LLY", "company_name": "Eli Lilly and Company", "current_price": 1417.54, "total_undervalued_score": 0.0, "total_overvalued_score": 41.0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 77.87884368815097, "disparity_value_pct": 18.074576954652933, "metrics": {"forward_per": 28.719135, "trailing_per": 46.11386, "reported_eps_ttm": 30.74, "target_mean_price": 1397.0221, "target_upside_pct": -1.4474327706517391, "recommendation_key": "buy", "beta": null, "market_cap": 1262666776576}, "updated_at": "2026-10-31 04:02 KST"}, "IONQ": {"ticker": "IONQ", "company_name": "IonQ, Inc.", "current_price": 30.04, "total_undervalued_score": 70, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": true, "sigma_check": false, "rsi_value": 34.73491942586617, "disparity_value_pct": -23.38949636823774, "metrics": {"forward_per": -22.348364, "trailing_per": null, "reported_eps_ttm": -3.25, "target_mean_price": 64.06071, "target_upside_pct": 113.25135834762152, "recommendation_key": "strong_buy", "beta": 3.361, "market_cap": 12899406848}, "updated_at": "2026-10-31 04:02 KST"}, "IREN": {"ticker": "IREN", "company_name": "IREN Limited", "current_price": 23.95, "total_undervalued_score": 90, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": true, "sigma_check": false, "rsi_value": 30.197800590603975, "disparity_value_pct": -37.90175342086025, "metrics": {"forward_per": -6.0135994, "trailing_per": null, "reported_eps_ttm": -2.02, "target_mean_price": 75.41667, "target_upside_pct": 214.89214028210282, "recommendation_key": "buy", "beta": 4.271, "market_cap": 9690494976}, "updated_at": "2026-10-31 04:02 KST"}, "LITE": {"ticker": "LITE", "company_name": "Lumentum Holdings Inc.", "current_price": 840.7, "total_undervalued_score": 68.1, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 44.5727097328957, "disparity_value_pct": -8.216466118794674, "metrics": {"forward_per": 23.53832, "trailing_per": null, "reported_eps_ttm": -84.99, "target_mean_price": 1166.2803, "target_upside_pct": 38.72728477049089, "recommendation_key": "buy", "beta": 1.536, "market_cap": 76153012224}, "updated_at": "2026-10-31 04:02 KST"}, "RKLB": {"ticker": "RKLB", "company_name": "Rocket Lab Corporation", "current_price": 54.73, "total_undervalued_score": 88.4, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 39.96489623708032, "disparity_value_pct": -18.023251234937742, "metrics": {"forward_per": 951.99164, "trailing_per": null, "reported_eps_ttm": -0.27, "target_mean_price": 102.15, "target_upside_pct": 86.64352430912892, "recommendation_key": "none", "beta": 2.938, "market_cap": 34994962432}, "updated_at": "2026-10-31 04:02 KST"}, "GEV": {"ticker": "GEV", "company_name": "GE Vernova Inc.", "current_price": 857.87, "total_undervalued_score": 59.2, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 40.62687991466372, "disparity_value_pct": -9.591593743880688, "metrics": {"forward_per": 33.136646, "trailing_per": 22.522184, "reported_eps_ttm": 38.09, "target_mean_price": 1194.8182, "target_upside_pct": 39.277303880617055, "recommendation_key": "strong_buy", "beta": 0.967, "market_cap": 227058515968}, "updated_at": "2026-10-31 04:02 KST"}, "PL": {"ticker": "PL", "company_name": "Planet Labs PBC", "current_price": 13.47, "total_undervalued_score": 69.6, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 36.452466381650154, "disparity_value_pct": -25.016700409142157, "metrics": {"forward_per": -10776.0, "trailing_per": null, "reported_eps_ttm": -1.04, "target_mean_price": 30.27273, "target_upside_pct": 124.74186636877856, "recommendation_key": "buy", "beta": 2.17, "market_cap": 4901032448}, "updated_at": "2026-10-31 04:02 KST"}, "COHR": {"ticker": "COHR", "company_name": "Coherent Corp.", "current_price": 210.32, "total_undervalued_score": 109.5, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": true, "rsi_value": 34.86782866007722, "disparity_value_pct": -26.867687236438297, "metrics": {"forward_per": 15.121983, "trailing_per": 57.621918, "reported_eps_ttm": 3.65, "target_mean_price": 394.39853, "target_upside_pct": 87.52306783254103, "recommendation_key": "buy", "beta": 2.113, "market_cap": 41418563584}, "updated_at": "2026-10-31 04:02 KST"}, "BE": {"ticker": "BE", "company_name": "Bloom Energy Corporation", "current_price": 203.17, "total_undervalued_score": 75.3, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 39.17171519992007, "disparity_value_pct": -16.5377213028432, "metrics": {"forward_per": 38.160225, "trailing_per": 123.13333, "reported_eps_ttm": 1.65, "target_mean_price": 284.8846, "target_upside_pct": 40.219817181425164, "recommendation_key": "buy", "beta": 3.776, "market_cap": 60044296192}, "updated_at": "2026-10-31 04:02 KST"}, "NVDA": {"ticker": "NVDA", "company_name": "NVIDIA Corporation", "current_price": 204.64, "total_undervalued_score": 72.7, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": false, "rsi_value": 35.05601474934153, "disparity_value_pct": -7.682244566502316, "metrics": {"forward_per": 12.858633, "trailing_per": 26.997362, "reported_eps_ttm": 7.58, "target_mean_price": 328.95346, "target_upside_pct": 60.74739101892309, "recommendation_key": "strong_buy", "beta": 2.216, "market_cap": 4941441662976}, "updated_at": "2026-10-31 04:02 KST"}, "SOXL": {"ticker": "SOXL", "company_name": "Direxion Daily Semiconductor Bull 3X Shares", "current_price": 77.05000305175781, "total_undervalued_score": 110, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": true, "rsi_value": 34.13843846355144, "disparity_value_pct": -37.63330065602782, "metrics": {"forward_per": null, "trailing_per": 17.41066, "reported_eps_ttm": null, "target_mean_price": null, "target_upside_pct": null, "recommendation_key": "N/A", "beta": null, "market_cap": null}, "updated_at": "2026-10-31 04:02 KST"}, "AVGO": {"ticker": "AVGO", "company_name": "Broadcom Inc.", "current_price": 326.08, "total_undervalued_score": 88.9, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 40.75846616790109, "disparity_value_pct": -9.557676120803094, "metrics": {"forward_per": 16.752058, "trailing_per": 41.644955, "reported_eps_ttm": 7.83, "target_mean_price": 530.14166, "target_upside_pct": 62.580250806809445, "recommendation_key": "strong_buy", "beta": 1.476, "market_cap": 1556585250816}, "updated_at": "2026-10-31 04:02 KST"}, "GOOGL": {"ticker": "GOOGL", "company_name": "Alphabet Inc.", "current_price": 279.84, "total_undervalued_score": 70.0, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": true, "mdd_check": false, "sigma_check": false, "rsi_value": 21.376894186862657, "disparity_value_pct": -17.769092664674446, "metrics": {"forward_per": 18.485123, "trailing_per": 14.822035, "reported_eps_ttm": 18.88, "target_mean_price": 406.54807, "target_upside_pct": 45.27875761873463, "recommendation_key": "strong_buy", "beta": 1.211, "market_cap": 3440352690176}, "updated_at": "2026-10-31 04:02 KST"}, "AMD": {"ticker": "AMD", "company_name": "Advanced Micro Devices, Inc.", "current_price": 504.8, "total_undervalued_score": 97.7, "total_overvalued_score": 0, "is_undervalued": false, "is_overvalued": false, "ma_check": false, "mdd_check": false, "sigma_check": true, "rsi_value": 39.66675258104969, "disparity_value_pct": -6.078915416587716, "metrics": {"forward_per": 31.736631, "trailing_per": 128.7755, "reported_eps_ttm": 3.92, "target_mean_price": 640.208, "target_upside_pct": 26.824091814868563, "recommendation_key": "strong_buy", "beta": 2.454, "market_cap": 824073388032}, "updated_at": "2026-10-31 04:02 KST"}};
+    // Initially empty so '---' is displayed until actual JSON is loaded
+    let screenerDb = {};
     let currentCategory = 'undervalued'; // 'undervalued' | 'overvalued' | 'treasury' | 'us' | 'kr' | 'crypto' | 'macro'
     let currentMarketFilter = 'all'; // 'all' | 'kr' | 'us'
     let currentSearch = '';
@@ -684,10 +685,15 @@
         const data = await res.json();
         if (data && typeof data === 'object' && Object.keys(data).length > 0) {
           screenerDb = data;
-          const updateTime = data._meta?.updated_at || Object.values(data)[0]?.updated_at || '';
-          if (updateTime) {
-            document.getElementById('topSubStatus').textContent = `최근 갱신: ${updateTime}`;
-            document.getElementById('feedUpdateBadge').textContent = `갱신: ${updateTime}`;
+          const updateTime = data._meta?.updated_at || data.updated_at || (data._macro?.us10y?.updated_at) || Object.values(data).find(v => v && v.updated_at)?.updated_at || '---';
+          const headerBadge = document.getElementById('jsonUpdateTimeHeader');
+          if (headerBadge) {
+            headerBadge.textContent = updateTime;
+            headerBadge.className = updateTime !== '---' ? 'text-emerald-500 font-bold font-mono' : 'text-slate-400 font-mono';
+          }
+          const feedBadge = document.getElementById('feedUpdateBadge');
+          if (feedBadge) {
+            feedBadge.textContent = `JSON 생성 시각: ${updateTime}`;
           }
 
           // 100% Real-time dynamic sync for Macro Indicators on Mobile!
@@ -771,8 +777,10 @@
 
         if (items.length === 0) {
           container.innerHTML = `
-            <div class="py-12 text-center text-slate-400 bg-white dark:bg-[#111827] rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
-              <p class="font-bold text-xs">일치하는 종목이 없습니다.</p>
+            <div class="py-12 text-center text-slate-400 bg-white dark:bg-[#111827] rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="text-xl">⏳</div>
+              <p class="font-bold text-xs text-slate-300">데이터 로딩 대기 중 (---)</p>
+              <p class="text-[10px] text-slate-500">screener_results.json 파일을 읽어오는 중이거나 종목이 없습니다.</p>
             </div>
           `;
           return;
