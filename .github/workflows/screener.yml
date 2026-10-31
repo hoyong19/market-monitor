@@ -2,39 +2,46 @@ name: Stock Valuation Screener
 
 on:
   schedule:
-    # 10분마다 자동 실행
-    - cron: '*/10 * * * *'
-  workflow_dispatch: # 언제든 수동 즉시 실행 가능
+    # 매 15분마다 자동 실행 (GitHub Actions 무료 플랜에서 가장 안정적인 주기)
+    - cron: '*/15 * * * *'
+  workflow_dispatch:  # 필요 시 수동 실행 버튼 유지
 
 permissions:
-  contents: write # 저장소 쓰기 권한
+  contents: write
 
 jobs:
   run-screener:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 저장소 소스코드 체크아웃
+      - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-      - name: 파이썬 3.10 환경 구성
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
-      - name: 필수 라이브러리 설치
+      - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install yfinance pandas numpy
 
-      - name: 종목 스크리닝 분석 엔진 가동
-        run: python stock_analyzer.py
-
-      - name: 결과 JSON 파일 자동 커밋 및 푸시
+      - name: Run stock analyzer
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          python stock_analyzer.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add screener_results.json
-          git commit -m "Auto-update: Screener rankings [$(date +'%Y-%m-%d %H:%M')]" || exit 0
-          git pull --rebase origin main
-          git push origin main
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto update screener & macro data [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
