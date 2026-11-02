@@ -1,0 +1,48 @@
+name: AI Market Intelligence Commentary
+
+on:
+  schedule:
+    # 1. 매일 08:30 KST (전날 23:30 UTC) - 모닝 브리핑
+    - cron: '30 23 * * *'
+    # 2. 매일 13:00 KST (당일 04:00 UTC) - 미드데이 점검
+    - cron: '0 4 * * *'
+    # 3. 매일 23:00 KST (당일 14:00 UTC) - 나이트 뉴욕 브리핑
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-ai-commentary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run AI Commentator
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python ai_commentator.py
+
+      - name: Commit and push AI commentary
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add screener_results.json
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 Update AI Market Intelligence Commentary [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No changes in AI commentary."
+          fi
