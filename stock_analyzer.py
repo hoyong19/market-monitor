@@ -449,7 +449,7 @@ def main_execution():
     macro_data = fetch_macro_data()
 
     # 2. 국내외 69개 주요 주식 및 암호화폐 리스트
-    stock_tickers_kr = [
+stock_tickers_kr = [
         '000660.KS', '005930.KS', '443250.KS', '453810.KS',
         '411060.KS', '0080G0.KS', '418670.KS', '0053L0.KS',
         '0183J0.KS', '0131V0.KS', '058610.KS', '0162Y0.KS',
@@ -458,6 +458,7 @@ def main_execution():
         '0023A0.KS', '452360.KS', '005935.KS', '487240.KS',
         '005387.KS', '486290.KS', '433500.KS', '307520.KS',
         '494670.KS', '487230.KS', '0144L0.KS', '426030.KS',
+        '0172V0.KS', '396500.KS', '316140.KS', '139220.KS'
     ]
 
     stock_tickers_us = [
