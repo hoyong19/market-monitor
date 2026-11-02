@@ -461,13 +461,17 @@ stock_tickers_kr = [
         '0172V0.KS', '396500.KS', '316140.KS', '139220.KS'
     ]
 
-    stock_tickers_us = [
+stock_tickers_us = [
         'CRWD', 'PANW', 'CRWV', 'NBIS', 'HUT', 'DELL', 'FIX', 'VRT',
         'GLW', 'INTC', 'STX', 'TEM', 'WDC', 'MU', 'SOFI', 'SLDP',
-        'ASTS', 'PLTR', 'META', 'ETH-USD', 'ONDS', 'LAES', 'ARM',
-        'QS', 'PGY', 'JOBY', 'MSFT', 'CIEN', 'APP', 'CLS', 'BTC-USD',
-        'TSLA', 'LLY', 'IONQ', 'IREN', 'LITE', 'RKLB', 'GEV', 'PL',
-        'COHR', 'BE', 'NVDA', 'SOXL', 'AVGO', 'GOOGL', 'AMD'
+        'ASTS', 'PLTR', 'META', 'ETH-USD', 'ONDS', 'LAES', 'ARM', 'QS',
+        'PGY', 'JOBY', 'MSFT', 'CIEN', 'APP', 'CLS', 'BTC-USD', 'TSLA',
+        'LLY', 'IONQ', 'IREN', 'LITE', 'RKLB', 'GEV', 'PL', 'COHR',
+        'BE', 'NVDA', 'SOXL', 'AVGO', 'GOOGL', 'AMD', 'COIN', 'TSEM',
+        'QCOM', 'ASML', 'TSM', 'LUNR', 'KORU', 'AAOI', 'CRDO', 'ORCL',
+        'TER', 'ALAB', 'AMAT', 'LRCX', 'KLAC', 'HOOD', 'DDOG', 'SNDK',
+        'SIMO', 'MRVL', 'CRCL', 'MSTR', 'SPCX', 'FTNT', 'AMZN', 'SNOW',
+        'OKTA', 'DG', 'UNH', 'ACN', 'KO', 'AAPL'
     ]
 
     all_results_kr = run_analysis(stock_tickers_kr, "한국 주식")
