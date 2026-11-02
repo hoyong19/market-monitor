@@ -448,8 +448,8 @@ def main_execution():
     # 1. 글로벌 거시경제 지표 및 시장 지수 실시간 크롤링
     macro_data = fetch_macro_data()
 
-    # 2. 국내외 69개 주요 주식 및 암호화폐 리스트
-stock_tickers_kr = [
+    # 2. 국내 주요 주식 및 ETF 리스트 (총 36개)
+    stock_tickers_kr = [
         '000660.KS', '005930.KS', '443250.KS', '453810.KS',
         '411060.KS', '0080G0.KS', '418670.KS', '0053L0.KS',
         '0183J0.KS', '0131V0.KS', '058610.KS', '0162Y0.KS',
@@ -461,7 +461,8 @@ stock_tickers_kr = [
         '0172V0.KS', '396500.KS', '316140.KS', '139220.KS'
     ]
 
-stock_tickers_us = [
+    # 3. 미국 주요 주식 및 암호화폐 리스트 (총 78개)
+    stock_tickers_us = [
         'CRWD', 'PANW', 'CRWV', 'NBIS', 'HUT', 'DELL', 'FIX', 'VRT',
         'GLW', 'INTC', 'STX', 'TEM', 'WDC', 'MU', 'SOFI', 'SLDP',
         'ASTS', 'PLTR', 'META', 'ETH-USD', 'ONDS', 'LAES', 'ARM', 'QS',
