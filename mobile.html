@@ -166,6 +166,26 @@
       <span id="feedUpdateBadge" class="font-mono text-[10px]">10분 자동 갱신</span>
     </div>
 
+    <!-- AI Market Intelligence Briefing Card (Daily 08:30 / 13:00 / 23:00 KST) -->
+    <div id="aiBriefingCard" class="hidden p-3.5 rounded-2xl bg-gradient-to-br from-indigo-900/40 via-slate-900/70 to-purple-950/40 border border-indigo-500/30 shadow-md space-y-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            🤖 AI 마켓 인텔리전스
+          </span>
+          <span id="aiSessionTag" class="text-[10px] font-bold text-slate-300">모닝 브리핑</span>
+        </div>
+        <span id="aiBriefingTime" class="text-[10px] font-mono text-indigo-300/80">--:--</span>
+      </div>
+
+      <h4 id="aiBriefingHeadline" class="text-xs font-black text-white leading-snug"></h4>
+      <p id="aiBriefingSummary" class="text-[11px] text-slate-300 leading-relaxed font-normal"></p>
+
+      <!-- Key Bullet Points -->
+      <div id="aiBriefingKeyPoints" class="space-y-1 pt-1.5 border-t border-indigo-500/20 text-[10.5px] text-slate-200"></div>
+    </div>
+
     <!-- Main List Container -->
     <div id="mobileListContainer" class="space-y-1.5">
       <!-- Rendered dynamically by JS -->
@@ -756,9 +776,41 @@
                 target.val = mItem.isYield ? `${formatNumber(p, 3)}%` : (target.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (target.id === 'fear_greed' ? `${p}점 (공포)` : (target.id === 'wti' || target.id === 'gold' || target.id.startsWith('btc') ? `$${formatNumber(p)}` : (target.id === 'spread' ? '+0.320%p' : formatNumber(p)))));
                 target.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, mItem.isYield ? 3 : 2)}${mItem.isYield ? '%p' : ''}${mItem.changePct ? ` (${mItem.changePct > 0 ? '+' : ''}${mItem.changePct}%)` : ''}` : '정상 곡선';
                 target.isUp = (mItem.change || 0) >= 0;
+                if (mItem.desc) target.desc = mItem.desc;
+                if (mItem.insight) target.insight = mItem.insight;
               }
             });
           });
+
+                    // Render AI Market Intelligence Briefing
+          if (data._ai_commentary) {
+            const ai = data._ai_commentary;
+            const aiCard = document.getElementById('aiBriefingCard');
+            if (aiCard) {
+              aiCard.classList.remove('hidden');
+              document.getElementById('aiSessionTag').textContent = ai.session_name || 'AI 시황 분석';
+              document.getElementById('aiBriefingTime').textContent = ai.updated_at || '';
+              document.getElementById('aiBriefingHeadline').textContent = ai.headline || '';
+              document.getElementById('aiBriefingSummary').textContent = ai.summary || '';
+              
+              const kpContainer = document.getElementById('aiBriefingKeyPoints');
+              if (kpContainer && Array.isArray(ai.key_points)) {
+                kpContainer.innerHTML = ai.key_points.map(pt => 
+                  `<div class="flex items-start gap-1.5 leading-tight"><span class="text-indigo-400 font-bold shrink-0">•</span><span>${pt}</span></div>`
+                ).join('');
+              }
+            }
+
+            if (ai.macro_insights) {
+              Object.values(CATEGORIZED_MACRO).forEach(group => {
+                group.items.forEach(target => {
+                  if (ai.macro_insights[target.id]) {
+                    target.insight = ai.macro_insights[target.id];
+                  }
+                });
+              });
+            }
+          }
 
           renderCurrentFeed();
         }
@@ -963,7 +1015,23 @@
       document.getElementById('macroSheetChange').textContent = m.chg;
       document.getElementById('macroSheetDayRange').textContent = `변동범위: ${m.dayRange}`;
       document.getElementById('macroSheetDesc').textContent = m.desc;
-      document.getElementById('macroSheetInsight').textContent = m.insight;
+      let dynamicInsight = m.insight;
+      if (m.val !== '---' && (!dynamicInsight || dynamicInsight.includes('4.94%') || dynamicInsight.includes('7,580.07') || dynamicInsight.includes('25,437.00'))) {
+        if (m.id === 'us10y') {
+          dynamicInsight = `현재 10년물 금리는 ${m.val} (${m.chg}) 수준으로 5%선 근방에서 글로벌 성장주 밸류에이션 부담 완화 여부를 가늠 중입니다.`;
+        } else if (m.id === 'us20y') {
+          dynamicInsight = `현재 20년물 금리는 ${m.val} (${m.chg}) 수준으로 장기 국채 발행 물량 부담을 반영하고 있습니다.`;
+        } else if (m.id === 'us30y') {
+          dynamicInsight = `현재 30년물 금리는 ${m.val} (${m.chg}) 수준으로 장기 경제 신뢰도 및 정상 우상향 스프레드를 나타냅니다.`;
+        } else if (m.id === 'us02y') {
+          dynamicInsight = `현재 2년물 금리는 ${m.val} (${m.chg}) 수준으로 연준 기준금리 정책 전망에 연동되어 있습니다.`;
+        } else if (m.id === 'sp500') {
+          dynamicInsight = `현재 S&P 500은 ${m.val} (${m.chg}) 수준으로 대형 우량주 투자심리를 대변합니다.`;
+        } else if (m.id === 'nasdaq') {
+          dynamicInsight = `현재 나스닥 지수는 ${m.val} (${m.chg}) 수준으로 빅테크·반도체 기술주 흐름을 나타냅니다.`;
+        }
+      }
+      document.getElementById('macroSheetInsight').textContent = dynamicInsight;
 
       const sheet = document.getElementById('bottomSheet');
       const content = document.getElementById('sheetContent');
@@ -1053,6 +1121,36 @@
           btn.className = 'm-tab-btn active px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap bg-emerald-500 text-white shadow-sm flex items-center gap-1';
           currentCategory = btn.getAttribute('data-cat');
           syncBottomNav(currentCategory);
+                    // Render AI Market Intelligence Briefing
+          if (data._ai_commentary) {
+            const ai = data._ai_commentary;
+            const aiCard = document.getElementById('aiBriefingCard');
+            if (aiCard) {
+              aiCard.classList.remove('hidden');
+              document.getElementById('aiSessionTag').textContent = ai.session_name || 'AI 시황 분석';
+              document.getElementById('aiBriefingTime').textContent = ai.updated_at || '';
+              document.getElementById('aiBriefingHeadline').textContent = ai.headline || '';
+              document.getElementById('aiBriefingSummary').textContent = ai.summary || '';
+              
+              const kpContainer = document.getElementById('aiBriefingKeyPoints');
+              if (kpContainer && Array.isArray(ai.key_points)) {
+                kpContainer.innerHTML = ai.key_points.map(pt => 
+                  `<div class="flex items-start gap-1.5 leading-tight"><span class="text-indigo-400 font-bold shrink-0">•</span><span>${pt}</span></div>`
+                ).join('');
+              }
+            }
+
+            if (ai.macro_insights) {
+              Object.values(CATEGORIZED_MACRO).forEach(group => {
+                group.items.forEach(target => {
+                  if (ai.macro_insights[target.id]) {
+                    target.insight = ai.macro_insights[target.id];
+                  }
+                });
+              });
+            }
+          }
+
           renderCurrentFeed();
         });
       });
@@ -1084,6 +1182,36 @@
             }
           });
 
+                    // Render AI Market Intelligence Briefing
+          if (data._ai_commentary) {
+            const ai = data._ai_commentary;
+            const aiCard = document.getElementById('aiBriefingCard');
+            if (aiCard) {
+              aiCard.classList.remove('hidden');
+              document.getElementById('aiSessionTag').textContent = ai.session_name || 'AI 시황 분석';
+              document.getElementById('aiBriefingTime').textContent = ai.updated_at || '';
+              document.getElementById('aiBriefingHeadline').textContent = ai.headline || '';
+              document.getElementById('aiBriefingSummary').textContent = ai.summary || '';
+              
+              const kpContainer = document.getElementById('aiBriefingKeyPoints');
+              if (kpContainer && Array.isArray(ai.key_points)) {
+                kpContainer.innerHTML = ai.key_points.map(pt => 
+                  `<div class="flex items-start gap-1.5 leading-tight"><span class="text-indigo-400 font-bold shrink-0">•</span><span>${pt}</span></div>`
+                ).join('');
+              }
+            }
+
+            if (ai.macro_insights) {
+              Object.values(CATEGORIZED_MACRO).forEach(group => {
+                group.items.forEach(target => {
+                  if (ai.macro_insights[target.id]) {
+                    target.insight = ai.macro_insights[target.id];
+                  }
+                });
+              });
+            }
+          }
+
           renderCurrentFeed();
         });
       });
@@ -1097,6 +1225,36 @@
           });
           mb.className = 'm-mkt-btn active px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white';
           currentMarketFilter = mb.getAttribute('data-market');
+                    // Render AI Market Intelligence Briefing
+          if (data._ai_commentary) {
+            const ai = data._ai_commentary;
+            const aiCard = document.getElementById('aiBriefingCard');
+            if (aiCard) {
+              aiCard.classList.remove('hidden');
+              document.getElementById('aiSessionTag').textContent = ai.session_name || 'AI 시황 분석';
+              document.getElementById('aiBriefingTime').textContent = ai.updated_at || '';
+              document.getElementById('aiBriefingHeadline').textContent = ai.headline || '';
+              document.getElementById('aiBriefingSummary').textContent = ai.summary || '';
+              
+              const kpContainer = document.getElementById('aiBriefingKeyPoints');
+              if (kpContainer && Array.isArray(ai.key_points)) {
+                kpContainer.innerHTML = ai.key_points.map(pt => 
+                  `<div class="flex items-start gap-1.5 leading-tight"><span class="text-indigo-400 font-bold shrink-0">•</span><span>${pt}</span></div>`
+                ).join('');
+              }
+            }
+
+            if (ai.macro_insights) {
+              Object.values(CATEGORIZED_MACRO).forEach(group => {
+                group.items.forEach(target => {
+                  if (ai.macro_insights[target.id]) {
+                    target.insight = ai.macro_insights[target.id];
+                  }
+                });
+              });
+            }
+          }
+
           renderCurrentFeed();
         });
       });
@@ -1107,13 +1265,73 @@
       searchInput.addEventListener('input', (e) => {
         currentSearch = e.target.value;
         clearBtn.classList.toggle('hidden', !currentSearch.trim());
-        renderCurrentFeed();
+                  // Render AI Market Intelligence Briefing
+          if (data._ai_commentary) {
+            const ai = data._ai_commentary;
+            const aiCard = document.getElementById('aiBriefingCard');
+            if (aiCard) {
+              aiCard.classList.remove('hidden');
+              document.getElementById('aiSessionTag').textContent = ai.session_name || 'AI 시황 분석';
+              document.getElementById('aiBriefingTime').textContent = ai.updated_at || '';
+              document.getElementById('aiBriefingHeadline').textContent = ai.headline || '';
+              document.getElementById('aiBriefingSummary').textContent = ai.summary || '';
+              
+              const kpContainer = document.getElementById('aiBriefingKeyPoints');
+              if (kpContainer && Array.isArray(ai.key_points)) {
+                kpContainer.innerHTML = ai.key_points.map(pt => 
+                  `<div class="flex items-start gap-1.5 leading-tight"><span class="text-indigo-400 font-bold shrink-0">•</span><span>${pt}</span></div>`
+                ).join('');
+              }
+            }
+
+            if (ai.macro_insights) {
+              Object.values(CATEGORIZED_MACRO).forEach(group => {
+                group.items.forEach(target => {
+                  if (ai.macro_insights[target.id]) {
+                    target.insight = ai.macro_insights[target.id];
+                  }
+                });
+              });
+            }
+          }
+
+          renderCurrentFeed();
       });
       clearBtn.addEventListener('click', () => {
         searchInput.value = '';
         currentSearch = '';
         clearBtn.classList.add('hidden');
-        renderCurrentFeed();
+                  // Render AI Market Intelligence Briefing
+          if (data._ai_commentary) {
+            const ai = data._ai_commentary;
+            const aiCard = document.getElementById('aiBriefingCard');
+            if (aiCard) {
+              aiCard.classList.remove('hidden');
+              document.getElementById('aiSessionTag').textContent = ai.session_name || 'AI 시황 분석';
+              document.getElementById('aiBriefingTime').textContent = ai.updated_at || '';
+              document.getElementById('aiBriefingHeadline').textContent = ai.headline || '';
+              document.getElementById('aiBriefingSummary').textContent = ai.summary || '';
+              
+              const kpContainer = document.getElementById('aiBriefingKeyPoints');
+              if (kpContainer && Array.isArray(ai.key_points)) {
+                kpContainer.innerHTML = ai.key_points.map(pt => 
+                  `<div class="flex items-start gap-1.5 leading-tight"><span class="text-indigo-400 font-bold shrink-0">•</span><span>${pt}</span></div>`
+                ).join('');
+              }
+            }
+
+            if (ai.macro_insights) {
+              Object.values(CATEGORIZED_MACRO).forEach(group => {
+                group.items.forEach(target => {
+                  if (ai.macro_insights[target.id]) {
+                    target.insight = ai.macro_insights[target.id];
+                  }
+                });
+              });
+            }
+          }
+
+          renderCurrentFeed();
       });
 
       // 7. Refresh Button
