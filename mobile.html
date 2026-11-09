@@ -120,6 +120,9 @@
       <button data-cat="overvalued" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
         🔥 고평가·과열 경계
       </button>
+      <button data-cat="leverage" class="m-tab-btn px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:text-white flex items-center gap-1">
+        ⚡ 레버리지 시그널
+      </button>
       <button data-cat="treasury" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
         🏛️ 미국 국채 (10Y/20Y/30Y)
       </button>
@@ -337,6 +340,10 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
       </svg>
       <span>과열경계</span>
+    </button>
+    <button class="m-bottom-nav flex flex-col items-center gap-0.5 text-indigo-400 font-medium" data-target="leverage">
+      <span class="text-lg leading-none">⚡</span>
+      <span class="font-bold">레버리지</span>
     </button>
     <button class="m-bottom-nav flex flex-col items-center gap-0.5 text-slate-400 font-medium" data-target="treasury">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -847,13 +854,143 @@
       return [];
     }
 
+        function renderLeverageDashboard(container) {
+      const lev = screenerDb._leverage_meter || {
+        stage: '평균', level: 2, score: 35,
+        badge: '⚖️ 2단계: 평균 (관망 대기)', color: 'slate',
+        guide: '지수가 일상적인 변동 범위에 위치해 있습니다. 1배수 기본 종목을 유지하며 레버리지 신규 진입은 보류하고 현금을 온존하세요.',
+        recommended_allocation: '0% ~ 10% 미만',
+        inputs: { drawdown_pct: -5.26, fear_greed: 26, vix: 19.42 }
+      };
+
+      const score = lev.score || 0;
+      const colorClass = lev.level === 4 ? 'text-indigo-400 bg-indigo-500/20 border-indigo-500/40' :
+                         lev.level === 3 ? 'text-emerald-400 bg-emerald-500/20 border-emerald-500/40' :
+                         lev.level === 2 ? 'text-slate-300 bg-slate-500/20 border-slate-500/40' :
+                         'text-rose-400 bg-rose-500/20 border-rose-500/40';
+
+      document.getElementById('feedCountTitle').textContent = '⚡ 퀀트 레버리지 투자 판정 시스템 (4단계)';
+
+      container.innerHTML = `
+        <!-- Hero Card: Current Stage & Score -->
+        <div class="p-4 rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 shadow-xl space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400">레버리지 진입 판정</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-black font-mono border ${colorClass}">
+              ${lev.badge}
+            </span>
+          </div>
+
+          <div class="flex items-baseline justify-between pt-1">
+            <div>
+              <div class="text-3xl font-black font-mono text-white tracking-tight">${score}<span class="text-base text-slate-400 font-normal"> / 100점</span></div>
+              <div class="text-xs font-bold text-indigo-400 mt-0.5">권장 비중: ${lev.recommended_allocation}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[10px] text-slate-400">대상 ETF</div>
+              <div class="text-xs font-mono font-bold text-white">TQQQ · SOXL · UPRO</div>
+            </div>
+          </div>
+
+          <!-- Visual 4-Segment Progress Bar -->
+          <div class="space-y-1.5 pt-2">
+            <div class="relative h-3 w-full bg-slate-800 rounded-full overflow-hidden flex">
+              <div class="w-1/4 bg-rose-500/80" title="고점 (0~25)"></div>
+              <div class="w-1/4 bg-slate-500/80" title="평균 (26~50)"></div>
+              <div class="w-1/4 bg-emerald-500/80" title="진입 (51~75)"></div>
+              <div class="w-1/4 bg-indigo-500/80" title="투하 (76~100)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] font-mono text-slate-400 px-0.5">
+              <span class="${lev.level===1?'text-rose-400 font-bold':''}">🚨 고점</span>
+              <span class="${lev.level===2?'text-slate-300 font-bold':''}">⚖️ 평균</span>
+              <span class="${lev.level===3?'text-emerald-400 font-bold':''}">🎯 진입</span>
+              <span class="${lev.level===4?'text-indigo-400 font-bold':''}">🚀 투하</span>
+            </div>
+          </div>
+
+          <!-- Action Guideline Box -->
+          <div class="p-3 rounded-2xl bg-indigo-950/60 border border-indigo-500/20 text-xs text-slate-200 leading-relaxed">
+            <div class="font-bold text-indigo-300 mb-1 flex items-center gap-1">
+              <span>💡 실전 투자 행동 지침</span>
+            </div>
+            ${lev.guide}
+          </div>
+        </div>
+
+        <!-- 4 Key Drivers Grid (2x2) -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">📉 나스닥 고점 대비 낙폭</div>
+            <div class="text-base font-black font-mono text-slate-900 dark:text-white mt-0.5">
+              ${lev.inputs?.drawdown_pct}%
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">40년 평균조정: -12.5%</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">😨 공포 & 탐욕 지수</div>
+            <div class="text-base font-black font-mono text-slate-900 dark:text-white mt-0.5">
+              ${lev.inputs?.fear_greed}점
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">25점 이하 시 극단적 공포</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">📊 VIX 변동성 지수</div>
+            <div class="text-base font-black font-mono text-slate-900 dark:text-white mt-0.5">
+              ${lev.inputs?.vix}pt
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">28 이상 시 투매 구간</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">📐 퀀트 매수 적합도</div>
+            <div class="text-base font-black font-mono text-indigo-400 mt-0.5">
+              ${score}점
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">51점 이상 시 진입 유효</div>
+          </div>
+        </div>
+
+        <!-- Reference Matrix Accordion/Table -->
+        <div class="p-3.5 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
+          <div class="font-bold text-slate-900 dark:text-white">레버리지 4단계 기준표</div>
+          <div class="space-y-1.5 text-[11px]">
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-rose-500">🚨 1단계: 고점 (0~25점)</span>
+              <span class="text-slate-400">레버리지 금지 / 전액 익절</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-slate-400">⚖️ 2단계: 평균 (26~50점)</span>
+              <span class="text-slate-400">관망 대기 / 1배수 보유</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-emerald-500">🎯 3단계: 진입 (51~75점)</span>
+              <span class="text-slate-400">1~2차 분할 매수 시작</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-indigo-400">🚀 4단계: 투하 (76~100점)</span>
+              <span class="text-slate-400">역사적 폭락 / 집중 풀베팅</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderCurrentFeed() {
       const container = document.getElementById('mobileListContainer');
-      const isScreener = currentCategory === 'undervalued' || currentCategory === 'overvalued';
 
       // Show Market Filter Pills (All/KR/US) only when screener or market tabs are active
       const subBar = document.getElementById('subFilterBar');
       const screenerPills = document.getElementById('screenerMarketPills');
+      
+      if (currentCategory === 'leverage') {
+        if (subBar) subBar.style.display = 'none';
+        renderLeverageDashboard(container);
+        return;
+      }
+
+      const isScreener = currentCategory === 'undervalued' || currentCategory === 'overvalued';
       if (subBar) {
         subBar.style.display = 'flex';
         if (screenerPills) {
