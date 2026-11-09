@@ -143,10 +143,11 @@
     <!-- Sub-Filter Bar (for Screener: All / KR / US) & Search -->
     <div id="subFilterBar" class="mt-2 flex items-center justify-between gap-2">
       <!-- Market Toggle Pills -->
-      <div id="screenerMarketPills" class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg text-xs">
-        <button data-market="all" class="m-mkt-btn active px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white">전체</button>
-        <button data-market="kr" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300">🇰🇷 한국</button>
-        <button data-market="us" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300">🇺🇸 미국·코인</button>
+      <div id="screenerMarketPills" class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg text-xs overflow-x-auto no-scrollbar">
+        <button data-market="all" class="m-mkt-btn active px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white whitespace-nowrap">전체</button>
+        <button data-market="kr" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">🇰🇷 국내</button>
+        <button data-market="etf" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">📊 ETF</button>
+        <button data-market="us" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">🇺🇸 미국·코인</button>
       </div>
 
       <!-- Compact Search Box -->
@@ -842,10 +843,30 @@
         // Filter out _macro and _meta so only genuine stocks with .ticker are processed!
         let list = Object.values(screenerDb).filter(i => i && typeof i === 'object' && i.ticker);
         
+        const KR_ETF_SET = new Set([
+          '453810.KS', '411060.KS', '0080G0.KS', '418670.KS', '0053L0.KS',
+          '0183J0.KS', '0131V0.KS', '0162Y0.KS', '441640.KS', '160580.KS',
+          '0163Y0.KS', '161510.KS', '0052D0.KS', '0123G0.KS', '229200.KS',
+          '245710.KS', '0023A0.KS', '452360.KS', '487240.KS', '486290.KS',
+          '433500.KS', '307520.KS', '494670.KS', '487230.KS', '0144L0.KS',
+          '426030.KS', '0172V0.KS', '396500.KS', '139220.KS'
+        ]);
+
         if (currentMarketFilter === 'kr') {
-          list = list.filter(i => (i.ticker || '').toLowerCase().endsWith('.ks') || (i.ticker || '').toLowerCase().endsWith('.kq'));
+          list = list.filter(i => {
+            const t = (i.ticker || '').toUpperCase();
+            return (t.endsWith('.KS') || t.endsWith('.KQ')) && !KR_ETF_SET.has(t) && i.market !== 'etf';
+          });
+        } else if (currentMarketFilter === 'etf') {
+          list = list.filter(i => {
+            const t = (i.ticker || '').toUpperCase();
+            return KR_ETF_SET.has(t) || i.market === 'etf';
+          });
         } else if (currentMarketFilter === 'us') {
-          list = list.filter(i => !(i.ticker || '').toLowerCase().endsWith('.ks') && !(i.ticker || '').toLowerCase().endsWith('.kq'));
+          list = list.filter(i => {
+            const t = (i.ticker || '').toUpperCase();
+            return (!t.endsWith('.KS') && !t.endsWith('.KQ')) || i.market === 'us';
+          });
         }
         if (currentSearch.trim()) {
           const q = currentSearch.toLowerCase().trim();
