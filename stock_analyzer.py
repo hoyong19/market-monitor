@@ -584,20 +584,25 @@ def main_execution():
     # 1. 글로벌 거시경제 지표 및 시장 지수 실시간 크롤링
     macro_data = fetch_macro_data()
 
-    # 2. 국내 주요 주식 및 ETF 리스트 (총 36개)
+# 2-1. 국내 순수 개별 주식 리스트 (총 7개)
     stock_tickers_kr = [
-        '000660.KS', '005930.KS', '443250.KS', '453810.KS',
-        '411060.KS', '0080G0.KS', '418670.KS', '0053L0.KS',
-        '0183J0.KS', '0131V0.KS', '058610.KS', '0162Y0.KS',
-        '441640.KS', '160580.KS', '0163Y0.KS', '161510.KS',
-        '0052D0.KS', '0123G0.KS', '229200.KS', '245710.KS',
-        '0023A0.KS', '452360.KS', '005935.KS', '487240.KS',
-        '005387.KS', '486290.KS', '433500.KS', '307520.KS',
-        '494670.KS', '487230.KS', '0144L0.KS', '426030.KS',
-        '0172V0.KS', '396500.KS', '316140.KS', '139220.KS'
+        '005930.KS', '005935.KS', '000660.KS', '005387.KS',
+        '316140.KS', '058610.KS', '443250.KS'
     ]
 
-# 3. 미국 주요 주식 및 암호화폐 리스트 (총 78개)
+    # 2-2. 국내 상장 테마 및 지수 ETF 리스트 (총 29개)
+    stock_tickers_etf = [
+        '453810.KS', '411060.KS', '0080G0.KS', '418670.KS',
+        '0053L0.KS', '0183J0.KS', '0131V0.KS', '0162Y0.KS',
+        '441640.KS', '160580.KS', '0163Y0.KS', '161510.KS',
+        '0052D0.KS', '0123G0.KS', '229200.KS', '245710.KS',
+        '0023A0.KS', '452360.KS', '487240.KS', '486290.KS',
+        '433500.KS', '307520.KS', '494670.KS', '487230.KS',
+        '0144L0.KS', '426030.KS', '0172V0.KS', '396500.KS',
+        '139220.KS'
+    ]
+
+    # 3. 미국 주요 주식 및 암호화폐 리스트 (총 78개)
     stock_tickers_us = [
         'CRWD', 'PANW', 'CRWV', 'NBIS', 'DELL', 'VRT', 'GLW', 'INTC',
         'STX', 'TEM', 'WDC', 'MU', 'SOFI', 'SLDP', 'ASTS', 'PLTR',
@@ -611,9 +616,17 @@ def main_execution():
         'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA'
     ]
 
-    all_results_kr = run_analysis(stock_tickers_kr, "한국 주식")
+    # 각 시장 카테고리별 분석 및 태깅
+    all_results_kr = run_analysis(stock_tickers_kr, "국내 주식")
+    for r in all_results_kr: r['market_type'] = 'kr'
+
+    all_results_etf = run_analysis(stock_tickers_etf, "국내 ETF")
+    for r in all_results_etf: r['market_type'] = 'etf'
+
     all_results_us = run_analysis(stock_tickers_us, "미국 및 암호화폐")
-    combined_results = all_results_kr + all_results_us
+    for r in all_results_us: r['market_type'] = 'us'
+
+    combined_results = all_results_kr + all_results_etf + all_results_us
 
     # 4. 레버리지 투자 판정 지표 계산
     leverage_meter = calculate_leverage_meter(macro_data)
