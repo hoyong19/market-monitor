@@ -523,8 +523,41 @@ def calculate_leverage_meter(macro_data: Dict[str, Any]) -> Dict[str, Any]:
     elif vix_val >= 14.0: vix_score = 4   # 평온
     else:                 vix_score = 0   # 극단적 안도감 (하락 위험)
 
-    # D. 기술적 보조 점수 (15점)
-    tech_score = 8
+    # D. 기술적 보조 점수 (최대 15점: 나스닥 일봉 기반 RSI 14일 및 200일선 이격도 동적 계산)
+    tech_score = 0
+    try:
+        if not nasdaq_df.empty and 'Close' in nasdaq_df:
+            n_close = nasdaq_df['Close'].dropna()
+            if len(n_close) >= 15:
+                delta = n_close.diff()
+                gain = delta.clip(lower=0).rolling(14).mean()
+                loss = (-delta.clip(upper=0)).rolling(14).mean()
+                rs = gain / loss
+                rsi_series = 100 - (100 / (1 + rs))
+                nasdaq_rsi = float(get_scalar_from_series_or_scalar(rsi_series.iloc[-1]))
+
+                # 1) RSI 과매도 점수 (최대 10점)
+                if nasdaq_rsi <= 30.0:   tech_score += 10  # 극단적 과매도 (역사적 반등 자리)
+                elif nasdaq_rsi <= 40.0: tech_score += 7   # 공포 침체 구간
+                elif nasdaq_rsi <= 50.0: tech_score += 4   # 중립 이하
+                elif nasdaq_rsi <= 65.0: tech_score += 1   # 중립 이상
+                else:                    tech_score += 0   # RSI 과열 구간
+
+                # 2) 200일 이동평균선(장기 추세선) 이격도 점수 (최대 5점)
+                if len(n_close) >= 200:
+                    sma_200 = float(get_scalar_from_series_or_scalar(n_close.rolling(200).mean().iloc[-1]))
+                    disparity_200 = ((nasdaq_cur - sma_200) / sma_200) * 100.0
+                    if disparity_200 <= -5.0:  tech_score += 5  # 200일선 붕괴 (극단적 역발상 매수 자리)
+                    elif disparity_200 <= 0.0: tech_score += 3  # 200일선 터치
+                    elif disparity_200 <= 5.0: tech_score += 1  # 200일선 근접 지지
+                else:
+                    tech_score += 3
+            else:
+                tech_score = 8
+        else:
+            tech_score = 8
+    except Exception:
+        tech_score = 8
 
     total_score = min(100, max(0, dd_score + fng_score + vix_score + tech_score))
 
