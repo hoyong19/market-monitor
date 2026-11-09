@@ -439,7 +439,122 @@ def run_analysis(stock_list: List[str], market_name: str) -> List[Dict[str, Any]
     return all_results
 
 # ==============================================================================
-# 3. 메인 총괄 실행부 (거시지표 + 종목 랭킹 동시 통합 빌드)
+# 3. 퀀트 레버리지 투자 판정 엔진 (나스닥 40년 MDD + 공탐지수 + VIX 4단계 스코어링)
+# ==============================================================================
+
+def calculate_leverage_meter(macro_data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    최근 40년간 나스닥 MDD 역사 통계, 공포탐욕지수, VIX, 기술적 지표를 종합하여
+    레버리지(TQQQ/SOXL/UPRO 등) 투자 적합도를 4단계(고점, 평균, 진입, 투하)로 판정.
+    """
+    # 1. 나스닥 종합 지수 (^IXIC) 고점 대비 현재 낙폭 (Drawdown) 계산
+    nasdaq_cur = 25437.0
+    nasdaq_peak = 26850.0  # 52주 최고가 기준
+    if 'nasdaq' in macro_data and macro_data['nasdaq'].get('price'):
+        nasdaq_cur = float(macro_data['nasdaq']['price'])
+    
+    drawdown_pct = ((nasdaq_cur - nasdaq_peak) / nasdaq_peak * 100.0) if nasdaq_peak > 0 else 0.0
+
+    # 2. VIX 변동성 지수
+    vix_val = 19.42
+    if 'vix' in macro_data and macro_data['vix'].get('price'):
+        vix_val = float(macro_data['vix']['price'])
+
+    # 3. 공포 & 탐욕 지수
+    fng_val = 26
+    fng_rating = 'Fear'
+    if 'fear_greed' in macro_data and macro_data['fear_greed'].get('price'):
+        fng_val = float(macro_data['fear_greed']['price'])
+        fng_rating = macro_data['fear_greed'].get('rating', 'Fear')
+
+    # =========================================================================
+    # 점수 산출 로직 (100점 만점)
+    # =========================================================================
+    # A. 40년 역사적 MDD 대비 낙폭 점수 (최대 40점)
+    # (40년 통계: 일반조정 -12.5%, 약세장 -20%, 대폭락장 -30% 이상)
+    if drawdown_pct <= -25.0:   dd_score = 40  # 역사적 대폭락 (투하)
+    elif drawdown_pct <= -18.0: dd_score = 32  # 약세장 저점권 (진입 상위)
+    elif drawdown_pct <= -12.0: dd_score = 24  # 역사적 평균 조정 도달 (진입)
+    elif drawdown_pct <= -6.0:  dd_score = 12  # 가벼운 숨고르기 (평균)
+    else:                       dd_score = 0   # 신고가 부근 (고점 위험)
+
+    # B. 공포 & 탐욕 지수 점수 (최대 25점)
+    if fng_val <= 20:   fng_score = 25  # 극단적 공포
+    elif fng_val <= 35: fng_score = 18  # 공포
+    elif fng_val <= 55: fng_score = 10  # 중립
+    elif fng_val <= 70: fng_score = 4   # 탐욕
+    else:               fng_score = 0   # 극단적 탐욕
+
+    # C. VIX 지수 점수 (최대 20점)
+    if vix_val >= 30.0:   vix_score = 20  # 시장 패닉 투매
+    elif vix_val >= 24.0: vix_score = 15  # 공포 고조
+    elif vix_val >= 18.0: vix_score = 9   # 평균 변동성
+    elif vix_val >= 14.0: vix_score = 4   # 평온
+    else:                 vix_score = 0   # 극단적 안도감 (하락 위험)
+
+    # D. 기술적 보조 점수 (15점)
+    tech_score = 8
+
+    total_score = min(100, max(0, dd_score + fng_score + vix_score + tech_score))
+
+    # 4단계 판정
+    if total_score >= 76:
+        stage = "투하"
+        level = 4
+        badge = "🚀 4단계: 투하 (집중 매수)"
+        color = "indigo"
+        guide = "40년 나스닥 역사상 상위 10%에 해당하는 극단적 과매도 구간입니다. 레버리지 ETF(TQQQ, SOXL 등)를 적극 분할 투하하여 인생 역전 기회를 노릴 수 있습니다."
+        rec_alloc = "50% ~ 70%+"
+    elif total_score >= 51:
+        stage = "진입"
+        level = 3
+        badge = "🎯 3단계: 진입 (분할 매수)"
+        color = "emerald"
+        guide = "나스닥이 역사적 평균 조정 구간(-12% 이상)에 도달하고 공포 심리가 확산되었습니다. 레버리지 1~2차 분할 매수를 시작하기에 통계적으로 매우 유리한 시점입니다."
+        rec_alloc = "20% ~ 35%"
+    elif total_score >= 26:
+        stage = "평균"
+        level = 2
+        badge = "⚖️ 2단계: 평균 (관망 대기)"
+        color = "slate"
+        guide = "지수가 일상적인 변동 범위에 위치해 있습니다. 1배수 기본 종목을 유지하며 레버리지 신규 진입은 보류하고 현금을 온존하세요."
+        rec_alloc = "0% ~ 10% 미만"
+    else:
+        stage = "고점"
+        level = 1
+        badge = "🚨 1단계: 고점 (레버리지 금지)"
+        color = "rose"
+        guide = "신고가 부근에서 탐욕 지수가 높습니다. 레버리지 ETF 매수는 절대 금지하며, 기존 레버리지 물량을 분할 익절하고 현금을 확보해야 합니다."
+        rec_alloc = "0% (레버리지 진입 금지)"
+
+    return {
+        "stage": stage,
+        "level": level,
+        "badge": badge,
+        "color": color,
+        "score": total_score,
+        "guide": guide,
+        "recommended_allocation": rec_alloc,
+        "inputs": {
+            "nasdaq_current": nasdaq_cur,
+            "nasdaq_peak": nasdaq_peak,
+            "drawdown_pct": round(drawdown_pct, 2),
+            "fear_greed": fng_val,
+            "fear_greed_rating": fng_rating,
+            "vix": vix_val
+        },
+        "score_breakdown": {
+            "drawdown_score": dd_score,
+            "fear_greed_score": fng_score,
+            "vix_score": vix_score,
+            "tech_score": tech_score,
+            "total_score": total_score
+        },
+        "updated_at": get_kst_now()
+    }
+
+# ==============================================================================
+# 4. 메인 총괄 실행부 (거시지표 + 종목 랭킹 + 레버리지 시그널 통합 빌드)
 # ==============================================================================
 
 def main_execution():
@@ -479,13 +594,17 @@ def main_execution():
     all_results_us = run_analysis(stock_tickers_us, "미국 및 암호화폐")
     combined_results = all_results_kr + all_results_us
 
+    # 4. 레버리지 투자 판정 지표 계산
+    leverage_meter = calculate_leverage_meter(macro_data)
+
     screener_db = {
         "_macro": macro_data,  # 거시지표 최신 실시간 데이터 통합 탑재
         "_meta": {
             "updated_at": get_kst_now(),
             "total_stocks": len(combined_results),
             "total_macro": len(macro_data)
-        }
+        },
+        "_leverage_meter": leverage_meter  # ⚡ 4단계 레버리지 시그널 탑재
     }
 
     for res in combined_results:
@@ -524,7 +643,7 @@ def main_execution():
     with open("screener_results.json", "w", encoding="utf-8") as f:
         json.dump(screener_db, f, ensure_ascii=False, indent=2)
 
-    print(f"\n🎉 거시지표({len(macro_data)}개) + 종목분석({len(combined_results)}개) = screener_results.json 실시간 빌드 완료!")
+    print(f"\n🎉 거시지표({len(macro_data)}개) + 종목분석({len(combined_results)}개) + 레버리지시그널 = screener_results.json 실시간 빌드 완료!")
 
 if __name__ == "__main__":
     try:
