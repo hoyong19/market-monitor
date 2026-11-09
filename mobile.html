@@ -874,9 +874,39 @@
         }
 
         if (currentCategory === 'undervalued') {
-          list.sort((a, b) => (b.total_undervalued_score || 0) - (a.total_undervalued_score || 0));
+          list.sort((a, b) => {
+            const aUnder = a.total_undervalued_score || 0;
+            const bUnder = b.total_undervalued_score || 0;
+            const aOver = a.total_overvalued_score || 0;
+            const bOver = b.total_overvalued_score || 0;
+
+            // 1차: 저평가 점수 높은 순 (내림차순)
+            if (bUnder !== aUnder) {
+              return bUnder - aUnder;
+            }
+            // 2차: 저평가 점수가 0점이거나 동점인 경우 -> 고평가(과열) 점수의 역순 (오름차순: 낮은 순서)
+            if (aOver !== bOver) {
+              return aOver - bOver;
+            }
+            return (a.ticker || '').localeCompare(b.ticker || '');
+          });
         } else {
-          list.sort((a, b) => (b.total_overvalued_score || 0) - (a.total_overvalued_score || 0));
+          list.sort((a, b) => {
+            const aUnder = a.total_undervalued_score || 0;
+            const bUnder = b.total_undervalued_score || 0;
+            const aOver = a.total_overvalued_score || 0;
+            const bOver = b.total_overvalued_score || 0;
+
+            // 1차: 고평가(과열) 점수 높은 순 (내림차순)
+            if (bOver !== aOver) {
+              return bOver - aOver;
+            }
+            // 2차: 고평가 점수가 0점이거나 동점인 경우 -> 저평가 점수의 역순 (오름차순: 낮은 순서)
+            if (aUnder !== bUnder) {
+              return aUnder - bUnder;
+            }
+            return (a.ticker || '').localeCompare(b.ticker || '');
+          });
         }
         return list;
       }
@@ -1046,7 +1076,8 @@
         }
 
         container.innerHTML = items.map((item, idx) => {
-          const score = isUnder ? (item.total_undervalued_score || 0) : (item.total_overvalued_score || 0);
+          const underScore = item.total_undervalued_score || 0;
+          const overScore = item.total_overvalued_score || 0;
           const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx + 1}`));
           const isKr = item.ticker.toLowerCase().endsWith('.ks') || item.ticker.toLowerCase().endsWith('.kq');
           const price = item.current_price
@@ -1077,14 +1108,17 @@
                 </div>
               </div>
 
-              <!-- Right: Price, Score, Upside -->
+              <!-- Right: Price, Scores (Both 저평가 & 과열), Upside -->
               <div class="text-right flex-shrink-0">
                 <div class="text-sm font-black font-mono text-slate-900 dark:text-white">${price}</div>
-                <div class="flex items-center justify-end gap-1.5 mt-0.5">
-                  <span class="text-xs font-black font-mono px-2 py-0.5 rounded-full ${isUnder ? 'bg-emerald-500/15 text-emerald-500' : 'bg-rose-500/15 text-rose-500'}">
-                    ${isUnder ? '저평가' : '과열'} ${score}점
+                <div class="flex flex-wrap items-center justify-end gap-1 mt-1">
+                  <span class="text-[11px] font-black font-mono px-1.5 py-0.5 rounded-md ${underScore > 0 ? 'bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700/60'}">
+                    저평가 ${underScore}점
                   </span>
-                  ${upsideText ? `<span class="text-[10px] font-bold font-mono text-emerald-500">목표 ${upsideText}</span>` : ''}
+                  <span class="text-[11px] font-black font-mono px-1.5 py-0.5 rounded-md ${overScore > 0 ? 'bg-rose-500/15 text-rose-500 dark:text-rose-400 border border-rose-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700/60'}">
+                    과열 ${overScore}점
+                  </span>
+                  ${upsideText ? `<span class="text-[10px] font-bold font-mono text-emerald-500 dark:text-emerald-400 ml-0.5">목표 ${upsideText}</span>` : ''}
                 </div>
               </div>
             </div>
@@ -1224,11 +1258,16 @@
         ? (isKr ? `${formatNumber(item.current_price, 0)}원` : `$${formatNumber(item.current_price, 2)}`)
         : '--';
 
-      const isUnder = currentCategory !== 'overvalued';
-      const score = isUnder ? (item.total_undervalued_score || 0) : (item.total_overvalued_score || 0);
+      const underScore = item.total_undervalued_score || 0;
+      const overScore = item.total_overvalued_score || 0;
       const scoreBadge = document.getElementById('sheetScoreBadge');
-      scoreBadge.textContent = `${isUnder ? '저평가' : '과열'} ${score}점`;
-      scoreBadge.className = `text-xs px-2 py-0.5 rounded font-black font-mono ${isUnder ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`;
+      if (scoreBadge) {
+        scoreBadge.innerHTML = `
+          <span class="px-2 py-0.5 rounded font-black font-mono ${underScore > 0 ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-300'}">저평가 ${underScore}점</span>
+          <span class="px-2 py-0.5 rounded font-black font-mono ${overScore > 0 ? 'bg-rose-500 text-white' : 'bg-slate-700 text-slate-300'}">과열 ${overScore}점</span>
+        `;
+        scoreBadge.className = "flex items-center gap-1.5 text-xs";
+      }
 
       const targetPrice = item.metrics?.target_mean_price;
       document.getElementById('sheetTargetPrice').textContent = targetPrice
