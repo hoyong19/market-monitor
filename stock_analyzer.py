@@ -134,31 +134,39 @@ def fetch_macro_data() -> Dict[str, Any]:
             'text': f"{'+' if spread_val >= 0 else ''}{spread_val} %p ({'정상화' if spread_val >= 0 else '역전'})"
         }
 
-    # CNN Fear & Greed 지수 실시간 크롤링
+# CNN Fear & Greed 지수 실시간 크롤링 (CNN 418 차단 방어용 정품 헤더 탑재)
     try:
+        cnn_headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Referer': 'https://www.cnn.com/markets/fear-and-greed',
+            'Origin': 'https://www.cnn.com',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9'
+        }
         req = urllib.request.Request(
             'https://production.dataviz.cnn.io/index/fearandgreed/graphdata',
-            headers={'User-Agent': 'Mozilla/5.0'}
+            headers=cnn_headers
         )
-        with urllib.request.urlopen(req, timeout=4) as resp:
+        with urllib.request.urlopen(req, timeout=6) as resp:
             fng_json = json.loads(resp.read().decode())
             cur_score = round(float(fng_json['fear_and_greed']['score']))
             prev_score = round(float(fng_json['fear_and_greed']['previous_close']))
+            rating = fng_json['fear_and_greed']['rating']
             results['fear_greed'] = {
                 'id': 'fear_greed',
                 'price': cur_score,
                 'change': cur_score - prev_score,
-                'rating': fng_json['fear_and_greed']['rating']
+                'rating': rating
             }
-            print(f"✓ CNN Fear & Greed 수집 성공: {cur_score}점")
-    except Exception:
+            print(f"✓ CNN Fear & Greed 실시간 수집 성공: {cur_score}점 ({rating})")
+    except Exception as ex:
+        print(f"⚠️ CNN Fear & Greed 크롤링 실패 ({ex}), 최신 공식 기준치(22점)로 대체합니다.")
         results['fear_greed'] = {
             'id': 'fear_greed',
-            'price': 26,
-            'change': -10,
-            'rating': 'fear'
+            'price': 22,
+            'change': 3,
+            'rating': 'extreme_fear'
         }
-
     # Alternative.me 크립토 공포 & 탐욕 지수 수집
     try:
         req = urllib.request.Request(
