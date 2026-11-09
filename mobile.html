@@ -271,12 +271,12 @@
         <div id="macroGaugeBox" class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-2">
           <div class="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
             <span>투자 심리 구간 게이지</span>
-            <span id="macroGaugeScoreText" class="font-mono text-emerald-500 font-black">26점 / 100점</span>
+            <span id="macroGaugeScoreText" class="font-mono text-emerald-500 font-black">22점 / 100점</span>
           </div>
           <!-- Colored Gauge Gradient Bar -->
           <div class="w-full h-3 rounded-full bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-500 relative overflow-hidden">
             <!-- Indicator Pin -->
-            <div id="macroGaugePin" class="absolute top-0 bottom-0 w-1.5 bg-white shadow-md rounded-full transform -translate-x-1/2" style="left: 26%;"></div>
+            <div id="macroGaugePin" class="absolute top-0 bottom-0 w-1.5 bg-white shadow-md rounded-full transform -translate-x-1/2" style="left: 22%;"></div>
           </div>
           <div class="flex justify-between text-[10px] text-slate-400 font-semibold px-0.5">
             <span>0 극단적공포</span>
@@ -379,7 +379,7 @@
       { id: 'kospi', name: '코스피', val: '---', chg: '---', isUp: false },
       { id: 'btc', name: '비트코인', val: '---', chg: '---', isUp: false },
       { id: 'usdkrw', name: '원/달러', val: '---', chg: '---', isUp: false },
-      { id: 'fng', name: '공포탐욕', val: '---', chg: '---', isUp: false }
+      { id: 'fear_greed', name: '공포탐욕', val: '---', chg: '---', isUp: false }
     ];
 
     const CATEGORIZED_MACRO = {
@@ -622,10 +622,10 @@
             val: '---',
             chg: '---',
             isUp: false,
-            score: 26,
+            score: 22,
             dayRange: '---',
             desc: '미국 주식시장 7대 지표(모멘텀·변동성·옵션수요) 종합 투자심리 지수',
-            insight: '금요일 미국 기술주 급락과 금리 상승 여파로 지수가 26점까지 급락하며 [극단적 공포(25 이하)] 경계선에 진입했습니다. 역사적으로 20~30점대 공포 구간은 비이성적 패닉 투매가 정점에 달해 중장기 분할 매수 관점의 접근이 유효했던 자리입니다.'
+            insight: '금요일 미국 기술주 급락과 금리 상승 여파로 지수가 22점으로 [극단적 공포(25 이하)] 구간에 진입했습니다. 역사적으로 20~30점대 공포 구간은 비이성적 패닉 투매가 정점에 달해 중장기 분할 매수 관점의 접근이 유효했던 자리입니다.'
           },
           {
             id: 'wti',
@@ -773,7 +773,8 @@
             usdkrw: { price: 1335.10, change: -2.88, changePct: -0.22 },
             dxy: { price: 101.64, change: -0.22, changePct: -0.22 },
             vix: { price: 19.42, change: 2.22, changePct: 12.91 },
-            fear_greed: { price: 26, change: -10 },
+            fear_greed: { price: 22, change: 3, rating: 'extreme_fear' },
+            fng: { price: 22, change: 3, rating: 'extreme_fear' },
             crypto_fng: { price: 30, change: 3 },
             wti: { price: 104.82, change: 2.82, changePct: 2.76 },
             gold: { price: 3875.84, change: -145.57, changePct: -3.62 },
@@ -783,7 +784,8 @@
 
           // Update Carousel
           TOP_CAROUSEL_ITEMS.forEach(c => {
-            const item = macro[c.id] || FALLBACKS[c.id];
+            const targetKey = (c.id === 'fng' || c.id === 'fear_greed') ? 'fear_greed' : c.id;
+            const item = macro[targetKey] || macro[c.id] || FALLBACKS[targetKey] || FALLBACKS[c.id];
             if (item) {
               let p = item.price;
               // 1/10 소수점 밀림 방어: 금리가 1.5% 미만으로 들어온 경우 10을 곱해 정상 비율(예: 4.93%)로 복원
@@ -791,9 +793,15 @@
               let chgVal = item.change;
               if (item.isYield && chgVal && Math.abs(chgVal) < 0.02) chgVal = chgVal * 10;
 
-              c.val = item.isYield ? `${formatNumber(p, 3)}%` : (c.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (c.id === 'fear_greed' || c.id === 'fng' ? `${p}점` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(p, 0)}` : (c.id === 'spread' ? '+0.320%p' : formatNumber(p)))));
-              c.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, item.isYield ? 3 : 2)}${item.isYield ? '%p' : ''}` : '정상화';
-              c.isUp = (item.change || 0) >= 0;
+              if (c.id === 'fear_greed' || c.id === 'fng') {
+                c.val = `${p}점`;
+                c.chg = item.rating ? (item.rating.includes('extreme') ? '극단공포' : (item.rating.includes('fear') ? '공포' : (item.rating.includes('greed') ? '탐욕' : '중립'))) : (p <= 25 ? '극단공포' : (p <= 45 ? '공포' : '중립'));
+                c.isUp = p > 50; // 50 초과는 탐욕(빨강), 50 이하는 공포(파랑)
+              } else {
+                c.val = item.isYield ? `${formatNumber(p, 3)}%` : (c.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(p, 0)}` : (c.id === 'spread' ? '+0.320%p' : formatNumber(p))));
+                c.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, item.isYield ? 3 : 2)}${item.isYield ? '%p' : ''}` : '정상화';
+                c.isUp = (item.change || 0) >= 0;
+              }
             }
           });
           renderMacroCarousel();
@@ -856,11 +864,11 @@
 
         function renderLeverageDashboard(container) {
       const lev = screenerDb._leverage_meter || {
-        stage: '평균', level: 2, score: 35,
-        badge: '⚖️ 2단계: 평균 (관망 대기)', color: 'slate',
-        guide: '지수가 일상적인 변동 범위에 위치해 있습니다. 1배수 기본 종목을 유지하며 레버리지 신규 진입은 보류하고 현금을 온존하세요.',
-        recommended_allocation: '0% ~ 10% 미만',
-        inputs: { drawdown_pct: -5.26, fear_greed: 26, vix: 19.42 }
+        stage: '진입', level: 3, score: 59,
+        badge: '🎯 3단계: 진입 (분할 매수)', color: 'emerald',
+        guide: '나스닥이 52주 최고가(27,722pt) 대비 -11.3% 하락하여 40년 평균 조정 구간(-10%~-13%)에 도달했으며, 공포지수가 22~26점으로 위축되었습니다. 레버리지 1~2차 분할 매수를 시작하기에 통계적으로 유리한 시점입니다.',
+        recommended_allocation: '20% ~ 35%',
+        inputs: { drawdown_pct: -11.34, fear_greed: 22, vix: 19.42 }
       };
 
       const score = lev.score || 0;
@@ -1144,7 +1152,7 @@
       const gaugeBox = document.getElementById('macroGaugeBox');
       if (m.id === 'fear_greed' || m.id === 'crypto_fng') {
         gaugeBox.classList.remove('hidden');
-        const numScore = parseInt(m.val, 10) || (m.id === 'fear_greed' ? 26 : 68);
+        const numScore = parseInt(m.val, 10) || (m.id === 'fear_greed' ? 22 : 68);
         document.getElementById('macroGaugeScoreText').textContent = `${numScore}점 (${numScore <= 25 ? '극단적공포' : (numScore <= 45 ? '공포' : (numScore <= 55 ? '중립' : '탐욕'))})`;
         document.getElementById('macroGaugePin').style.left = `${numScore}%`;
       } else {
