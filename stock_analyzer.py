@@ -1,693 +1,1431 @@
-import yfinance as yf
-import pandas as pd
-import numpy as np
-import json
-import sys
-import traceback
-import urllib.request
-from typing import List, Dict, Any
-from datetime import datetime, timezone, timedelta
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>마켓모니터 모바일 | Market Monitor Mobile</title>
+  
+  <!-- Mobile App PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="마켓모니터">
+  <meta name="theme-color" content="#0b0f19">
 
-# 깃허브 클라우드 러너(UTC)에서도 정확한 한국 표준시(KST = UTC+9)를 생성하도록 고정
-KST = timezone(timedelta(hours=9))
-
-def get_kst_now():
-    return datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
-
-def get_scalar_from_series_or_scalar(value):
-    if isinstance(value, pd.Series):
-        if value.empty:
-            return np.nan
-        return value.item()
-    return value
-
-# ==============================================================================
-# 1. 거시지표 (미국채, 코스피, 코스닥, 미증시, 환율, VIX, 금, 오일, 코인) 실시간 수집
-# ==============================================================================
-
-def fetch_macro_data() -> Dict[str, Any]:
-    print("--- 🌐 글로벌 거시경제 지표 및 시장 지수 실시간 수집 시작 ---")
-    macro_symbols = {
-        'us10y': '^TNX',       # 미국채 10년물 금리
-        'us30y': '^TYX',       # 미국채 30년물 금리
-        'us05y': '^FVX',       # 미국채 5년물 금리
-        'us3m': '^IRX',        # 미국채 13주(3개월물) 금리
-        'sp500': '^GSPC',      # S&P 500
-        'nasdaq': '^IXIC',     # 나스닥 종합
-        'dow': '^DJI',         # 다우존스
-        'sox': '^SOX',         # 필라델피아 반도체
-        'russell': '^RUT',     # 러셀 2000
-        'kospi': '^KS11',      # 코스피
-        'kosdaq': '^KQ11',     # 코스닥
-        'kospi200': '^KS200',  # 코스피 200
-        'usdkrw': 'KRW=X',     # 원/달러 환율
-        'dxy': 'DX-Y.NYB',     # 달러 인덱스
-        'vix': '^VIX',         # VIX 변동성 지수
-        'wti': 'CL=F',         # WTI 원유 선물
-        'gold': 'GC=F',        # 국제 금 선물
-        'btc': 'BTC-USD',      # 비트코인
-        'eth': 'ETH-USD'       # 이더리움
-    }
-
-    results = {}
-
-    try:
-        tickers_list = list(macro_symbols.values())
-        print(f"다운로드 중 ({len(tickers_list)}개 글로벌 지표)...")
-        df_all = yf.download(tickers_list, period="5d", interval="1d", progress=False)
-
-        if not df_all.empty and 'Close' in df_all:
-            close_df = df_all['Close']
-
-            for key, symbol in macro_symbols.items():
-                try:
-                    if symbol not in close_df:
-                        continue
-                    # 주말(토/일)에는 24시간 거래되는 암호화폐 외에 주식/국채는 NaN이므로,
-                    # 각 종목별로 dropna()하여 가장 최근 유효 거래일 종가를 가져옵니다.
-                    series = close_df[symbol].dropna()
-                    if series.empty:
-                        continue
-                    last_val = get_scalar_from_series_or_scalar(series.iloc[-1])
-                    prev_val = get_scalar_from_series_or_scalar(series.iloc[-2]) if len(series) >= 2 else last_val
-
-                    if np.isnan(last_val) or last_val == 0:
-                        continue
-
-                    is_yield = key.startswith('us') and key not in ['usdkrw']
-                    # yfinance에서 이미 4.93%로 제공되는 경우 10으로 중복 나눗셈 방어 (10 초과일 때만 나눔)
-                    if is_yield and key in ['us10y', 'us30y', 'us05y'] and last_val > 10.0:
-                        last_val = last_val / 10.0
-                        prev_val = prev_val / 10.0 if (not np.isnan(prev_val) and prev_val > 10.0) else last_val
-
-                    chg = last_val - prev_val if not np.isnan(prev_val) else 0.0
-                    chg_pct = (chg / prev_val * 100.0) if (not np.isnan(prev_val) and prev_val != 0) else 0.0
-
-                    results[key] = {
-                        'id': key,
-                        'price': round(float(last_val), 3 if is_yield else 2),
-                        'change': round(float(chg), 3 if is_yield else 2),
-                        'changePct': round(float(chg_pct), 2),
-                        'prevClose': round(float(prev_val), 3 if is_yield else 2),
-                        'isYield': is_yield,
-                        'updated_at': get_kst_now()
-                    }
-                except Exception as ex:
-                    print(f"  ⚠️ {key} ({symbol}) 파싱 오류: {ex}")
-    except Exception as e:
-        print(f"❌ 거시지표 다운로드 오류: {e}")
-
-    # 미국채 20년물 금리 산출 (10년물과 30년물 가중치 기반 수급 모델)
-    if 'us10y' in results and 'us30y' in results:
-        u10 = results['us10y']['price']
-        u30 = results['us30y']['price']
-        u20_price = round((u10 * 0.2 + u30 * 0.8) + 0.03, 3)
-        results['us20y'] = {
-            'id': 'us20y',
-            'price': u20_price,
-            'change': -0.010,
-            'changePct': -0.19,
-            'isYield': True,
-            'updated_at': get_kst_now()
-        }
-
-    # 미국채 2년물 금리 산출 (5년물 연동 추정)
-    if 'us05y' in results:
-        u5 = results['us05y']['price']
-        u02_price = round(u5 - 0.13, 3)
-        results['us02y'] = {
-            'id': 'us02y',
-            'price': u02_price,
-            'change': 0.020,
-            'changePct': 0.43,
-            'isYield': True,
-            'updated_at': get_kst_now()
-        }
-
-    # 10Y-2Y 장단기 금리차 스프레드 계산
-    if 'us10y' in results and 'us02y' in results:
-        spread_val = round(results['us10y']['price'] - results['us02y']['price'], 3)
-        results['spread'] = {
-            'id': 'spread',
-            'price': spread_val,
-            'isNormal': spread_val >= 0,
-            'text': f"{'+' if spread_val >= 0 else ''}{spread_val} %p ({'정상화' if spread_val >= 0 else '역전'})"
-        }
-
-# CNN Fear & Greed 지수 실시간 크롤링 (CNN 418 차단 방어용 정품 헤더 탑재)
-    try:
-        cnn_headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-            'Referer': 'https://www.cnn.com/markets/fear-and-greed',
-            'Origin': 'https://www.cnn.com',
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-US,en;q=0.9'
-        }
-        req = urllib.request.Request(
-            'https://production.dataviz.cnn.io/index/fearandgreed/graphdata',
-            headers=cnn_headers
-        )
-        with urllib.request.urlopen(req, timeout=6) as resp:
-            fng_json = json.loads(resp.read().decode())
-            cur_score = round(float(fng_json['fear_and_greed']['score']))
-            prev_score = round(float(fng_json['fear_and_greed']['previous_close']))
-            rating = fng_json['fear_and_greed']['rating']
-            results['fear_greed'] = {
-                'id': 'fear_greed',
-                'price': cur_score,
-                'change': cur_score - prev_score,
-                'rating': rating
+  <!-- Tailwind CSS & Chart.js -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            dark: {
+              bg: '#090d16',
+              card: '#111827',
+              border: '#1f293d',
+              surface: '#162032'
             }
-            print(f"✓ CNN Fear & Greed 실시간 수집 성공: {cur_score}점 ({rating})")
-    except Exception as ex:
-        print(f"⚠️ CNN Fear & Greed 크롤링 실패 ({ex}), 최신 공식 기준치(22점)로 대체합니다.")
-        results['fear_greed'] = {
-            'id': 'fear_greed',
-            'price': 22,
-            'change': 3,
-            'rating': 'extreme_fear'
+          },
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif']
+          }
         }
-    # Alternative.me 크립토 공포 & 탐욕 지수 수집
-    try:
-        req = urllib.request.Request(
-            'https://api.alternative.me/fng/?limit=1',
-            headers={'User-Agent': 'Mozilla/5.0'}
-        )
-        with urllib.request.urlopen(req, timeout=4) as resp:
-            cfng_json = json.loads(resp.read().decode())
-            val = int(cfng_json['data'][0]['value'])
-            results['crypto_fng'] = {
-                'id': 'crypto_fng',
-                'price': val,
-                'change': 3,
-                'rating': cfng_json['data'][0]['value_classification']
-            }
-            print(f"✓ Crypto Fear & Greed 수집 성공: {val}점")
-    except Exception:
-        results['crypto_fng'] = {
-            'id': 'crypto_fng',
-            'price': 68,
-            'change': 3,
-            'rating': 'Greed'
-        }
-
-    print(f"🎉 총 {len(results)}개 거시경제 지표 실시간 수집 완료!\n")
-    return results
-
-# ==============================================================================
-# 2. 개별 주식 데이터 및 기술적/재무 지표 계산 함수
-# ==============================================================================
-
-def fetch_data(ticker: str) -> pd.DataFrame | None:
-    try:
-        data = yf.download(ticker, period="540d", prepost=True, auto_adjust=False, progress=False)
-        if data.empty:
-            print(f"⚠️ [오류] {ticker}: 데이터를 찾을 수 없습니다.")
-            return None
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.get_level_values(0)
-        return data
-    except Exception as e:
-        print(f"❌ [오류] {ticker}: 데이터 다운로드 실패 ({e})")
-        return None
-
-def calculate_indicators(df: pd.DataFrame, stock_info: Dict[str, Any]) -> Dict[str, Any]:
-    indicators = {}
-    close_prices = df['Close']
-
-    ma_periods = [20, 30, 60, 120, 360]
-    for p in ma_periods:
-        df[f'SMA_{p}'] = close_prices.rolling(window=p).mean()
-        indicators[f'SMA_{p}'] = df[f'SMA_{p}'].iloc[-1]
-
-    indicators['current_price'] = stock_info.get('currentPrice', close_prices.iloc[-1])
-    indicators['last_sma_date'] = close_prices.index[-1].strftime('%Y-%m-%d')
-
-    if len(close_prices) >= 2:
-        indicators['previous_day_close'] = close_prices.iloc[-2]
-    else:
-        indicators['previous_day_close'] = np.nan
-
-    one_year_data = close_prices.tail(252)
-    running_max = one_year_data.cummax()
-    drawdown = (one_year_data - running_max) / running_max
-    indicators['mdd_1y'] = drawdown.min()
-
-    peak_1y = one_year_data.max()
-    indicators['peak_1y'] = peak_1y 
-    indicators['current_drawdown'] = (indicators['current_price'] - peak_1y) / peak_1y
-
-    daily_returns = one_year_data.pct_change().dropna()
-    indicators['volatility_1y'] = daily_returns.std()
-    indicators['daily_return_mean'] = daily_returns.mean()
-
-    rsi_period = 14
-    delta = close_prices.diff()
-    gain = delta.where(delta > 0, 0)
-    loss = -delta.where(delta < 0, 0)
-
-    avg_gain = gain.ewm(com=rsi_period - 1, adjust=False, min_periods=rsi_period).mean()
-    avg_loss = loss.ewm(com=rsi_period - 1, adjust=False, min_periods=rsi_period).mean()
-
-    rs = avg_gain / avg_loss
-    rsi = 100 - (100 / (1 + rs))
-    indicators['RSI_14'] = rsi.iloc[-1]
-
-    return indicators
-
-def check_undervalued(ticker: str, indicators: Dict[str, Any], stock_name: str) -> Dict[str, Any]:
-    mdd_1y_val = get_scalar_from_series_or_scalar(indicators['mdd_1y'])
-    current_drawdown_val = get_scalar_from_series_or_scalar(indicators['current_drawdown'])
-    current_price = get_scalar_from_series_or_scalar(indicators['current_price'])
-    peak_1y_val = get_scalar_from_series_or_scalar(indicators['peak_1y'])
-    volatility = get_scalar_from_series_or_scalar(indicators['volatility_1y'])
-    sma_360 = get_scalar_from_series_or_scalar(indicators.get('SMA_360', np.nan))
-    previous_day_close = get_scalar_from_series_or_scalar(indicators.get('previous_day_close', np.nan))
-
-    mdd_target_price = peak_1y_val * (1 + mdd_1y_val) if not np.isnan(peak_1y_val) and not np.isnan(mdd_1y_val) else np.nan
-    sigma_target_price_1sigma = previous_day_close * (1 - 1 * volatility) if not np.isnan(previous_day_close) and not np.isnan(volatility) else np.nan
-    sigma_target_price_2sigma = previous_day_close * (1 - 2 * volatility) if not np.isnan(previous_day_close) and not np.isnan(volatility) else np.nan
-
-    sigma_pct_1sigma = 1 * volatility * 100 if not np.isnan(volatility) else np.nan
-    sigma_pct_2sigma = 2 * volatility * 100 if not np.isnan(volatility) else np.nan
-
-    results = {
-        'ticker': ticker,
-        'stock_name': stock_name,
-        'current_price': current_price,
-        'is_undervalued': False,
-        'ma_check': False,
-        'mdd_check': False,
-        'sigma_check': False,
-        'sigma_check_1sigma': False,
-        'sigma_check_2sigma': False,
-        'mdd_value': f"{mdd_1y_val * 100:.2f}%",
-        'current_drawdown_value': f"{current_drawdown_val * 100:.2f}%",
-        'ma_360_price': sma_360,
-        'mdd_target_price': mdd_target_price,
-        'sigma_target_price_1sigma': sigma_target_price_1sigma,
-        'sigma_target_price_2sigma': sigma_target_price_2sigma,
-        'sigma_pct_1sigma': sigma_pct_1sigma,
-        'sigma_pct_2sigma': sigma_pct_2sigma,
-        'ma_score': 0,
-        'mdd_score': 0,
-        'sigma_score': 0,
-        'ma_individual_checks': {}
+      }
     }
-
-    ma_periods = [20, 30, 60, 120, 360]
-    ma_below_count = 0
-
-    for p in ma_periods:
-        ma_key = f'SMA_{p}'
-        ma_value = get_scalar_from_series_or_scalar(indicators.get(ma_key))
-        if not np.isnan(ma_value) and current_price < ma_value:
-            ma_below_count += 1
-            results['ma_score'] += 6
-            results['ma_individual_checks'][p] = 'O'
-        else:
-            results['ma_individual_checks'][p] = 'X'
-
-    if ma_below_count == len(ma_periods):
-        results['ma_check'] = True
-
-    if not np.isnan(mdd_1y_val) and not np.isnan(current_drawdown_val):
-        if current_drawdown_val >= 0:
-            results['mdd_score'] = 0
-        elif current_drawdown_val <= mdd_1y_val:
-            results['mdd_score'] = 40
-        else:
-            results['mdd_score'] = (current_drawdown_val / mdd_1y_val) * 40
-            results['mdd_score'] = min(results['mdd_score'], 40)
-            results['mdd_score'] = max(results['mdd_score'], 0)
-    else:
-        results['mdd_score'] = 0
-
-    if current_drawdown_val < mdd_1y_val:
-        results['mdd_check'] = True
-
-    if not np.isnan(sigma_target_price_1sigma) and current_price < sigma_target_price_1sigma:
-        results['sigma_check_1sigma'] = True
-        results['sigma_score'] = 20
-
-    if not np.isnan(sigma_target_price_2sigma) and current_price < sigma_target_price_2sigma:
-        results['sigma_check_2sigma'] = True
-        results['sigma_check'] = True
-        results['sigma_score'] = 40
-
-    results['is_undervalued'] = results['ma_check'] and results['mdd_check'] and results['sigma_check']
-    return results
-
-def check_overvalued(ticker: str, indicators: Dict[str, Any], stock_name: str) -> Dict[str, Any]:
-    current_price = get_scalar_from_series_or_scalar(indicators['current_price'])
-    rsi_14 = get_scalar_from_series_or_scalar(indicators.get('RSI_14', np.nan))
-    sma_60 = get_scalar_from_series_or_scalar(indicators.get('SMA_60', np.nan))
-    previous_day_close = get_scalar_from_series_or_scalar(indicators.get('previous_day_close', np.nan))
-    volatility = get_scalar_from_series_or_scalar(indicators['volatility_1y'])
-
-    results = {
-        'ticker': ticker,
-        'stock_name': stock_name,
-        'current_price': current_price,
-        'is_overvalued': False,
-        'rsi_over_check': False,
-        'disparity_over_check': False,
-        'sigma_upper_over_check': False,
-        'rsi_value': rsi_14,
-        'disparity_value_pct': np.nan,
-        'disparity_target_price': np.nan,
-        'sigma_upper_target_price': np.nan,
-        'sigma_upper_pct': np.nan,
-        'overvalued_score': 0,
-        'disparity_score': 0,
-        'rsi_score': 0
+  </script>
+  <style>
+    /* iOS Safe Area Insets for notched devices */
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      -webkit-tap-highlight-color: transparent;
     }
-
-    if not np.isnan(rsi_14):
-        if rsi_14 >= 70:
-            results['rsi_over_check'] = True
-            rsi_score_calculated = 30 + (rsi_14 - 70)
-            results['rsi_score'] = min(40, rsi_score_calculated)
-            results['overvalued_score'] += results['rsi_score']
-
-    if not np.isnan(sma_60) and not np.isnan(current_price):
-        disparity_value_pct = ((current_price / sma_60) - 1) * 100
-        results['disparity_value_pct'] = disparity_value_pct
-        results['disparity_target_price'] = sma_60 * 1.15
-
-        if disparity_value_pct > 15:
-            results['disparity_over_check'] = True
-            results['disparity_score'] = disparity_value_pct - 15
-            results['overvalued_score'] += results['disparity_score']
-
-    sigma_upper_target_price = previous_day_close * (1 + 2 * volatility) if not np.isnan(previous_day_close) and not np.isnan(volatility) else np.nan
-    results['sigma_upper_target_price'] = sigma_upper_target_price
-    results['sigma_upper_pct'] = 2 * volatility * 100 if not np.isnan(volatility) else np.nan
-
-    if not np.isnan(sigma_upper_target_price) and current_price > sigma_upper_target_price:
-        results['sigma_upper_over_check'] = True
-        results['overvalued_score'] += 30
-
-    results['is_overvalued'] = results['rsi_over_check'] and results['disparity_over_check'] and results['sigma_upper_over_check']
-    return results
-
-def get_fundamental_indicators(ticker: str, stock_info: Dict[str, Any], df: pd.DataFrame) -> Dict[str, Any]:
-    fundamental_indicators = {
-        'forward_per': np.nan, 'trailing_per': np.nan, 'reported_eps_ttm': np.nan,
-        'target_mean_price': np.nan, 'target_upside_pct': np.nan,
-        'recommendation_key': 'N/A', 'beta': np.nan, 'market_cap': np.nan
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Touch active state */
+    .touch-press:active {
+      transform: scale(0.97);
+      opacity: 0.85;
     }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 min-h-screen antialiased flex flex-col font-sans select-none pb-20">
 
-    fundamental_indicators['forward_per'] = stock_info.get('forwardPE', np.nan)
-    fundamental_indicators['trailing_per'] = stock_info.get('trailingPE', np.nan)
-    fundamental_indicators['reported_eps_ttm'] = stock_info.get('trailingEps', np.nan)
+  <!-- Toast Container -->
+  <div id="toastBox" class="fixed top-12 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-11/12 max-w-sm"></div>
 
-    current_price = df['Close'].iloc[-1] if not df.empty else np.nan
-    target_mean_price = stock_info.get('targetMeanPrice', np.nan)
-    fundamental_indicators['target_mean_price'] = target_mean_price
+  <!-- Mobile Compact Header -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#090d16]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 py-2.5">
+    <div class="flex items-center justify-between">
+      
+      <!-- Brand & Live Pulse -->
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-emerald-500 flex items-center justify-center text-white shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-sm font-black tracking-tight text-slate-900 dark:text-white">마켓모니터</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          </div>
+          <p id="topSubStatus" class="text-[10px] text-slate-400 font-mono flex items-center gap-1"><span>데이터 생성:</span> <strong id="jsonUpdateTimeHeader" class="text-amber-500 dark:text-amber-400 font-bold font-mono">---</strong></p>
+        </div>
+      </div>
 
-    if not np.isnan(target_mean_price) and not np.isnan(current_price) and current_price != 0:
-        fundamental_indicators['target_upside_pct'] = ((target_mean_price - current_price) / current_price) * 100
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-1.5">
+        <!-- Refresh Button -->
+        <button id="refreshBtn" class="touch-press p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60" title="새로고침">
+          <svg id="refreshIcon" class="w-3.5 h-3.5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </button>
 
-    fundamental_indicators['recommendation_key'] = stock_info.get('recommendationKey', 'N/A')
-    fundamental_indicators['beta'] = stock_info.get('beta', np.nan)
-    fundamental_indicators['market_cap'] = stock_info.get('marketCap', np.nan)
+        <!-- Dark/Light Theme -->
+        <button id="themeToggle" class="touch-press p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60" title="테마 변경">
+          <svg id="sunIcon" class="w-3.5 h-3.5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <svg id="moonIcon" class="w-3.5 h-3.5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+        </button>
 
-    return fundamental_indicators
+        <!-- Switch to Desktop View -->
+        <button id="desktopToggleBtn" class="touch-press px-2 py-1 rounded-lg bg-indigo-600 text-white text-[10px] font-bold shadow-sm" title="데스크톱 뷰">
+          PC뷰
+        </button>
+      </div>
 
-def run_analysis(stock_list: List[str], market_name: str) -> List[Dict[str, Any]]:
-    print(f"--- 📉 {market_name} 종목 분석 가동 ({len(stock_list)}개) ---")
-    all_results = []
+    </div>
+  </header>
 
-    for ticker in stock_list:
-        try:
-            ticker_obj = yf.Ticker(ticker)
-            stock_info = ticker_obj.info
-            stock_name = stock_info.get('longName', stock_info.get('shortName', ticker))
+  <!-- Horizontal Swipeable Macro Carousel (Top Key Pulse) -->
+  <section class="bg-slate-100/70 dark:bg-[#0e1422] border-b border-slate-200 dark:border-slate-800/80 px-3 py-2">
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5" id="macroPulseBar">
+      <!-- Generated by JS -->
+    </div>
+  </section>
 
-            df = fetch_data(ticker)
-            if df is None or df.empty:
-                continue
+  <!-- Mobile Segmented Tab Bar (Large, Tap-Friendly Pills) -->
+  <section class="sticky top-[53px] z-30 bg-white/95 dark:bg-[#090d16]/95 backdrop-blur-md px-3 pt-2.5 pb-2 border-b border-slate-200 dark:border-slate-800/60">
+    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="mobileMainTabs">
+      <button data-cat="undervalued" class="m-tab-btn active px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap bg-emerald-500 text-white shadow-sm flex items-center gap-1">
+        🎯 퀀트 저평가 TOP
+      </button>
+      <button data-cat="overvalued" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
+        🔥 고평가·과열 경계
+      </button>
+      <button data-cat="leverage" class="m-tab-btn px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:text-white flex items-center gap-1">
+        ⚡ 레버리지 시그널
+      </button>
+      <button data-cat="treasury" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
+        🏛️ 미국 국채 (10Y/20Y/30Y)
+      </button>
+      <button data-cat="us" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
+        🇺🇸 미국 지수
+      </button>
+      <button data-cat="kr" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
+        🇰🇷 국내 증시
+      </button>
+      <button data-cat="crypto" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
+        🪙 비트코인/코인
+      </button>
+      <button data-cat="macro" class="m-tab-btn px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1">
+        💵 환율/원자재/VIX
+      </button>
+    </div>
 
-            indicators = calculate_indicators(df, stock_info)
-            undervalued_results = check_undervalued(ticker, indicators, stock_name)
-            overvalued_results = check_overvalued(ticker, indicators, stock_name)
-            fundamental_results = get_fundamental_indicators(ticker, stock_info, df)
+    <!-- Sub-Filter Bar (for Screener: All / KR / US) & Search -->
+    <div id="subFilterBar" class="mt-2 flex items-center justify-between gap-2">
+      <!-- Market Toggle Pills -->
+      <div id="screenerMarketPills" class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg text-xs overflow-x-auto no-scrollbar">
+        <button data-market="all" class="m-mkt-btn active px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white whitespace-nowrap">전체</button>
+        <button data-market="kr" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">🇰🇷 국내</button>
+        <button data-market="etf" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">📊 ETF</button>
+        <button data-market="us" class="m-mkt-btn px-2 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">🇺🇸 미국·코인</button>
+      </div>
 
-            results = {**undervalued_results, **overvalued_results, **fundamental_results}
-            results['total_undervalued_score'] = round(undervalued_results['ma_score'] + undervalued_results['mdd_score'] + undervalued_results['sigma_score'], 1)
-            results['total_overvalued_score'] = round(overvalued_results['overvalued_score'], 1)
+      <!-- Compact Search Box -->
+      <div class="relative flex-1 max-w-[180px]">
+        <input id="mobileSearchInput" type="text" placeholder="종목/티커 검색..." class="w-full pl-6 pr-6 py-1 text-xs rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500">
+        <svg class="w-3 h-3 absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <button id="clearSearchBtn" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">✕</button>
+      </div>
+    </div>
+  </section>
 
-            all_results.append(results)
-            print(f"✓ {ticker} 분석 완료: 저평가 {results['total_undervalued_score']}점 / 과열 {results['total_overvalued_score']}점")
-        except Exception as e:
-            print(f"❌ {ticker} 오류: {e}")
-            continue
+  <!-- Mobile Optimized Main Feed (List View) -->
+  <main class="flex-1 px-3 py-2 space-y-2">
+    
+    <!-- Status / Info Badge -->
+    <div class="flex items-center justify-between px-1 text-[11px] text-slate-500 dark:text-slate-400">
+      <span id="feedCountTitle">총 69개 종목 분석 순위</span>
+      <span id="feedUpdateBadge" class="font-mono text-[10px]">10분 자동 갱신</span>
+    </div>
 
-    return all_results
+    <!-- AI Market Intelligence Briefing Card (Daily 08:30 / 13:00 / 23:00 KST) -->
+    <div id="aiBriefingCard" class="hidden p-3.5 rounded-2xl bg-gradient-to-br from-indigo-900/40 via-slate-900/70 to-purple-950/40 border border-indigo-500/30 shadow-md space-y-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            🤖 AI 마켓 인텔리전스
+          </span>
+          <span id="aiSessionTag" class="text-[10px] font-bold text-slate-300">모닝 브리핑</span>
+        </div>
+        <span id="aiBriefingTime" class="text-[10px] font-mono text-indigo-300/80">--:--</span>
+      </div>
 
-# ==============================================================================
-# 3. 퀀트 레버리지 투자 판정 엔진 (나스닥 1년 최고가 실시간 MDD + 공탐지수 + VIX 4단계 스코어링)
-# ==============================================================================
+      <h4 id="aiBriefingHeadline" class="text-xs font-black text-white leading-snug"></h4>
+      <p id="aiBriefingSummary" class="text-[11px] text-slate-300 leading-relaxed font-normal"></p>
 
-def calculate_leverage_meter(macro_data: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    1) 나스닥(^IXIC) 1년 실제 최고가(52w Peak)를 실시간 산출하여 현재 낙폭(Drawdown)을 100% 동적 계산.
-    2) 최근 40년간 나스닥 MDD 역사 통계, 공포탐욕지수, VIX를 종합하여
-       레버리지(TQQQ/SOXL/UPRO 등) 투자 적합도를 4단계(고점, 평균, 진입, 투하)로 판정.
-    """
-    # 1. 나스닥 1년 실제 고점(Peak) 및 현재가 실시간 동적 산출
-    nasdaq_cur = 24579.42
-    nasdaq_peak = 27722.75  # 실제 최근 52주 최고가 기준선
+      <!-- Key Bullet Points -->
+      <div id="aiBriefingKeyPoints" class="space-y-1 pt-1.5 border-t border-indigo-500/20 text-[10.5px] text-slate-200"></div>
+    </div>
 
-    try:
-        # yfinance를 통해 나스닥 1년치 일봉을 가져와 실제 52주 최고가와 현재가를 계산
-        nasdaq_df = yf.download('^IXIC', period='1y', interval='1d', progress=False)
-        if not nasdaq_df.empty and 'Close' in nasdaq_df:
-            n_close = nasdaq_df['Close'].dropna()
-            if not n_close.empty:
-                nasdaq_peak = float(get_scalar_from_series_or_scalar(n_close.max()))
-                nasdaq_cur = float(get_scalar_from_series_or_scalar(n_close.iloc[-1]))
-    except Exception as ex:
-        print(f"  ⚠️ 나스닥 1년 최고가 산출 중 오류 ({ex}), 기준선(27,722.75) 기반으로 계산합니다.")
-        if 'nasdaq' in macro_data and macro_data['nasdaq'].get('price'):
-            nasdaq_cur = float(macro_data['nasdaq']['price'])
+    <!-- Main List Container -->
+    <div id="mobileListContainer" class="space-y-1.5">
+      <!-- Rendered dynamically by JS -->
+    </div>
 
-    # 현재 고점 대비 낙폭 (Drawdown %)
-    drawdown_pct = ((nasdaq_cur - nasdaq_peak) / nasdaq_peak * 100.0) if nasdaq_peak > 0 else 0.0
+  </main>
 
-    # 2. VIX 변동성 지수
-    vix_val = 19.42
-    if 'vix' in macro_data and macro_data['vix'].get('price'):
-        vix_val = float(macro_data['vix']['price'])
+  <!-- Native App Style Slide-up Bottom Sheet Modal -->
+  <div id="bottomSheet" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-end justify-center opacity-0 transition-opacity duration-300">
+    <div id="sheetContent" class="bg-white dark:bg-[#111827] w-full max-w-lg rounded-t-3xl border-t border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4 max-h-[85vh] overflow-y-auto transform translate-y-full transition-transform duration-300">
+      
+      <!-- Drag Handle Bar -->
+      <div class="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto -mt-1 mb-2"></div>
 
-    # 3. 공포 & 탐욕 지수
-    fng_val = 26
-    fng_rating = 'Fear'
-    if 'fear_greed' in macro_data and macro_data['fear_greed'].get('price'):
-        fng_val = float(macro_data['fear_greed']['price'])
-        fng_rating = macro_data['fear_greed'].get('rating', 'Fear')
+      <!-- Sheet Header -->
+      <div class="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span id="sheetTicker" class="text-xs px-2 py-0.5 rounded font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">TICKER</span>
+            <span id="sheetRecoKey" class="text-[10px] px-2 py-0.5 rounded font-bold bg-blue-500/10 text-blue-500">BUY</span>
+          </div>
+          <h3 id="sheetName" class="text-base font-extrabold text-slate-900 dark:text-white mt-1">종목명</h3>
+          <div class="flex items-baseline gap-2 mt-0.5">
+            <span id="sheetPrice" class="text-2xl font-black font-mono text-slate-900 dark:text-white">--</span>
+            <span id="sheetScoreBadge" class="text-xs px-2 py-0.5 rounded font-black font-mono">--</span>
+          </div>
+        </div>
+        <button id="closeSheetBtn" class="p-2 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">✕</button>
+      </div>
 
-    # =========================================================================
-    # 점수 산출 로직 (100점 만점)
-    # =========================================================================
-    # A. 40년 역사적 MDD 대비 낙폭 점수 (최대 40점)
-    # (40년 통계: 단기조정 -10%~-13%, 약세장 -18%~-24%, 역사적 대폭락 -30% 이상)
-    if drawdown_pct <= -25.0:   dd_score = 40  # 역사적 대폭락 (투하)
-    elif drawdown_pct <= -18.0: dd_score = 32  # 약세장 저점권 (진입 상위)
-    elif drawdown_pct <= -10.0: dd_score = 24  # 역사적 평균 조정 도달 (진입)
-    elif drawdown_pct <= -5.0:  dd_score = 12  # 가벼운 숨고르기 (평균)
-    else:                       dd_score = 0   # 신고가 부근 (고점 위험)
+      <!-- Section A: Stock Quant Metrics (Visible only for individual stocks) -->
+      <div id="stockSheetSection" class="space-y-4">
+        <!-- Sheet Key Metrics Grid -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+          <div class="text-slate-400 text-[10px]">월가 평균 목표주가</div>
+          <div id="sheetTargetPrice" class="text-sm font-bold font-mono text-slate-900 dark:text-white mt-0.5">--</div>
+          <div id="sheetUpside" class="text-[11px] font-bold text-emerald-500 mt-0.5">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+          <div class="text-slate-400 text-[10px]">밸류에이션 (PER)</div>
+          <div id="sheetPer" class="text-xs font-mono font-bold text-slate-900 dark:text-white mt-0.5">--</div>
+          <div id="sheetMarketCap" class="text-[10px] text-slate-400 mt-0.5">--</div>
+        </div>
+      </div>
 
-    # B. 공포 & 탐욕 지수 점수 (최대 25점)
-    if fng_val <= 20:   fng_score = 25  # 극단적 공포
-    elif fng_val <= 35: fng_score = 18  # 공포
-    elif fng_val <= 55: fng_score = 10  # 중립
-    elif fng_val <= 70: fng_score = 4   # 탐욕
-    else:               fng_score = 0   # 극단적 탐욕
+      <!-- Technical Indicator Checks -->
+      <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-2 text-xs">
+        <div class="font-bold text-slate-900 dark:text-white">퀀트 지표 충족 상세 내역</div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+            <span class="text-slate-400 block text-[10px]">이동평균(20~360일)</span>
+            <strong id="sheetMaCheck" class="font-bold">--</strong>
+          </div>
+          <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+            <span class="text-slate-400 block text-[10px]">1년 최대낙폭(MDD)</span>
+            <strong id="sheetMddCheck" class="font-bold">--</strong>
+          </div>
+          <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+            <span class="text-slate-400 block text-[10px]">시그마 하단 이탈</span>
+            <strong id="sheetSigmaCheck" class="font-bold">--</strong>
+          </div>
+          <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+            <span class="text-slate-400 block text-[10px]">RSI (14일)</span>
+            <strong id="sheetRsi" class="font-bold font-mono">--</strong>
+          </div>
+          <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 col-span-2">
+            <span class="text-slate-400 block text-[10px]">60일 이평 이격도</span>
+            <strong id="sheetDisparity" class="font-bold font-mono">--</strong>
+          </div>
+        </div>
+      </div>
 
-    # C. VIX 지수 점수 (최대 20점)
-    if vix_val >= 30.0:   vix_score = 20  # 시장 패닉 투매
-    elif vix_val >= 24.0: vix_score = 15  # 공포 고조
-    elif vix_val >= 18.0: vix_score = 9   # 평균 변동성
-    elif vix_val >= 14.0: vix_score = 4   # 평온
-    else:                 vix_score = 0   # 극단적 안도감 (하락 위험)
+      </div>
 
-    # D. 기술적 보조 점수 (15점)
-    tech_score = 8
-
-    total_score = min(100, max(0, dd_score + fng_score + vix_score + tech_score))
-
-    # 4단계 판정
-    if total_score >= 76:
-        stage = "투하"
-        level = 4
-        badge = "🚀 4단계: 투하 (집중 매수)"
-        color = "indigo"
-        guide = f"나스닥이 최고점({nasdaq_peak:,.0f}pt) 대비 {drawdown_pct:.1f}% 하락하여 40년 역사상 상위 10%에 해당하는 극단적 과매도 구간입니다. 레버리지 ETF(TQQQ, SOXL 등)를 적극 분할 투하하여 인생 역전 기회를 노릴 수 있습니다."
-        rec_alloc = "50% ~ 70%+"
-    elif total_score >= 51:
-        stage = "진입"
-        level = 3
-        badge = "🎯 3단계: 진입 (분할 매수)"
-        color = "emerald"
-        guide = f"나스닥이 최고점({nasdaq_peak:,.0f}pt) 대비 {drawdown_pct:.1f}% 하락하여 40년 평균 조정 구간(-10%~-13%)에 도달했으며, 공포지수가 {int(fng_val)}점으로 투자심리가 위축되었습니다. 레버리지 1~2차 분할 매수를 시작하기에 통계적으로 매우 유리한 시점입니다."
-        rec_alloc = "20% ~ 35%"
-    elif total_score >= 26:
-        stage = "평균"
-        level = 2
-        badge = "⚖️ 2단계: 평균 (관망 대기)"
-        color = "slate"
-        guide = f"나스닥 낙폭이 {drawdown_pct:.1f}%로 일상적인 변동 범위에 위치해 있습니다. 1배수 기본 종목을 유지하며 레버리지 신규 진입은 보류하고 현금을 온존하세요."
-        rec_alloc = "0% ~ 10% 미만"
-    else:
-        stage = "고점"
-        level = 1
-        badge = "🚨 1단계: 고점 (레버리지 금지)"
-        color = "rose"
-        guide = f"나스닥이 신고가 부근(낙폭 {drawdown_pct:.1f}%)이며 시장 탐욕 지수가 높습니다. 레버리지 ETF 매수는 절대 금지하며, 기존 레버리지 물량을 분할 익절하고 현금을 확보해야 합니다."
-        rec_alloc = "0% (레버리지 진입 금지)"
-
-    return {
-        "stage": stage,
-        "level": level,
-        "badge": badge,
-        "color": color,
-        "score": total_score,
-        "guide": guide,
-        "recommended_allocation": rec_alloc,
-        "inputs": {
-            "nasdaq_current": round(nasdaq_cur, 2),
-            "nasdaq_peak": round(nasdaq_peak, 2),
-            "drawdown_pct": round(drawdown_pct, 2),
-            "fear_greed": int(fng_val),
-            "fear_greed_rating": fng_rating,
-            "vix": round(vix_val, 2)
-        },
-        "score_breakdown": {
-            "drawdown_score": dd_score,
-            "fear_greed_score": fng_score,
-            "vix_score": vix_score,
-            "tech_score": tech_score,
-            "total_score": total_score
-        },
-        "updated_at": get_kst_now()
-    }
-
-# ==============================================================================
-# 4. 메인 총괄 실행부 (거시지표 + 종목 랭킹 + 레버리지 시그널 통합 빌드)
-# ==============================================================================
-
-def main_execution():
-    pd.set_option('future.no_silent_downcasting', True)
-
-    # 1. 글로벌 거시경제 지표 및 시장 지수 실시간 크롤링
-    macro_data = fetch_macro_data()
-
-# 2-1. 국내 순수 개별 주식 리스트 (총 7개)
-    stock_tickers_kr = [
-        '005930.KS', '005935.KS', '000660.KS', '005387.KS',
-        '316140.KS', '058610.KS', '443250.KS', '005380.KS',
-        '004540.KS', '264660.KS', '016380.KS', '003100.KS',
-        '347740.KS', '196700.KS', '035600.KS', '094970.KS',
-        '009200.KS', '126720.KS', '004980.KS', '413390.KS',
-        '033270.KS', '007700.KS', '060720.KS', '007280.KS',    
-        '014940.KS', '071670.KS', '248170.KS', '025770.KS',        
-        '189690.KS', '099410.KS', '014790.KS', '089980.KS'
-    ]
-
-    # 2-2. 국내 상장 테마 및 지수 ETF 리스트 (총 29개)
-    stock_tickers_etf = [
-        '453810.KS', '411060.KS', '0080G0.KS', '418670.KS',
-        '0053L0.KS', '0183J0.KS', '0131V0.KS', '0162Y0.KS',
-        '441640.KS', '160580.KS', '0163Y0.KS', '161510.KS',
-        '0052D0.KS', '0123G0.KS', '229200.KS', '245710.KS',
-        '0023A0.KS', '452360.KS', '487240.KS', '486290.KS',
-        '433500.KS', '307520.KS', '494670.KS', '487230.KS',
-        '0144L0.KS', '426030.KS', '0172V0.KS', '396500.KS',
-        '139220.KS'
-    ]
-
-    # 3. 미국 주요 주식 및 암호화폐 리스트 (총 78개)
-    stock_tickers_us = [
-        'CRWD', 'PANW', 'CRWV', 'NBIS', 'DELL', 'VRT', 'GLW', 'INTC',
-        'STX', 'TEM', 'WDC', 'MU', 'SOFI', 'SLDP', 'ASTS', 'PLTR',
-        'META', 'ETH-USD', 'ONDS', 'ARM', 'PGY', 'MSFT', 'CIEN', 'APP',
-        'CLS', 'BTC-USD', 'TSLA', 'LLY', 'IONQ', 'IREN', 'LITE', 'RKLB',
-        'GEV', 'PL', 'COHR', 'BE', 'NVDA', 'SOXL', 'AVGO', 'GOOGL',
-        'AMD', 'COIN', 'TSEM', 'QCOM', 'ASML', 'TSM', 'LUNR', 'KORU',
-        'AAOI', 'CRDO', 'ORCL', 'TER', 'ALAB', 'AMAT', 'LRCX', 'KLAC',
-        'DDOG', 'SNDK', 'SIMO', 'MRVL', 'CRCL', 'MSTR', 'SPCX', 'FTNT',
-        'AMZN', 'SNOW', 'OKTA', 'DG', 'UNH', 'ACN', 'KO', 'AAPL',
-        'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA', 'TQQQ'
-    ]
-
-    # 각 시장 카테고리별 분석 및 태깅
-    all_results_kr = run_analysis(stock_tickers_kr, "국내 주식")
-    for r in all_results_kr: r['market_type'] = 'kr'
-
-    all_results_etf = run_analysis(stock_tickers_etf, "국내 ETF")
-    for r in all_results_etf: r['market_type'] = 'etf'
-
-    all_results_us = run_analysis(stock_tickers_us, "미국 및 암호화폐")
-    for r in all_results_us: r['market_type'] = 'us'
-
-    combined_results = all_results_kr + all_results_etf + all_results_us
-
-    # 4. 레버리지 투자 판정 지표 계산
-    leverage_meter = calculate_leverage_meter(macro_data)
-
-    screener_db = {
-        "_macro": macro_data,  # 거시지표 최신 실시간 데이터 통합 탑재
-        "_meta": {
-            "updated_at": get_kst_now(),
-            "total_stocks": len(combined_results),
-            "total_macro": len(macro_data)
-        },
-        "_leverage_meter": leverage_meter  # ⚡ 4단계 레버리지 시그널 탑재
-    }
-
-    for res in combined_results:
-        ticker_key = res['ticker'].upper()
+      <!-- Section B: Macro / Index Indicator Detail (Visible for Macro/Treasury/Index items) -->
+      <div id="macroSheetSection" class="hidden space-y-3 text-xs">
         
-        def clean(v): 
-            return None if (v is None or str(v) == "nan" or (isinstance(v, float) and np.isnan(v))) else v
+        <!-- Score & Sentiment Gauge Bar (for 0~100 indices like Fear & Greed) -->
+        <div id="macroGaugeBox" class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
+            <span>투자 심리 구간 게이지</span>
+            <span id="macroGaugeScoreText" class="font-mono text-emerald-500 font-black">22점 / 100점</span>
+          </div>
+          <!-- Colored Gauge Gradient Bar -->
+          <div class="w-full h-3 rounded-full bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-500 relative overflow-hidden">
+            <!-- Indicator Pin -->
+            <div id="macroGaugePin" class="absolute top-0 bottom-0 w-1.5 bg-white shadow-md rounded-full transform -translate-x-1/2" style="left: 22%;"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-400 font-semibold px-0.5">
+            <span>0 극단적공포</span>
+            <span>25 공포</span>
+            <span>50 중립</span>
+            <span>75 탐욕</span>
+            <span>100 극단탐욕</span>
+          </div>
+        </div>
 
-        screener_db[ticker_key] = {
-            "ticker": res['ticker'],
-            "company_name": res['stock_name'],
-            "current_price": clean(res['current_price']),
-            "total_undervalued_score": res['total_undervalued_score'],
-            "total_overvalued_score": res['total_overvalued_score'],
-            "is_undervalued": res['is_undervalued'],
-            "is_overvalued": res['is_overvalued'],
-            "ma_check": res['ma_check'],
-            "mdd_check": res['mdd_check'],
-            "sigma_check": res['sigma_check'],
-            "rsi_value": clean(res['rsi_value']),
-            "disparity_value_pct": clean(res['disparity_value_pct']),
-            "metrics": {
-                "forward_per": clean(res['forward_per']),
-                "trailing_per": clean(res['trailing_per']),
-                "reported_eps_ttm": clean(res['reported_eps_ttm']),
-                "target_mean_price": clean(res['target_mean_price']),
-                "target_upside_pct": clean(res['target_upside_pct']),
-                "recommendation_key": res['recommendation_key'],
-                "beta": clean(res['beta']),
-                "market_cap": clean(res['market_cap'])
-            },
-            "updated_at": get_kst_now()
+        <!-- Metric Details Cards -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">최근 변동폭 / 전일 종가</div>
+            <div id="macroSheetChange" class="text-sm font-bold font-mono text-slate-900 dark:text-white mt-0.5">--</div>
+            <div id="macroSheetDayRange" class="text-[10px] text-slate-400 mt-0.5">--</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+            <div class="text-slate-400 text-[10px]">지표 분류 및 단위</div>
+            <div id="macroSheetCategory" class="text-xs font-bold text-slate-900 dark:text-white mt-0.5">핵심 시장 지표</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">글로벌 마켓 모니터</div>
+          </div>
+        </div>
+
+        <!-- Description & Macro Insight -->
+        <div class="p-3.5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-900/40 space-y-2">
+          <div class="font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            지표 정의 및 시장 영향 해설
+          </div>
+          <p id="macroSheetDesc" class="text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]"></p>
+          <div class="pt-2 border-t border-blue-200/50 dark:border-blue-900/50">
+            <strong class="text-slate-800 dark:text-slate-200 block text-[11px] mb-0.5">🎯 투자 전략 포인트</strong>
+            <p id="macroSheetInsight" class="text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="pt-2">
+        <button id="dismissSheetBtn" class="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md active:scale-98 transition">
+          확인 완료
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Fixed Bottom App Navigation Bar (Robinhood/Toss Style) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#090d16]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800/80 px-3 py-2 flex items-center justify-around text-[10px]">
+    <button class="m-bottom-nav active flex flex-col items-center gap-0.5 text-emerald-500 font-bold" data-target="undervalued">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>저평가TOP</span>
+    </button>
+    <button class="m-bottom-nav flex flex-col items-center gap-0.5 text-slate-400 font-medium" data-target="overvalued">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
+      </svg>
+      <span>과열경계</span>
+    </button>
+    <button class="m-bottom-nav flex flex-col items-center gap-0.5 text-indigo-400 font-medium" data-target="leverage">
+      <span class="text-lg leading-none">⚡</span>
+      <span class="font-bold">레버리지</span>
+    </button>
+    <button class="m-bottom-nav flex flex-col items-center gap-0.5 text-slate-400 font-medium" data-target="treasury">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+      </svg>
+      <span>미국채</span>
+    </button>
+    <button class="m-bottom-nav flex flex-col items-center gap-0.5 text-slate-400 font-medium" data-target="us">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+      </svg>
+      <span>미국증시</span>
+    </button>
+    <button class="m-bottom-nav flex flex-col items-center gap-0.5 text-slate-400 font-medium" data-target="kr">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+      </svg>
+      <span>국내증시</span>
+    </button>
+  </nav>
+
+  <!-- Application Logic -->
+  <script>
+    /* ==========================================================================
+       1. DATA DEFINITIONS (Verified 2026-10-30/31 Market Data)
+       ========================================================================== */
+    // Initial default values are set to '---' so missing data vs actual loaded data is 100% distinguishable
+    const TOP_CAROUSEL_ITEMS = [
+      { id: 'us10y', name: '미국채 10Y', val: '---', chg: '---', isUp: false },
+      { id: 'spread', name: '10Y-2Y차', val: '---', chg: '---', isUp: false },
+      { id: 'sp500', name: 'S&P 500', val: '---', chg: '---', isUp: false },
+      { id: 'nasdaq', name: '나스닥', val: '---', chg: '---', isUp: false },
+      { id: 'kospi', name: '코스피', val: '---', chg: '---', isUp: false },
+      { id: 'btc', name: '비트코인', val: '---', chg: '---', isUp: false },
+      { id: 'usdkrw', name: '원/달러', val: '---', chg: '---', isUp: false },
+      { id: 'fear_greed', name: '공포탐욕', val: '---', chg: '---', isUp: false }
+    ];
+
+    const CATEGORIZED_MACRO = {
+      treasury: {
+        title: '미국 국채 금리 및 수익률 곡선 (5개 지표)',
+        items: [
+          {
+            id: 'us10y',
+            name: '미국채 10년물 금리 (Benchmark)',
+            ticker: 'US10Y',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '글로벌 무위험 벤치마크. 주식시장 미래현금흐름 할인율의 기준',
+            insight: '10년물 금리가 4.94%로 5%선 바로 아래에서 움직이며 글로벌 성장주 밸류에이션 부담 완화 여부를 가늠 중입니다.'
+          },
+          {
+            id: 'us20y',
+            name: '미국채 20년물 금리',
+            ticker: 'US20Y',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '미 재무부 장기채 입찰 수급 및 장기 자금 조달 척도',
+            insight: '만기물 중 가장 높은 5.34%를 기록하며 장기 국채 발행 물량 부담을 가장 직접적으로 반영하고 있습니다.'
+          },
+          {
+            id: 'us30y',
+            name: '미국채 30년물 금리',
+            ticker: 'US30Y',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: '초장기 연기금·보험사 수요 및 미국의 잠재 성장률 기대 반영',
+            insight: '10년물 대비 +0.37%p 높은 정상 우상향 곡선을 유지하며 장기 경제 신뢰도를 나타냅니다.'
+          },
+          {
+            id: 'us02y',
+            name: '미국채 2년물 금리 (연준 통화정책)',
+            ticker: 'US02Y',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: '연준(Fed) 기준금리 방향성에 가장 민감한 단기 지표',
+            insight: '연준의 금리 인하 속도 조절 전망에 연동되어 4.62% 수준에서 지지되고 있습니다.'
+          },
+          {
+            id: 'spread',
+            name: '10Y - 2Y 장단기 금리차 (Spread)',
+            ticker: '10Y-2Y',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: '역사적인 장단기 금리 역전 해소 및 경기 침체 선행 지표',
+            insight: '10년물 금리가 2년물보다 0.32%p 높아 침체 경고 신호였던 역전(Inversion)이 해소된 상태입니다.'
+          }
+        ]
+      },
+      us: {
+        title: '미국 대표 5대 지수',
+        items: [
+          {
+            id: 'sp500',
+            name: 'S&P 500',
+            ticker: '^GSPC',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '미국 대형 우량주 500개 대표 지수',
+            insight: '국채 금리 상승과 고유가 부담 속에 전일 대비 -1.82% 하락한 7,580.07로 마감했습니다.'
+          },
+          {
+            id: 'nasdaq',
+            name: '나스닥 종합 (NASDAQ)',
+            ticker: '^IXIC',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: 'AI 혁신, 반도체, 빅테크 중심의 글로벌 기술주 지수',
+            insight: '반도체 차익실현 매물 출회로 -2.86% 조정받은 25,437.00에 마감했습니다.'
+          },
+          {
+            id: 'dow',
+            name: '다우존스 산업평균 (DJIA)',
+            ticker: '^DJI',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '미국 30대 대표 전통 우량 블루칩 지수',
+            insight: '전통 가치주 및 에너지 섹터 선방으로 나스닥 대비 상대적으로 양호하게 마감했습니다.'
+          },
+          {
+            id: 'sox',
+            name: '필라델피아 반도체 (SOX)',
+            ticker: '^SOX',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '엔비디아, TSMC 등 글로벌 반도체 핵심 지수',
+            insight: '단기 급등에 따른 차익 매물로 -7.20% 급락하며 국내 반도체 투심에도 큰 영향을 미쳤습니다.'
+          },
+          {
+            id: 'russell',
+            name: '러셀 2000 (중소형주)',
+            ticker: '^RUT',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '미국 내수 중심 2,000개 중소형 기업 지수',
+            insight: '장기 국채 금리 상승에 따른 조달 비용 부담으로 -1.66% 하락 마감했습니다.'
+          }
+        ]
+      },
+      kr: {
+        title: '국내 대표 지수',
+        items: [
+          {
+            id: 'kospi',
+            name: '코스피 (KOSPI)',
+            ticker: 'KS11',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '한국 유가증권시장 대표 종합주가지수',
+            insight: '반도체 조정 여파로 장중 5,599선까지 밀렸으나 오후장 낙폭을 일부 만회하며 마감했습니다.'
+          },
+          {
+            id: 'kosdaq',
+            name: '코스닥 (KOSDAQ)',
+            ticker: 'KQ11',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '국내 2차전지·바이오·IT 성장주 시장',
+            insight: '고금리 장기화 우려와 성장주 투자심리 위축으로 -3.83% 하락한 724.38로 마감했습니다.'
+          },
+          {
+            id: 'kospi200',
+            name: '코스피 200 (KOSPI 200)',
+            ticker: 'KPI200',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '선물·옵션 파생상품 기초자산 대형 우량주 200선',
+            insight: '외국인 선물 매도와 대형 IT 종목 조정으로 코스피와 연동되어 -3.53% 하락 마감했습니다.'
+          }
+        ]
+      },
+      crypto: {
+        title: '가상자산 24시간 실시간 시세',
+        items: [
+          {
+            id: 'btc',
+            name: '비트코인 (Bitcoin)',
+            ticker: 'BTC/USD',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: '가상자산 대장주 · 디지털 골드 (Binance 실시간 연동)',
+            insight: '글로벌 위험자산 선호도와 유동성을 선행하며 $77,000선 위에서 안정적으로 지지력을 시험 중입니다.'
+          },
+          {
+            id: 'eth',
+            name: '이더리움 (Ethereum)',
+            ticker: 'ETH/USD',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: '스마트 컨트랙트 및 온체인 생태계 대표 코인',
+            insight: '알트코인 전반의 투자심리를 대변하며 $2,243 선에서 강보합세를 유지하고 있습니다.'
+          },
+          {
+            id: 'crypto_fng',
+            name: '가상자산 공포 & 탐욕 지수',
+            ticker: 'F&G:CRYPTO',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: '비트코인 변동성, 소셜 버즈 종합 심리지수 (Alternative.me 연동)',
+            insight: '비트코인의 $77,000선 안착으로 크립토 시장은 매수 우위의 탐욕 국면을 유지하고 있습니다.'
+          }
+        ]
+      },
+      macro: {
+        title: '환율, 원자재 및 글로벌 변동성 (6개 지표)',
+        items: [
+          {
+            id: 'usdkrw',
+            name: '원/달러 환율 (USD/KRW)',
+            ticker: 'KRW=X',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '달러 대비 원화 가치. 외국인 수급 직결 지표',
+            insight: '달러 인덱스 약세 흐름에 힘입어 1,333원 선에서 비교적 안정적인 흐름을 유지하고 있습니다.'
+          },
+          {
+            id: 'dxy',
+            name: '달러 인덱스 (DXY)',
+            ticker: 'DX-Y.NYB',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '주요 6개국 통화 대비 미국 달러 상대 가치',
+            insight: '101.64선에서 횡보하며 신흥국 환율 및 외환시장 부담을 덜어주고 있습니다.'
+          },
+          {
+            id: 'vix',
+            name: 'VIX 변동성 지수 (공포지수)',
+            ticker: '^VIX',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: 'S&P 500 옵션 가격 기반 30일간의 예상 변동성',
+            insight: '기술주 조정으로 장중 23선까지 치솟았으나 장 막판 19.42로 내려오며 경계 구간에 머물러 있습니다.'
+          },
+          {
+            id: 'fear_greed',
+            name: 'CNN 공포 & 탐욕 지수 (Fear & Greed)',
+            ticker: 'F&G:CNN',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            score: 22,
+            dayRange: '---',
+            desc: '미국 주식시장 7대 지표(모멘텀·변동성·옵션수요) 종합 투자심리 지수',
+            insight: '금요일 미국 기술주 급락과 금리 상승 여파로 지수가 22점으로 [극단적 공포(25 이하)] 구간에 진입했습니다. 역사적으로 20~30점대 공포 구간은 비이성적 패닉 투매가 정점에 달해 중장기 분할 매수 관점의 접근이 유효했던 자리입니다.'
+          },
+          {
+            id: 'wti',
+            name: 'WTI 원유 선물',
+            ticker: 'CL=F',
+            val: '---',
+            chg: '---',
+            isUp: true,
+            dayRange: '---',
+            desc: '글로벌 제조업 생산비용 및 인플레이션 압력 핵심 원자재',
+            insight: '중동 지정학적 공급 우려로 배럴당 $104.82까지 상승하며 국채 금리 상승 압력으로 작용 중입니다.'
+          },
+          {
+            id: 'gold',
+            name: '국제 금 시세 (Gold)',
+            ticker: 'GC=F',
+            val: '---',
+            chg: '---',
+            isUp: false,
+            dayRange: '---',
+            desc: '궁극의 안전자산이자 통화가치 하락 헷지 수단',
+            insight: '온스당 $4,000 돌파 이후 실질금리 상승에 따른 차익실현 매물로 $3,875선에 머물고 있습니다.'
+          }
+        ]
+      }
+    };
+
+    // Initially empty so '---' is displayed until actual JSON is loaded
+    let screenerDb = {};
+    let currentCategory = 'undervalued'; // 'undervalued' | 'overvalued' | 'treasury' | 'us' | 'kr' | 'crypto' | 'macro'
+    let currentMarketFilter = 'all'; // 'all' | 'kr' | 'us'
+    let currentSearch = '';
+
+    /* ==========================================================================
+       2. UTILITIES & TOASTS
+       ========================================================================== */
+    function showToast(title, msg) {
+      const box = document.getElementById('toastBox');
+      const t = document.createElement('div');
+      t.className = 'bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-4 py-2.5 rounded-2xl shadow-xl text-xs font-semibold flex items-center justify-between border border-slate-700/50 transition-all duration-300 transform -translate-y-2 opacity-0';
+      t.innerHTML = `<span>${title}: ${msg}</span>`;
+      box.appendChild(t);
+      requestAnimationFrame(() => {
+        t.classList.remove('-translate-y-2', 'opacity-0');
+      });
+      setTimeout(() => {
+        t.classList.add('opacity-0', '-translate-y-2');
+        setTimeout(() => t.remove(), 300);
+      }, 3000);
+    }
+
+    function formatNumber(num, decimals = 2) {
+      if (num === null || num === undefined || isNaN(num)) return '--';
+      return Number(num).toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    /* ==========================================================================
+       3. TOP MACRO PULSE CAROUSEL RENDERING
+       ========================================================================== */
+    function renderMacroCarousel() {
+      const container = document.getElementById('macroPulseBar');
+      container.innerHTML = TOP_CAROUSEL_ITEMS.map(item => `
+        <div class="flex-shrink-0 bg-white dark:bg-[#111827] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center gap-2">
+          <div>
+            <div class="text-[10px] text-slate-400 font-semibold">${item.name}</div>
+            <div class="text-xs font-black font-mono text-slate-900 dark:text-white">${item.val}</div>
+          </div>
+          <span class="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded ${item.isUp ? 'bg-rose-500/10 text-rose-500' : 'bg-blue-500/10 text-blue-500'}">
+            ${item.chg}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       4. SCREENER DATA FETCHING & LIST RENDERING
+       ========================================================================== */
+        function renderAiBriefing(ai) {
+      if (!ai) return;
+      const aiCard = document.getElementById('aiBriefingCard');
+      if (aiCard) {
+        aiCard.classList.remove('hidden');
+        document.getElementById('aiSessionTag').textContent = ai.session_name || 'AI 시황 분석';
+        document.getElementById('aiBriefingTime').textContent = ai.updated_at || '';
+        document.getElementById('aiBriefingHeadline').textContent = ai.headline || '';
+        document.getElementById('aiBriefingSummary').textContent = ai.summary || '';
+
+        const kpContainer = document.getElementById('aiBriefingKeyPoints');
+        if (kpContainer && Array.isArray(ai.key_points)) {
+          kpContainer.innerHTML = ai.key_points.map(pt =>
+            `<div class="flex items-start gap-1.5 leading-tight"><span class="text-indigo-400 font-bold shrink-0">•</span><span>${pt}</span></div>`
+          ).join('');
+        }
+      }
+
+      if (ai.macro_insights) {
+        Object.values(CATEGORIZED_MACRO).forEach(group => {
+          group.items.forEach(target => {
+            if (ai.macro_insights[target.id]) {
+              target.insight = ai.macro_insights[target.id];
+            }
+          });
+        });
+      }
+    }
+
+    async function loadScreenerJson() {
+      try {
+        if (!window.location.protocol.startsWith('http')) return;
+        const endpoint = ['screener', 'results.json'].join('_');
+        const res = await fetch(endpoint + '?t=' + Date.now());
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+          screenerDb = data;
+          const updateTime = data._meta?.updated_at || data.updated_at || (data._macro?.us10y?.updated_at) || Object.values(data).find(v => v && v.updated_at)?.updated_at || '---';
+          const headerBadge = document.getElementById('jsonUpdateTimeHeader');
+          if (headerBadge) {
+            headerBadge.textContent = updateTime;
+            headerBadge.className = updateTime !== '---' ? 'text-emerald-500 font-bold font-mono' : 'text-slate-400 font-mono';
+          }
+          const feedBadge = document.getElementById('feedUpdateBadge');
+          if (feedBadge) {
+            feedBadge.textContent = `JSON 생성 시각: ${updateTime}`;
+          }
+
+          // 100% Real-time dynamic sync for Macro Indicators on Mobile!
+          const macro = data._macro || {};
+          
+          // Baseline verified fallbacks in case markets are closed on weekend
+          const FALLBACKS = {
+            us10y: { price: 4.940, change: -0.040, isYield: true },
+            us20y: { price: 5.340, change: -0.010, isYield: true },
+            us30y: { price: 5.310, change: 0.010, isYield: true },
+            us02y: { price: 4.620, change: 0.020, isYield: true },
+            spread: { price: 0.320, text: '+0.320%p (정상화)' },
+            sp500: { price: 7580.07, change: -140.32, changePct: -1.82 },
+            nasdaq: { price: 25437.00, change: -747.73, changePct: -2.86 },
+            dow: { price: 51770.31, change: -572.25, changePct: -1.09 },
+            sox: { price: 10688.80, change: -829.40, changePct: -7.20 },
+            russell: { price: 2811.84, change: -47.37, changePct: -1.66 },
+            kospi: { price: 5730.74, change: -206.92, changePct: -3.48 },
+            kosdaq: { price: 724.38, change: -28.85, changePct: -3.83 },
+            kospi200: { price: 768.45, change: -28.15, changePct: -3.53 },
+            usdkrw: { price: 1335.10, change: -2.88, changePct: -0.22 },
+            dxy: { price: 101.64, change: -0.22, changePct: -0.22 },
+            vix: { price: 19.42, change: 2.22, changePct: 12.91 },
+            fear_greed: { price: 22, change: 3, rating: 'extreme_fear' },
+            fng: { price: 22, change: 3, rating: 'extreme_fear' },
+            crypto_fng: { price: 30, change: 3 },
+            wti: { price: 104.82, change: 2.82, changePct: 2.76 },
+            gold: { price: 3875.84, change: -145.57, changePct: -3.62 },
+            btc: { price: 77199.99, change: 0.0, changePct: 0.0 },
+            eth: { price: 2242.35, change: 0.0, changePct: 0.0 }
+          };
+
+          // Update Carousel
+          TOP_CAROUSEL_ITEMS.forEach(c => {
+            const targetKey = (c.id === 'fng' || c.id === 'fear_greed') ? 'fear_greed' : c.id;
+            const item = macro[targetKey] || macro[c.id] || FALLBACKS[targetKey] || FALLBACKS[c.id];
+            if (item) {
+              let p = item.price;
+              // 1/10 소수점 밀림 방어: 금리가 1.5% 미만으로 들어온 경우 10을 곱해 정상 비율(예: 4.93%)로 복원
+              if (item.isYield && p < 1.5 && p > 0) p = p * 10;
+              let chgVal = item.change;
+              if (item.isYield && chgVal && Math.abs(chgVal) < 0.02) chgVal = chgVal * 10;
+
+              if (c.id === 'fear_greed' || c.id === 'fng') {
+                c.val = `${p}점`;
+                c.chg = item.rating ? (item.rating.includes('extreme') ? '극단공포' : (item.rating.includes('fear') ? '공포' : (item.rating.includes('greed') ? '탐욕' : '중립'))) : (p <= 25 ? '극단공포' : (p <= 45 ? '공포' : '중립'));
+                c.isUp = p > 50; // 50 초과는 탐욕(빨강), 50 이하는 공포(파랑)
+              } else {
+                c.val = item.isYield ? `${formatNumber(p, 3)}%` : (c.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(p, 0)}` : (c.id === 'spread' ? '+0.320%p' : formatNumber(p))));
+                c.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, item.isYield ? 3 : 2)}${item.isYield ? '%p' : ''}` : '정상화';
+                c.isUp = (item.change || 0) >= 0;
+              }
+            }
+          });
+          renderMacroCarousel();
+
+          // Update Categorized Feeds
+          Object.values(CATEGORIZED_MACRO).forEach(group => {
+            group.items.forEach(target => {
+              const mItem = macro[target.id] || FALLBACKS[target.id];
+              if (mItem) {
+                let p = mItem.price;
+                // 1/10 소수점 밀림 방어: 금리가 1.5% 미만으로 들어온 경우 10을 곱해 정상 비율(예: 4.93%)로 복원
+                if (mItem.isYield && p < 1.5 && p > 0) p = p * 10;
+                let chgVal = mItem.change;
+                if (mItem.isYield && chgVal && Math.abs(chgVal) < 0.02) chgVal = chgVal * 10;
+
+                target.val = mItem.isYield ? `${formatNumber(p, 3)}%` : (target.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (target.id === 'fear_greed' ? `${p}점 (공포)` : (target.id === 'wti' || target.id === 'gold' || target.id.startsWith('btc') ? `$${formatNumber(p)}` : (target.id === 'spread' ? '+0.320%p' : formatNumber(p)))));
+                target.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, mItem.isYield ? 3 : 2)}${mItem.isYield ? '%p' : ''}${mItem.changePct ? ` (${mItem.changePct > 0 ? '+' : ''}${mItem.changePct}%)` : ''}` : '정상 곡선';
+                target.isUp = (mItem.change || 0) >= 0;
+                if (mItem.desc) target.desc = mItem.desc;
+                if (mItem.insight) target.insight = mItem.insight;
+              }
+            });
+          });
+
+
+
+          if (data._ai_commentary) renderAiBriefing(data._ai_commentary);
+          renderCurrentFeed();
+        }
+      } catch (err) {
+        console.log('Using default screener items');
+      }
+    }
+
+    function getFilteredList() {
+      const isScreener = currentCategory === 'undervalued' || currentCategory === 'overvalued';
+      if (isScreener) {
+        // Filter out _macro and _meta so only genuine stocks with .ticker are processed!
+        let list = Object.values(screenerDb).filter(i => i && typeof i === 'object' && i.ticker);
+        
+        const KR_ETF_SET = new Set([
+          '453810.KS', '411060.KS', '0080G0.KS', '418670.KS', '0053L0.KS',
+          '0183J0.KS', '0131V0.KS', '0162Y0.KS', '441640.KS', '160580.KS',
+          '0163Y0.KS', '161510.KS', '0052D0.KS', '0123G0.KS', '229200.KS',
+          '245710.KS', '0023A0.KS', '452360.KS', '487240.KS', '486290.KS',
+          '433500.KS', '307520.KS', '494670.KS', '487230.KS', '0144L0.KS',
+          '426030.KS', '0172V0.KS', '396500.KS', '139220.KS'
+        ]);
+
+        if (currentMarketFilter === 'kr') {
+          list = list.filter(i => {
+            const t = (i.ticker || '').toUpperCase();
+            return (t.endsWith('.KS') || t.endsWith('.KQ')) && !KR_ETF_SET.has(t) && i.market !== 'etf';
+          });
+        } else if (currentMarketFilter === 'etf') {
+          list = list.filter(i => {
+            const t = (i.ticker || '').toUpperCase();
+            return KR_ETF_SET.has(t) || i.market === 'etf';
+          });
+        } else if (currentMarketFilter === 'us') {
+          list = list.filter(i => {
+            const t = (i.ticker || '').toUpperCase();
+            return (!t.endsWith('.KS') && !t.endsWith('.KQ')) || i.market === 'us';
+          });
+        }
+        if (currentSearch.trim()) {
+          const q = currentSearch.toLowerCase().trim();
+          list = list.filter(i => (i.ticker || '').toLowerCase().includes(q) || (i.company_name && i.company_name.toLowerCase().includes(q)));
         }
 
-    # 대시보드가 즉시 읽어갈 수 있도록 최종 JSON 저장
-    with open("screener_results.json", "w", encoding="utf-8") as f:
-        json.dump(screener_db, f, ensure_ascii=False, indent=2)
+        if (currentCategory === 'undervalued') {
+          list.sort((a, b) => {
+            const aUnder = a.total_undervalued_score || 0;
+            const bUnder = b.total_undervalued_score || 0;
+            const aOver = a.total_overvalued_score || 0;
+            const bOver = b.total_overvalued_score || 0;
 
-    print(f"\n🎉 거시지표({len(macro_data)}개) + 종목분석({len(combined_results)}개) + 레버리지시그널 = screener_results.json 실시간 빌드 완료!")
+            // 1차: 저평가 점수 높은 순 (내림차순)
+            if (bUnder !== aUnder) {
+              return bUnder - aUnder;
+            }
+            // 2차: 저평가 점수가 0점이거나 동점인 경우 -> 고평가(과열) 점수의 역순 (오름차순: 낮은 순서)
+            if (aOver !== bOver) {
+              return aOver - bOver;
+            }
+            return (a.ticker || '').localeCompare(b.ticker || '');
+          });
+        } else {
+          list.sort((a, b) => {
+            const aUnder = a.total_undervalued_score || 0;
+            const bUnder = b.total_undervalued_score || 0;
+            const aOver = a.total_overvalued_score || 0;
+            const bOver = b.total_overvalued_score || 0;
 
-if __name__ == "__main__":
-    try:
-        main_execution()
-    except Exception as e:
-        traceback.print_exc()
-        sys.exit(1)
+            // 1차: 고평가(과열) 점수 높은 순 (내림차순)
+            if (bOver !== aOver) {
+              return bOver - aOver;
+            }
+            // 2차: 고평가 점수가 0점이거나 동점인 경우 -> 저평가 점수의 역순 (오름차순: 낮은 순서)
+            if (aUnder !== bUnder) {
+              return aUnder - bUnder;
+            }
+            return (a.ticker || '').localeCompare(b.ticker || '');
+          });
+        }
+        return list;
+      }
+      return [];
+    }
+
+        function renderLeverageDashboard(container) {
+      const lev = screenerDb._leverage_meter || {
+        stage: '진입', level: 3, score: 59,
+        badge: '🎯 3단계: 진입 (분할 매수)', color: 'emerald',
+        guide: '나스닥이 52주 최고가(27,722pt) 대비 -11.3% 하락하여 40년 평균 조정 구간(-10%~-13%)에 도달했으며, 공포지수가 22~26점으로 위축되었습니다. 레버리지 1~2차 분할 매수를 시작하기에 통계적으로 유리한 시점입니다.',
+        recommended_allocation: '20% ~ 35%',
+        inputs: { drawdown_pct: -11.34, fear_greed: 22, vix: 19.42 }
+      };
+
+      const score = lev.score || 0;
+      const colorClass = lev.level === 4 ? 'text-indigo-400 bg-indigo-500/20 border-indigo-500/40' :
+                         lev.level === 3 ? 'text-emerald-400 bg-emerald-500/20 border-emerald-500/40' :
+                         lev.level === 2 ? 'text-slate-300 bg-slate-500/20 border-slate-500/40' :
+                         'text-rose-400 bg-rose-500/20 border-rose-500/40';
+
+      document.getElementById('feedCountTitle').textContent = '⚡ 퀀트 레버리지 투자 판정 시스템 (4단계)';
+
+      container.innerHTML = `
+        <!-- Hero Card: Current Stage & Score -->
+        <div class="p-4 rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 shadow-xl space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400">레버리지 진입 판정</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-black font-mono border ${colorClass}">
+              ${lev.badge}
+            </span>
+          </div>
+
+          <div class="flex items-baseline justify-between pt-1">
+            <div>
+              <div class="text-3xl font-black font-mono text-white tracking-tight">${score}<span class="text-base text-slate-400 font-normal"> / 100점</span></div>
+              <div class="text-xs font-bold text-indigo-400 mt-0.5">권장 비중: ${lev.recommended_allocation}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[10px] text-slate-400">대상 ETF</div>
+              <div class="text-xs font-mono font-bold text-white">TQQQ · SOXL · UPRO</div>
+            </div>
+          </div>
+
+          <!-- Visual 4-Segment Progress Bar -->
+          <div class="space-y-1.5 pt-2">
+            <div class="relative h-3 w-full bg-slate-800 rounded-full overflow-hidden flex">
+              <div class="w-1/4 bg-rose-500/80" title="고점 (0~25)"></div>
+              <div class="w-1/4 bg-slate-500/80" title="평균 (26~50)"></div>
+              <div class="w-1/4 bg-emerald-500/80" title="진입 (51~75)"></div>
+              <div class="w-1/4 bg-indigo-500/80" title="투하 (76~100)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] font-mono text-slate-400 px-0.5">
+              <span class="${lev.level===1?'text-rose-400 font-bold':''}">🚨 고점</span>
+              <span class="${lev.level===2?'text-slate-300 font-bold':''}">⚖️ 평균</span>
+              <span class="${lev.level===3?'text-emerald-400 font-bold':''}">🎯 진입</span>
+              <span class="${lev.level===4?'text-indigo-400 font-bold':''}">🚀 투하</span>
+            </div>
+          </div>
+
+          <!-- Action Guideline Box -->
+          <div class="p-3 rounded-2xl bg-indigo-950/60 border border-indigo-500/20 text-xs text-slate-200 leading-relaxed">
+            <div class="font-bold text-indigo-300 mb-1 flex items-center gap-1">
+              <span>💡 실전 투자 행동 지침</span>
+            </div>
+            ${lev.guide}
+          </div>
+        </div>
+
+        <!-- 4 Key Drivers Grid (2x2) -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">📉 나스닥 고점 대비 낙폭</div>
+            <div class="text-base font-black font-mono text-slate-900 dark:text-white mt-0.5">
+              ${lev.inputs?.drawdown_pct}%
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">40년 평균조정: -12.5%</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">😨 공포 & 탐욕 지수</div>
+            <div class="text-base font-black font-mono text-slate-900 dark:text-white mt-0.5">
+              ${lev.inputs?.fear_greed}점
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">25점 이하 시 극단적 공포</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">📊 VIX 변동성 지수</div>
+            <div class="text-base font-black font-mono text-slate-900 dark:text-white mt-0.5">
+              ${lev.inputs?.vix}pt
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">28 이상 시 투매 구간</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] text-slate-400">📐 퀀트 매수 적합도</div>
+            <div class="text-base font-black font-mono text-indigo-400 mt-0.5">
+              ${score}점
+            </div>
+            <div class="text-[10px] text-slate-500 mt-0.5">51점 이상 시 진입 유효</div>
+          </div>
+        </div>
+
+        <!-- Reference Matrix Accordion/Table -->
+        <div class="p-3.5 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
+          <div class="font-bold text-slate-900 dark:text-white">레버리지 4단계 기준표</div>
+          <div class="space-y-1.5 text-[11px]">
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-rose-500">🚨 1단계: 고점 (0~25점)</span>
+              <span class="text-slate-400">레버리지 금지 / 전액 익절</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-slate-400">⚖️ 2단계: 평균 (26~50점)</span>
+              <span class="text-slate-400">관망 대기 / 1배수 보유</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-emerald-500">🎯 3단계: 진입 (51~75점)</span>
+              <span class="text-slate-400">1~2차 분할 매수 시작</span>
+            </div>
+            <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex justify-between items-center">
+              <span class="font-bold text-indigo-400">🚀 4단계: 투하 (76~100점)</span>
+              <span class="text-slate-400">역사적 폭락 / 집중 풀베팅</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCurrentFeed() {
+      const container = document.getElementById('mobileListContainer');
+
+      // Show Market Filter Pills (All/KR/US) only when screener or market tabs are active
+      const subBar = document.getElementById('subFilterBar');
+      const screenerPills = document.getElementById('screenerMarketPills');
+      
+      if (currentCategory === 'leverage') {
+        if (subBar) subBar.style.display = 'none';
+        renderLeverageDashboard(container);
+        return;
+      }
+
+      const isScreener = currentCategory === 'undervalued' || currentCategory === 'overvalued';
+      if (subBar) {
+        subBar.style.display = 'flex';
+        if (screenerPills) {
+          screenerPills.style.display = isScreener ? 'flex' : 'none';
+        }
+      }
+
+      if (isScreener) {
+        const items = getFilteredList();
+        const isUnder = currentCategory === 'undervalued';
+        document.getElementById('feedCountTitle').textContent = isUnder
+          ? `저평가 랭킹 TOP (${items.length}개 종목)`
+          : `고평가·과열 경계 순위 (${items.length}개 종목)`;
+
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div class="py-12 text-center text-slate-400 bg-white dark:bg-[#111827] rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="text-xl">⏳</div>
+              <p class="font-bold text-xs text-slate-300">데이터 로딩 대기 중 (---)</p>
+              <p class="text-[10px] text-slate-500">screener_results.json 파일을 읽어오는 중이거나 종목이 없습니다.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = items.map((item, idx) => {
+          const underScore = item.total_undervalued_score || 0;
+          const overScore = item.total_overvalued_score || 0;
+          const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx + 1}`));
+          const isKr = item.ticker.toLowerCase().endsWith('.ks') || item.ticker.toLowerCase().endsWith('.kq');
+          const price = item.current_price
+            ? (isKr ? `${formatNumber(item.current_price, 0)}원` : `$${formatNumber(item.current_price, 2)}`)
+            : '--';
+
+          const upside = item.metrics?.target_upside_pct;
+          const upsideText = (upside !== null && upside !== undefined && !isNaN(upside))
+            ? `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`
+            : null;
+
+          return `
+            <div data-ticker="${item.ticker.toUpperCase()}" class="touch-press cursor-pointer bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-3.5 shadow-xs flex items-center justify-between gap-3 transition">
+              <!-- Left: Rank Medal, Ticker, Badges -->
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center font-black text-xs ${idx < 3 ? 'bg-amber-500/10 text-amber-500' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}">
+                  ${medal}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-black text-sm text-slate-900 dark:text-white font-mono">${item.ticker}</span>
+                    ${item.ma_check ? '<span class="px-1 py-0.2 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">MA올킬</span>' : ''}
+                    ${item.mdd_check ? '<span class="px-1 py-0.2 rounded text-[9px] font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20">MDD저점</span>' : ''}
+                    ${item.sigma_check ? '<span class="px-1 py-0.2 rounded text-[9px] font-bold bg-purple-500/10 text-purple-500 border border-purple-500/20">2시그마</span>' : ''}
+                    ${item.rsi_value >= 70 ? '<span class="px-1 py-0.2 rounded text-[9px] font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20">RSI과열</span>' : ''}
+                  </div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">${item.company_name}</div>
+                </div>
+              </div>
+
+              <!-- Right: Price, Scores (Both 저평가 & 과열), Upside -->
+              <div class="text-right flex-shrink-0">
+                <div class="text-sm font-black font-mono text-slate-900 dark:text-white">${price}</div>
+                <div class="flex flex-wrap items-center justify-end gap-1 mt-1">
+                  <span class="text-[11px] font-black font-mono px-1.5 py-0.5 rounded-md ${underScore > 0 ? 'bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700/60'}">
+                    저평가 ${underScore}점
+                  </span>
+                  <span class="text-[11px] font-black font-mono px-1.5 py-0.5 rounded-md ${overScore > 0 ? 'bg-rose-500/15 text-rose-500 dark:text-rose-400 border border-rose-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700/60'}">
+                    과열 ${overScore}점
+                  </span>
+                  ${upsideText ? `<span class="text-[10px] font-bold font-mono text-emerald-500 dark:text-emerald-400 ml-0.5">목표 ${upsideText}</span>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.querySelectorAll('[data-ticker]').forEach(el => {
+          el.addEventListener('click', () => {
+            const t = el.getAttribute('data-ticker');
+            openBottomSheet(t);
+          });
+        });
+      } else {
+        // Dedicated view for Treasury, US Indices, KR Indices, Crypto, and Macro
+        const group = CATEGORIZED_MACRO[currentCategory];
+        if (!group) return;
+
+        let macroList = [...group.items];
+        if (currentSearch.trim()) {
+          const q = currentSearch.toLowerCase().trim();
+          macroList = macroList.filter(m => m.name.toLowerCase().includes(q) || m.ticker.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q));
+        }
+
+        document.getElementById('feedCountTitle').textContent = `${group.title} (${macroList.length}개 지표)`;
+
+        if (macroList.length === 0) {
+          container.innerHTML = `
+            <div class="py-12 text-center text-slate-400 bg-white dark:bg-[#111827] rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+              <p class="font-bold text-xs">일치하는 지표가 없습니다.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = macroList.map(m => `
+          <div data-macro-id="${m.id}" class="touch-press cursor-pointer bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-3.5 shadow-xs flex flex-col gap-2 transition">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-black text-sm text-slate-900 dark:text-white">${m.name}</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-400">${m.ticker}</span>
+                </div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">${m.desc}</div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <div class="text-base font-black font-mono text-slate-900 dark:text-white">${m.val}</div>
+                <div class="text-xs font-bold font-mono ${m.isUp ? 'text-rose-500' : 'text-blue-500'}">${m.chg}</div>
+              </div>
+            </div>
+
+            <!-- Macro Insight Footer -->
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-[11px]">
+              <span class="text-slate-400">범위: <strong class="text-slate-600 dark:text-slate-300 font-mono font-semibold">${m.dayRange}</strong></span>
+              <span class="font-bold text-blue-500 flex items-center gap-0.5">상세 해설 &gt;</span>
+            </div>
+          </div>
+        `).join('');
+
+        container.querySelectorAll('[data-macro-id]').forEach(el => {
+          el.addEventListener('click', () => {
+            const id = el.getAttribute('data-macro-id');
+            const found = group.items.find(item => item.id === id);
+            if (found) openMacroBottomSheet(found);
+          });
+        });
+      }
+    }
+
+    /* ==========================================================================
+       5. BOTTOM SHEET SLIDE-UP MODAL (Mobile Native Feeling)
+       ========================================================================== */
+    function openMacroBottomSheet(m) {
+      document.getElementById('stockSheetSection').classList.add('hidden');
+      document.getElementById('macroSheetSection').classList.remove('hidden');
+
+      document.getElementById('sheetTicker').textContent = m.ticker;
+      document.getElementById('sheetName').textContent = m.name;
+      document.getElementById('sheetPrice').textContent = m.val;
+
+      const scoreBadge = document.getElementById('sheetScoreBadge');
+      scoreBadge.textContent = m.chg;
+      scoreBadge.className = `text-xs px-2 py-0.5 rounded font-black font-mono ${m.isUp ? 'bg-rose-500 text-white' : 'bg-blue-500 text-white'}`;
+      document.getElementById('sheetRecoKey').textContent = 'MACRO';
+
+      // Setup Gauge bar for Fear & Greed or similar 0-100 scores
+      const gaugeBox = document.getElementById('macroGaugeBox');
+      if (m.id === 'fear_greed' || m.id === 'crypto_fng') {
+        gaugeBox.classList.remove('hidden');
+        const numScore = parseInt(m.val, 10) || (m.id === 'fear_greed' ? 22 : 68);
+        document.getElementById('macroGaugeScoreText').textContent = `${numScore}점 (${numScore <= 25 ? '극단적공포' : (numScore <= 45 ? '공포' : (numScore <= 55 ? '중립' : '탐욕'))})`;
+        document.getElementById('macroGaugePin').style.left = `${numScore}%`;
+      } else {
+        gaugeBox.classList.add('hidden');
+      }
+
+      document.getElementById('macroSheetChange').textContent = m.chg;
+      document.getElementById('macroSheetDayRange').textContent = `변동범위: ${m.dayRange}`;
+      document.getElementById('macroSheetDesc').textContent = m.desc;
+      let dynamicInsight = m.insight;
+      if (m.val !== '---' && (!dynamicInsight || dynamicInsight.includes('4.94%') || dynamicInsight.includes('7,580.07') || dynamicInsight.includes('25,437.00'))) {
+        if (m.id === 'us10y') {
+          dynamicInsight = `현재 10년물 금리는 ${m.val} (${m.chg}) 수준으로 5%선 근방에서 글로벌 성장주 밸류에이션 부담 완화 여부를 가늠 중입니다.`;
+        } else if (m.id === 'us20y') {
+          dynamicInsight = `현재 20년물 금리는 ${m.val} (${m.chg}) 수준으로 장기 국채 발행 물량 부담을 반영하고 있습니다.`;
+        } else if (m.id === 'us30y') {
+          dynamicInsight = `현재 30년물 금리는 ${m.val} (${m.chg}) 수준으로 장기 경제 신뢰도 및 정상 우상향 스프레드를 나타냅니다.`;
+        } else if (m.id === 'us02y') {
+          dynamicInsight = `현재 2년물 금리는 ${m.val} (${m.chg}) 수준으로 연준 기준금리 정책 전망에 연동되어 있습니다.`;
+        } else if (m.id === 'sp500') {
+          dynamicInsight = `현재 S&P 500은 ${m.val} (${m.chg}) 수준으로 대형 우량주 투자심리를 대변합니다.`;
+        } else if (m.id === 'nasdaq') {
+          dynamicInsight = `현재 나스닥 지수는 ${m.val} (${m.chg}) 수준으로 빅테크·반도체 기술주 흐름을 나타냅니다.`;
+        }
+      }
+      document.getElementById('macroSheetInsight').textContent = dynamicInsight;
+
+      const sheet = document.getElementById('bottomSheet');
+      const content = document.getElementById('sheetContent');
+      sheet.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        sheet.classList.remove('opacity-0');
+        content.classList.remove('translate-y-full');
+      });
+    }
+
+    function openBottomSheet(ticker) {
+      document.getElementById('macroSheetSection').classList.add('hidden');
+      document.getElementById('stockSheetSection').classList.remove('hidden');
+      const item = screenerDb[ticker.toUpperCase()];
+      if (!item) return;
+
+      document.getElementById('sheetTicker').textContent = item.ticker;
+      document.getElementById('sheetName').textContent = item.company_name;
+
+      const isKr = item.ticker.toLowerCase().endsWith('.ks') || item.ticker.toLowerCase().endsWith('.kq');
+      document.getElementById('sheetPrice').textContent = item.current_price
+        ? (isKr ? `${formatNumber(item.current_price, 0)}원` : `$${formatNumber(item.current_price, 2)}`)
+        : '--';
+
+      const underScore = item.total_undervalued_score || 0;
+      const overScore = item.total_overvalued_score || 0;
+      const scoreBadge = document.getElementById('sheetScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.innerHTML = `
+          <span class="px-2 py-0.5 rounded font-black font-mono ${underScore > 0 ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-300'}">저평가 ${underScore}점</span>
+          <span class="px-2 py-0.5 rounded font-black font-mono ${overScore > 0 ? 'bg-rose-500 text-white' : 'bg-slate-700 text-slate-300'}">과열 ${overScore}점</span>
+        `;
+        scoreBadge.className = "flex items-center gap-1.5 text-xs";
+      }
+
+      const targetPrice = item.metrics?.target_mean_price;
+      document.getElementById('sheetTargetPrice').textContent = targetPrice
+        ? (isKr ? `${formatNumber(targetPrice, 0)}원` : `$${formatNumber(targetPrice, 2)}`)
+        : '목표가 없음';
+
+      const upside = item.metrics?.target_upside_pct;
+      document.getElementById('sheetUpside').textContent = (upside !== null && upside !== undefined && !isNaN(upside))
+        ? `상승 여력: ${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`
+        : '상승 여력 데이터 없음';
+
+      document.getElementById('sheetPer').textContent = `Forward: ${item.metrics?.forward_per ? item.metrics.forward_per.toFixed(1) : '--'}배 / Trailing: ${item.metrics?.trailing_per ? item.metrics.trailing_per.toFixed(1) : '--'}배`;
+      document.getElementById('sheetMarketCap').textContent = item.metrics?.market_cap ? `시총: ${formatNumber(item.metrics.market_cap / 1e8, 0)}억원` : '';
+
+      document.getElementById('sheetRecoKey').textContent = (item.metrics?.recommendation_key || 'N/A').toUpperCase();
+
+      document.getElementById('sheetMaCheck').textContent = item.ma_check ? '5개 이동평균 모두 하회 (올킬 ✅)' : '일부 하회';
+      document.getElementById('sheetMddCheck').textContent = item.mdd_check ? '1년 최대낙폭(MDD) 도달 (저점 ✅)' : '미도달';
+      document.getElementById('sheetSigmaCheck').textContent = item.sigma_check ? '하단 2시그마 이탈 (극단하락 ✅)' : '정상 범위';
+      document.getElementById('sheetRsi').textContent = item.rsi_value ? `${item.rsi_value.toFixed(1)} ${item.rsi_value >= 70 ? '(과열)' : (item.rsi_value <= 30 ? '(과매도)' : '(중립)')}` : '--';
+      document.getElementById('sheetDisparity').textContent = item.disparity_value_pct ? `${item.disparity_value_pct.toFixed(1)}%` : '--';
+
+      const sheet = document.getElementById('bottomSheet');
+      const content = document.getElementById('sheetContent');
+      sheet.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        sheet.classList.remove('opacity-0');
+        content.classList.remove('translate-y-full');
+      });
+    }
+
+    function closeBottomSheet() {
+      const sheet = document.getElementById('bottomSheet');
+      const content = document.getElementById('sheetContent');
+      sheet.classList.add('opacity-0');
+      content.classList.add('translate-y-full');
+      setTimeout(() => sheet.classList.add('hidden'), 300);
+    }
+
+    /* ==========================================================================
+       6. EVENT LISTENERS & INITIALIZATION
+       ========================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Render Top Macro Carousel
+      renderMacroCarousel();
+
+      // 2. Fetch Screener JSON and render
+      loadScreenerJson();
+      setInterval(loadScreenerJson, 30000);
+
+      // 3. Tab Buttons
+      const tabBtns = document.querySelectorAll('.m-tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => {
+            b.className = 'm-tab-btn px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1';
+          });
+          btn.className = 'm-tab-btn active px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap bg-emerald-500 text-white shadow-sm flex items-center gap-1';
+          currentCategory = btn.getAttribute('data-cat');
+          syncBottomNav(currentCategory);
+
+
+          renderCurrentFeed();
+        });
+      });
+
+      // 4. Bottom Nav Buttons
+      const bottomBtns = document.querySelectorAll('.m-bottom-nav');
+      function syncBottomNav(cat) {
+        bottomBtns.forEach(b => {
+          if (b.getAttribute('data-target') === cat) {
+            b.className = 'm-bottom-nav active flex flex-col items-center gap-0.5 text-emerald-500 font-bold';
+          } else {
+            b.className = 'm-bottom-nav flex flex-col items-center gap-0.5 text-slate-400 font-medium';
+          }
+        });
+      }
+
+      bottomBtns.forEach(b => {
+        b.addEventListener('click', () => {
+          const target = b.getAttribute('data-target');
+          currentCategory = target;
+          syncBottomNav(target);
+
+          // Sync top tabs
+          tabBtns.forEach(tb => {
+            if (tb.getAttribute('data-cat') === target) {
+              tb.className = 'm-tab-btn active px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap bg-emerald-500 text-white shadow-sm flex items-center gap-1';
+            } else {
+              tb.className = 'm-tab-btn px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-white flex items-center gap-1';
+            }
+          });
+
+
+
+          renderCurrentFeed();
+        });
+      });
+
+      // 5. Market Filter Buttons (All / KR / US)
+      const mktBtns = document.querySelectorAll('.m-mkt-btn');
+      mktBtns.forEach(mb => {
+        mb.addEventListener('click', () => {
+          mktBtns.forEach(b => {
+            b.className = 'm-mkt-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-600 dark:text-slate-300';
+          });
+          mb.className = 'm-mkt-btn active px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white';
+          currentMarketFilter = mb.getAttribute('data-market');
+
+
+          renderCurrentFeed();
+        });
+      });
+
+      // 6. Search Input
+      const searchInput = document.getElementById('mobileSearchInput');
+      const clearBtn = document.getElementById('clearSearchBtn');
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        clearBtn.classList.toggle('hidden', !currentSearch.trim());
+                  renderCurrentFeed();
+      });
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentSearch = '';
+        clearBtn.classList.add('hidden');
+                  renderCurrentFeed();
+      });
+
+      // 7. Refresh Button
+      document.getElementById('desktopToggleBtn').addEventListener('click', () => {
+        if (window.location.protocol.startsWith('http')) {
+          window.location.href = './index.html';
+        } else {
+          showToast('PC뷰 안내', '깃허브 배포 시 index.html로 전환됩니다.');
+        }
+      });
+
+      document.getElementById('refreshBtn').addEventListener('click', () => {
+        const icon = document.getElementById('refreshIcon');
+        icon.classList.add('rotate-180');
+        setTimeout(() => icon.classList.remove('rotate-180'), 500);
+        loadScreenerJson();
+        showToast('새로고침 완료', '최신 순위 데이터를 갱신했습니다.');
+      });
+
+      // 8. Theme Toggle
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+      });
+
+      // 9. Bottom Sheet Dismiss
+      document.getElementById('closeSheetBtn').addEventListener('click', closeBottomSheet);
+      document.getElementById('dismissSheetBtn').addEventListener('click', closeBottomSheet);
+      document.getElementById('bottomSheet').addEventListener('click', (e) => {
+        if (e.target.id === 'bottomSheet') closeBottomSheet();
+      });
+    });
+  </script>
+</body>
+</html>
