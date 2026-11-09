@@ -619,7 +619,7 @@ def main_execution():
         'AAOI', 'CRDO', 'ORCL', 'TER', 'ALAB', 'AMAT', 'LRCX', 'KLAC',
         'DDOG', 'SNDK', 'SIMO', 'MRVL', 'CRCL', 'MSTR', 'SPCX', 'FTNT',
         'AMZN', 'SNOW', 'OKTA', 'DG', 'UNH', 'ACN', 'KO', 'AAPL',
-        'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA'
+        'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA', 'TQQQ'
     ]
 
     # 각 시장 카테고리별 분석 및 태깅
