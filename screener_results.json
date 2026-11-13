@@ -7,7 +7,7 @@
       "changePct": 2.1,
       "prevClose": 4.998,
       "isYield": true,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "us30y": {
       "id": "us30y",
@@ -16,7 +16,7 @@
       "changePct": 1.44,
       "prevClose": 5.356,
       "isYield": true,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "us05y": {
       "id": "us05y",
@@ -25,7 +25,7 @@
       "changePct": 2.44,
       "prevClose": 4.827,
       "isYield": true,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "us3m": {
       "id": "us3m",
@@ -34,7 +34,7 @@
       "changePct": 0.32,
       "prevClose": 4.115,
       "isYield": true,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "sp500": {
       "id": "sp500",
@@ -43,7 +43,16 @@
       "changePct": -0.35,
       "prevClose": 7619.38,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
+    },
+    "nasdaq": {
+      "id": "nasdaq",
+      "price": 25366.09,
+      "change": -100.1,
+      "changePct": -0.39,
+      "prevClose": 25466.19,
+      "isYield": false,
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "dow": {
       "id": "dow",
@@ -52,7 +61,7 @@
       "changePct": -0.36,
       "prevClose": 52486.49,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "sox": {
       "id": "sox",
@@ -61,7 +70,7 @@
       "changePct": -0.54,
       "prevClose": 10564.11,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "russell": {
       "id": "russell",
@@ -70,52 +79,52 @@
       "changePct": -1.66,
       "prevClose": 2846.26,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "kospi": {
       "id": "kospi",
-      "price": 5454.38,
-      "change": 79.02,
-      "changePct": 1.47,
+      "price": 5448.24,
+      "change": 72.88,
+      "changePct": 1.36,
       "prevClose": 5375.36,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "kosdaq": {
       "id": "kosdaq",
-      "price": 723.81,
-      "change": 18.71,
-      "changePct": 2.65,
+      "price": 722.91,
+      "change": 17.81,
+      "changePct": 2.53,
       "prevClose": 705.1,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "kospi200": {
       "id": "kospi200",
-      "price": 851.54,
+      "price": 850.9,
       "change": 0.0,
       "changePct": 0.0,
-      "prevClose": 851.54,
+      "prevClose": 850.9,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "usdkrw": {
       "id": "usdkrw",
-      "price": 1332.97,
-      "change": -3.29,
-      "changePct": -0.25,
+      "price": 1333.18,
+      "change": -3.08,
+      "changePct": -0.23,
       "prevClose": 1336.26,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "dxy": {
       "id": "dxy",
       "price": 103.15,
       "change": 0.24,
-      "changePct": 0.24,
+      "changePct": 0.23,
       "prevClose": 102.91,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "vix": {
       "id": "vix",
@@ -124,43 +133,43 @@
       "changePct": 6.92,
       "prevClose": 17.49,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "wti": {
       "id": "wti",
-      "price": 88.11,
-      "change": 1.58,
-      "changePct": 1.83,
+      "price": 88.4,
+      "change": 1.87,
+      "changePct": 2.16,
       "prevClose": 86.53,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "gold": {
       "id": "gold",
-      "price": 3914.8,
-      "change": -85.7,
-      "changePct": -2.14,
+      "price": 3912.3,
+      "change": -88.2,
+      "changePct": -2.2,
       "prevClose": 4000.5,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "btc": {
       "id": "btc",
-      "price": 70529.51,
-      "change": -3434.96,
-      "changePct": -4.64,
+      "price": 70393.71,
+      "change": -3570.76,
+      "changePct": -4.83,
       "prevClose": 73964.47,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "eth": {
       "id": "eth",
-      "price": 2002.26,
-      "change": -53.62,
-      "changePct": -2.61,
+      "price": 1996.93,
+      "change": -58.95,
+      "changePct": -2.87,
       "prevClose": 2055.88,
       "isYield": false,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "us20y": {
       "id": "us20y",
@@ -168,7 +177,7 @@
       "change": -0.01,
       "changePct": -0.19,
       "isYield": true,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "us02y": {
       "id": "us02y",
@@ -176,7 +185,7 @@
       "change": 0.02,
       "changePct": 0.43,
       "isYield": true,
-      "updated_at": "2026-11-13 11:20 KST"
+      "updated_at": "2026-11-13 11:30 KST"
     },
     "spread": {
       "id": "spread",
@@ -198,9 +207,9 @@
     }
   },
   "_meta": {
-    "updated_at": "2026-11-13 11:22 KST",
+    "updated_at": "2026-11-13 11:32 KST",
     "total_stocks": 154,
-    "total_macro": 23
+    "total_macro": 24
   },
   "_leverage_meter": {
     "stage": "평균",
@@ -225,7 +234,7 @@
       "tech_score": 5,
       "total_score": 36
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "005930.KS": {
     "ticker": "005930.KS",
@@ -251,13 +260,13 @@
       "beta": 1.594,
       "market_cap": 1385412568285184
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "005935.KS": {
     "ticker": "005935.KS",
     "market": "kr",
     "company_name": "Samsung Electronics Co., Ltd.",
-    "current_price": 173200.0,
+    "current_price": 173250.0,
     "total_undervalued_score": 47.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -265,25 +274,25 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 50.473179503107964,
-    "disparity_value_pct": -6.238157965967128,
+    "rsi_value": 50.502230664242525,
+    "disparity_value_pct": -6.211513563015125,
     "metrics": {
-      "forward_per": 2.49138,
+      "forward_per": 2.4920993,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 349700.0,
-      "target_upside_pct": 101.90531177829098,
+      "target_upside_pct": 101.84704184704185,
       "recommendation_key": "strong_buy",
       "beta": 1.594,
-      "market_cap": 1142831473229824
+      "market_cap": 1143161380405248
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "000660.KS": {
     "ticker": "000660.KS",
     "market": "kr",
     "company_name": "SK hynix Inc.",
-    "current_price": 1280000.0,
+    "current_price": 1278000.0,
     "total_undervalued_score": 60.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -291,34 +300,34 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 43.85072912724087,
-    "disparity_value_pct": -18.267440004256898,
+    "rsi_value": 43.64798089770418,
+    "disparity_value_pct": -18.39254166577978,
     "metrics": {
-      "forward_per": 2.3892515,
+      "forward_per": 2.3855183,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 3097152.2,
-      "target_upside_pct": 141.7761280249805,
+      "target_upside_pct": 142.34367762128326,
       "recommendation_key": "strong_buy",
       "beta": 2.466,
-      "market_cap": 902621871210496
+      "market_cap": 901211511324672
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "005387.KS": {
     "ticker": "005387.KS",
     "market": "kr",
     "company_name": "Hyundai Motor Company",
-    "current_price": 152300.0,
-    "total_undervalued_score": 68.3,
+    "current_price": 151500.0,
+    "total_undervalued_score": 68.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 44.049873838882284,
-    "disparity_value_pct": -11.698200722803076,
+    "rsi_value": 43.48003212257814,
+    "disparity_value_pct": -12.157787419912836,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -327,50 +336,50 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 1.768,
-      "market_cap": 39877328502784
+      "market_cap": 39667864961024
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "316140.KS": {
     "ticker": "316140.KS",
     "market": "kr",
     "company_name": "Woori Financial Group Inc.",
-    "current_price": 32550.0,
-    "total_undervalued_score": 32.5,
+    "current_price": 32600.0,
+    "total_undervalued_score": 32.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 57.0259372223176,
-    "disparity_value_pct": -1.1089169071851757,
+    "rsi_value": 57.31529912692059,
+    "disparity_value_pct": -0.959517962480072,
     "metrics": {
-      "forward_per": 6.782275,
+      "forward_per": 6.7926936,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 41619.047,
-      "target_upside_pct": 27.861895545314898,
+      "target_upside_pct": 27.66578834355828,
       "recommendation_key": "strong_buy",
       "beta": 0.562,
-      "market_cap": 23860332199936
+      "market_cap": 23896982028288
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "004540.KS": {
     "ticker": "004540.KS",
     "market": "kr",
     "company_name": "KleanNara Co., Ltd.",
-    "current_price": 1258.0,
-    "total_undervalued_score": 75.9,
+    "current_price": 1250.0,
+    "total_undervalued_score": 76.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 47.538404816342975,
-    "disparity_value_pct": 1.2936818938214634,
+    "rsi_value": 47.21950805134084,
+    "disparity_value_pct": 0.6603317764535488,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -379,15 +388,15 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.455,
-      "market_cap": 46846976000
+      "market_cap": 46549061632
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "900290.KQ": {
     "ticker": "900290.KQ",
     "market": "kr",
     "company_name": "Great Rich Technologies Limited",
-    "current_price": 3110.0,
+    "current_price": 3115.0,
     "total_undervalued_score": 50.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -395,8 +404,8 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 52.74219049529727,
-    "disparity_value_pct": -7.960935187925422,
+    "rsi_value": 52.90055950662275,
+    "disparity_value_pct": -7.8152358874448264,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -405,9 +414,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": -0.534,
-      "market_cap": 259716071424
+      "market_cap": 288919781376
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "092780.KS": {
     "ticker": "092780.KS",
@@ -433,7 +442,7 @@
       "beta": 1.181,
       "market_cap": 38683156480
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "054540.KQ": {
     "ticker": "054540.KQ",
@@ -459,7 +468,7 @@
       "beta": 1.186,
       "market_cap": 70070001664
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "005110.KS": {
     "ticker": "005110.KS",
@@ -485,22 +494,22 @@
       "beta": 0.083,
       "market_cap": 225317664
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "033310.KQ": {
     "ticker": "033310.KQ",
     "market": "kr",
     "company_name": "M2N Co.,Ltd",
-    "current_price": 1258.0,
-    "total_undervalued_score": 67.6,
+    "current_price": 1232.0,
+    "total_undervalued_score": 68.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 41.665530814858045,
-    "disparity_value_pct": -8.972503617945005,
+    "rsi_value": 35.679159562613165,
+    "disparity_value_pct": -10.825874007768954,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -509,15 +518,15 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": null,
-      "market_cap": 49794727936
+      "market_cap": 48765587456
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "016380.KS": {
     "ticker": "016380.KS",
     "market": "kr",
     "company_name": "KG Dongbu Steel Co.,Ltd.",
-    "current_price": 4890.0,
+    "current_price": 4885.0,
     "total_undervalued_score": 68.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -525,34 +534,34 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 36.35776708582213,
-    "disparity_value_pct": -9.312892158377895,
+    "rsi_value": 35.99627946775705,
+    "disparity_value_pct": -9.404219148442927,
     "metrics": {
-      "forward_per": 3.6794581,
+      "forward_per": 3.675696,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 7500.0,
-      "target_upside_pct": 53.37423312883436,
+      "target_upside_pct": 53.53121801432958,
       "recommendation_key": "none",
       "beta": 0.877,
-      "market_cap": 476975955968
+      "market_cap": 476488269824
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "002870.KS": {
     "ticker": "002870.KS",
     "market": "kr",
     "company_name": "Shinpoong Paper Mfg. Co., Ltd",
-    "current_price": 954.0,
-    "total_undervalued_score": 55.1,
+    "current_price": 955.0,
+    "total_undervalued_score": 55.0,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 41.91973492763538,
-    "disparity_value_pct": -8.451154756573477,
+    "rsi_value": 42.12334639325847,
+    "disparity_value_pct": -8.356657337065165,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -561,24 +570,24 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.227,
-      "market_cap": 26431887360
+      "market_cap": 26459592704
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "013810.KQ": {
     "ticker": "013810.KQ",
     "market": "kr",
     "company_name": "SPECO Ltd.",
-    "current_price": 1211.0,
-    "total_undervalued_score": 69.9,
+    "current_price": 1222.0,
+    "total_undervalued_score": 69.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 37.036652836761874,
-    "disparity_value_pct": -19.237951271563226,
+    "rsi_value": 37.96468890954762,
+    "disparity_value_pct": -18.51432000800187,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -587,9 +596,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.376,
-      "market_cap": 17747773440
+      "market_cap": 17908983808
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "196700.KQ": {
     "ticker": "196700.KQ",
@@ -615,33 +624,33 @@
       "beta": 0.444,
       "market_cap": 11061116928
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "035600.KQ": {
     "ticker": "035600.KQ",
     "market": "kr",
     "company_name": "Kginicis Co.,Ltd",
-    "current_price": 9290.0,
-    "total_undervalued_score": 66.3,
+    "current_price": 9270.0,
+    "total_undervalued_score": 66.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 42.14404430999188,
-    "disparity_value_pct": -5.512611879576889,
+    "rsi_value": 41.26289924583061,
+    "disparity_value_pct": -5.712832683505676,
     "metrics": {
-      "forward_per": 3.4466982,
+      "forward_per": 3.439278,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 13000.0,
-      "target_upside_pct": 39.93541442411195,
+      "target_upside_pct": 40.23732470334412,
       "recommendation_key": "none",
       "beta": 0.684,
-      "market_cap": 247285760000
+      "market_cap": 246753378304
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "025880.KQ": {
     "ticker": "025880.KQ",
@@ -667,7 +676,7 @@
       "beta": null,
       "market_cap": 36384739328
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "091970.KQ": {
     "ticker": "091970.KQ",
@@ -693,22 +702,22 @@
       "beta": 0.312,
       "market_cap": 21468651520
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "017390.KS": {
     "ticker": "017390.KS",
     "market": "kr",
     "company_name": "Seoul City Gas Co., Ltd.",
-    "current_price": 56200.0,
-    "total_undervalued_score": 36.7,
-    "total_overvalued_score": 0,
+    "current_price": 56300.0,
+    "total_undervalued_score": 36.6,
+    "total_overvalued_score": 30.1,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 69.66657722233771,
-    "disparity_value_pct": 3.8145377297496896,
+    "rsi_value": 70.05089943326391,
+    "disparity_value_pct": 3.9960593559509983,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -717,24 +726,24 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.304,
-      "market_cap": 223832915968
+      "market_cap": 224231194624
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "123010.KQ": {
     "ticker": "123010.KQ",
     "market": "kr",
     "company_name": "MSDI Co.,Ltd",
-    "current_price": 3205.0,
-    "total_undervalued_score": 50.3,
+    "current_price": 3225.0,
+    "total_undervalued_score": 44.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 42.95044588571206,
-    "disparity_value_pct": -0.39314406476776975,
+    "rsi_value": 43.480623139332955,
+    "disparity_value_pct": 0.21804546325598917,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -743,9 +752,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 1.126,
-      "market_cap": 64412487680
+      "market_cap": 64814436352
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "023410.KQ": {
     "ticker": "023410.KQ",
@@ -771,7 +780,7 @@
       "beta": 0.598,
       "market_cap": 244683571200
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "009200.KS": {
     "ticker": "009200.KS",
@@ -797,22 +806,22 @@
       "beta": 0.31,
       "market_cap": 57753726976
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "126720.KS": {
     "ticker": "126720.KS",
     "market": "kr",
     "company_name": "Soosan Industries Co., Ltd.",
-    "current_price": 19230.0,
-    "total_undervalued_score": 68.3,
+    "current_price": 19070.0,
+    "total_undervalued_score": 68.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 44.94738854225252,
-    "disparity_value_pct": -6.9426073490983065,
+    "rsi_value": 42.472225870650604,
+    "disparity_value_pct": -7.704965637401995,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -821,9 +830,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.751,
-      "market_cap": 270646378496
+      "market_cap": 268394512384
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "013580.KS": {
     "ticker": "013580.KS",
@@ -849,22 +858,22 @@
       "beta": 0.769,
       "market_cap": 231871823872
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "036190.KQ": {
     "ticker": "036190.KQ",
     "market": "kr",
     "company_name": "Geumhwa Plant Service & Construction Co., Ltd.",
-    "current_price": 29450.0,
-    "total_undervalued_score": 67.7,
+    "current_price": 29500.0,
+    "total_undervalued_score": 67.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 39.04784511929164,
-    "disparity_value_pct": -9.604808799079168,
+    "rsi_value": 39.5866417022727,
+    "disparity_value_pct": -9.453652547575198,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -873,9 +882,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.315,
-      "market_cap": 173925515264
+      "market_cap": 174220804096
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "041650.KS": {
     "ticker": "041650.KS",
@@ -901,13 +910,13 @@
       "beta": 0.759,
       "market_cap": 35138961408
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "108230.KQ": {
     "ticker": "108230.KQ",
     "market": "kr",
     "company_name": "TOPTEC Co., Ltd",
-    "current_price": 2545.0,
+    "current_price": 2550.0,
     "total_undervalued_score": 68.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -915,8 +924,8 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 39.479790131659705,
-    "disparity_value_pct": -14.62119094213028,
+    "rsi_value": 39.83727304618977,
+    "disparity_value_pct": -14.455844119538163,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -925,9 +934,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": null,
-      "market_cap": 92728573952
+      "market_cap": 92910747648
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "221980.KQ": {
     "ticker": "221980.KQ",
@@ -953,13 +962,13 @@
       "beta": 0.345,
       "market_cap": 34602700800
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "033270.KS": {
     "ticker": "033270.KS",
     "market": "kr",
     "company_name": "Korea United Pharm Inc.",
-    "current_price": 15740.0,
+    "current_price": 15730.0,
     "total_undervalued_score": 69.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -967,19 +976,19 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 31.850560705502232,
-    "disparity_value_pct": -9.719234850440216,
+    "rsi_value": 31.560168341693867,
+    "disparity_value_pct": -9.775729881651142,
     "metrics": {
-      "forward_per": 5.921746,
+      "forward_per": 5.9179835,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 27000.0,
-      "target_upside_pct": 71.53748411689962,
+      "target_upside_pct": 71.64653528289891,
       "recommendation_key": "none",
       "beta": 0.325,
-      "market_cap": 249648594944
+      "market_cap": 249489997824
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "136480.KQ": {
     "ticker": "136480.KQ",
@@ -1005,7 +1014,7 @@
       "beta": 0.179,
       "market_cap": 283519778816
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "007700.KS": {
     "ticker": "007700.KS",
@@ -1031,48 +1040,48 @@
       "beta": 1.651,
       "market_cap": 515331883008
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "060720.KQ": {
     "ticker": "060720.KQ",
     "market": "kr",
     "company_name": "KHVATEC Co.,Ltd.",
-    "current_price": 10700.0,
-    "total_undervalued_score": 62.3,
+    "current_price": 10670.0,
+    "total_undervalued_score": 62.4,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 50.076424476497166,
-    "disparity_value_pct": -1.0694363115233974,
+    "rsi_value": 49.754748857112226,
+    "disparity_value_pct": -1.3422508514277731,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 16000.0,
-      "target_upside_pct": 49.532710280373834,
+      "target_upside_pct": 49.95313964386129,
       "recommendation_key": "none",
       "beta": null,
-      "market_cap": 236540493824
+      "market_cap": 235877285888
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "007280.KS": {
     "ticker": "007280.KS",
     "market": "kr",
     "company_name": "Korea Steel Co., Ltd.",
-    "current_price": 1833.0,
-    "total_undervalued_score": 68.2,
+    "current_price": 1873.0,
+    "total_undervalued_score": 67.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 32.96593269947192,
-    "disparity_value_pct": -16.915336440761198,
+    "rsi_value": 37.373769604948095,
+    "disparity_value_pct": -15.127897229082176,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1081,24 +1090,24 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.264,
-      "market_cap": 52509106176
+      "market_cap": 53654970368
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "041190.KQ": {
     "ticker": "041190.KQ",
     "market": "kr",
     "company_name": "Woori Technology Investment Co., Ltd",
-    "current_price": 4780.0,
-    "total_undervalued_score": 57.3,
+    "current_price": 4760.0,
+    "total_undervalued_score": 57.4,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 45.38688268606877,
-    "disparity_value_pct": -11.843359050809955,
+    "rsi_value": 44.744859944066874,
+    "disparity_value_pct": -12.206818111954743,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1107,24 +1116,24 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 1.243,
-      "market_cap": 372224098304
+      "market_cap": 370666668032
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "071670.KQ": {
     "ticker": "071670.KQ",
     "market": "kr",
     "company_name": "A-Tech Solution Co., Ltd.",
-    "current_price": 4175.0,
-    "total_undervalued_score": 69.7,
+    "current_price": 4210.0,
+    "total_undervalued_score": 69.6,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 35.46973778585094,
-    "disparity_value_pct": -14.564894868777822,
+    "rsi_value": 36.954577903130634,
+    "disparity_value_pct": -13.858955122084293,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1133,24 +1142,24 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": null,
-      "market_cap": 41749999616
+      "market_cap": 42099998720
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "023760.KQ": {
     "ticker": "023760.KQ",
     "market": "kr",
     "company_name": "Han Kook Capital.Co., Ltd",
-    "current_price": 1389.0,
-    "total_undervalued_score": 49.4,
+    "current_price": 1392.0,
+    "total_undervalued_score": 49.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 57.48505961935182,
-    "disparity_value_pct": 0.3999614494988313,
+    "rsi_value": 58.31372269334495,
+    "disparity_value_pct": 0.6131717483225163,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1159,9 +1168,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": null,
-      "market_cap": 217302499328
+      "market_cap": 217771835392
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "000230.KS": {
     "ticker": "000230.KS",
@@ -1187,22 +1196,22 @@
       "beta": 0.223,
       "market_cap": 64741642240
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "248170.KS": {
     "ticker": "248170.KS",
     "market": "kr",
     "company_name": "Sempio Foods Company",
-    "current_price": 23200.0,
-    "total_undervalued_score": 35.8,
+    "current_price": 23100.0,
+    "total_undervalued_score": 36.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 53.75581052271139,
-    "disparity_value_pct": 2.2101475879286347,
+    "rsi_value": 53.23939157853584,
+    "disparity_value_pct": 1.7770597738287597,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1211,9 +1220,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.323,
-      "market_cap": 105945030656
+      "market_cap": 105488367616
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "025770.KQ": {
     "ticker": "025770.KQ",
@@ -1239,22 +1248,22 @@
       "beta": 0.357,
       "market_cap": 272604692480
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "000910.KS": {
     "ticker": "000910.KS",
     "market": "kr",
     "company_name": "Union Corporation",
-    "current_price": 2395.0,
-    "total_undervalued_score": 68.7,
+    "current_price": 2415.0,
+    "total_undervalued_score": 68.4,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 32.574801627329606,
-    "disparity_value_pct": -14.796478017254156,
+    "rsi_value": 34.750514625191784,
+    "disparity_value_pct": -14.095153401511784,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1263,24 +1272,24 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.217,
-      "market_cap": 37389828096
+      "market_cap": 37702057984
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "147830.KQ": {
     "ticker": "147830.KQ",
     "market": "kr",
     "company_name": "Cheryong Industrial Co.,Ltd.",
-    "current_price": 5840.0,
-    "total_undervalued_score": 67.4,
+    "current_price": 5850.0,
+    "total_undervalued_score": 67.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 43.02324075656756,
-    "disparity_value_pct": -12.417516496700664,
+    "rsi_value": 43.256799247442224,
+    "disparity_value_pct": -12.26973930865556,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1289,9 +1298,9 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 1.603,
-      "market_cap": 111847563264
+      "market_cap": 112039084032
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "036690.KQ": {
     "ticker": "036690.KQ",
@@ -1317,74 +1326,74 @@
       "beta": null,
       "market_cap": 0
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "089980.KQ": {
     "ticker": "089980.KQ",
     "market": "kr",
     "company_name": "Sang-A Frontec Co.,Ltd.",
-    "current_price": 13550.0,
-    "total_undervalued_score": 59.4,
+    "current_price": 13570.0,
+    "total_undervalued_score": 59.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 48.75014925489707,
-    "disparity_value_pct": -7.1515040771110705,
+    "rsi_value": 48.918400349229024,
+    "disparity_value_pct": -7.016582157050843,
     "metrics": {
-      "forward_per": 15.646651,
+      "forward_per": 15.669746,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 25000.0,
-      "target_upside_pct": 84.50184501845018,
+      "target_upside_pct": 84.22991893883567,
       "recommendation_key": "none",
       "beta": 1.269,
-      "market_cap": 211907035136
+      "market_cap": 212219822080
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "097950.KS": {
     "ticker": "097950.KS",
     "market": "kr",
     "company_name": "CJ Cheiljedang Corporation",
-    "current_price": 175100.0,
-    "total_undervalued_score": 66.7,
+    "current_price": 174900.0,
+    "total_undervalued_score": 66.8,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 45.93052017177915,
-    "disparity_value_pct": -2.698797858743762,
+    "rsi_value": 45.58200513581464,
+    "disparity_value_pct": -2.8081354425221416,
     "metrics": {
-      "forward_per": 6.8275895,
+      "forward_per": 6.819791,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 251142.86,
-      "target_upside_pct": 43.428246716162185,
+      "target_upside_pct": 43.592258433390505,
       "recommendation_key": "buy",
       "beta": 0.119,
-      "market_cap": 2805659336704
+      "market_cap": 2802454626304
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "008970.KS": {
     "ticker": "008970.KS",
     "market": "kr",
     "company_name": "Kbi Dong Yang Steel Pipe Co.,Ltd",
-    "current_price": 1077.0,
-    "total_undervalued_score": 67.2,
+    "current_price": 1073.0,
+    "total_undervalued_score": 67.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 42.51538202260493,
-    "disparity_value_pct": -10.405545927209703,
+    "rsi_value": 42.197565882949284,
+    "disparity_value_pct": -10.7333508964102,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1393,76 +1402,76 @@
       "target_upside_pct": null,
       "recommendation_key": "none",
       "beta": 0.63,
-      "market_cap": 111737708544
+      "market_cap": 111322710016
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "014790.KS": {
     "ticker": "014790.KS",
     "market": "kr",
     "company_name": "HL D&I Halla Corporation",
-    "current_price": 2380.0,
-    "total_undervalued_score": 54.1,
+    "current_price": 2410.0,
+    "total_undervalued_score": 53.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 50.01925447409888,
-    "disparity_value_pct": -2.820783286263573,
+    "rsi_value": 51.85525847019921,
+    "disparity_value_pct": -1.6159210750127606,
     "metrics": {
-      "forward_per": 1.3584474,
+      "forward_per": 1.3755708,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 4633.3335,
-      "target_upside_pct": 94.6778781512605,
+      "target_upside_pct": 92.25450207468879,
       "recommendation_key": "none",
       "beta": 0.69,
-      "market_cap": 90103463936
+      "market_cap": 91239227392
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "011200.KS": {
     "ticker": "011200.KS",
     "market": "kr",
     "company_name": "HMM Co.,Ltd",
-    "current_price": 21750.0,
-    "total_undervalued_score": 35.8,
+    "current_price": 21600.0,
+    "total_undervalued_score": 36.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 48.56388563496095,
-    "disparity_value_pct": -0.0956937799043045,
+    "rsi_value": 47.51085088808878,
+    "disparity_value_pct": -0.7732945409999137,
     "metrics": {
-      "forward_per": 13.079349,
+      "forward_per": 12.989146,
       "trailing_per": null,
       "reported_eps_ttm": null,
       "target_mean_price": 24878.908,
-      "target_upside_pct": 14.385783908045974,
+      "target_upside_pct": 15.180129629629628,
       "recommendation_key": "none",
       "beta": 0.626,
-      "market_cap": 20515425091584
+      "market_cap": 20373940731904
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "453810.KS": {
     "ticker": "453810.KS",
     "market": "etf",
     "company_name": "Samsung Kodex India Nifty 50 ETF",
-    "current_price": 11965.0,
-    "total_undervalued_score": 31.3,
-    "total_overvalued_score": 34.4,
+    "current_price": 11960.0,
+    "total_undervalued_score": 31.4,
+    "total_overvalued_score": 34.3,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 74.36159434561594,
-    "disparity_value_pct": 6.910699260605058,
+    "rsi_value": 74.27329526440818,
+    "disparity_value_pct": 6.866818567662958,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1473,13 +1482,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "411060.KS": {
     "ticker": "411060.KS",
     "market": "etf",
     "company_name": "Korea Investment Trust Management Co, Ltd - KIM KINDEX KRX Physical Gold ETF",
-    "current_price": 23375.0,
+    "current_price": 23370.0,
     "total_undervalued_score": 70,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1487,8 +1496,8 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 35.142533151593796,
-    "disparity_value_pct": -9.502116456741682,
+    "rsi_value": 35.101072714460514,
+    "disparity_value_pct": -9.521182380440784,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1499,13 +1508,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0080G0.KS": {
     "ticker": "0080G0.KS",
     "market": "etf",
     "company_name": "Samsung Kodex K-Defense Top10 ETF",
-    "current_price": 6700.0,
+    "current_price": 6715.0,
     "total_undervalued_score": 61.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1513,8 +1522,8 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 37.01016968502103,
-    "disparity_value_pct": -26.197907104828356,
+    "rsi_value": 37.15658301359942,
+    "disparity_value_pct": -26.03471540163205,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1525,7 +1534,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "418670.KS": {
     "ticker": "418670.KS",
@@ -1551,22 +1560,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0053L0.KS": {
     "ticker": "0053L0.KS",
     "market": "etf",
     "company_name": "Mirae Asset Tiger China Humanoid Robot ETF",
-    "current_price": 8685.0,
-    "total_undervalued_score": 46.1,
+    "current_price": 8725.0,
+    "total_undervalued_score": 45.9,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 51.895979647839376,
-    "disparity_value_pct": -1.8810371123538339,
+    "rsi_value": 52.61673741699391,
+    "disparity_value_pct": -1.4365597876226044,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1577,13 +1586,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0183J0.KS": {
     "ticker": "0183J0.KS",
     "market": "etf",
     "company_name": "DBS Bank LTD - Mirae Asset Tiger US SPAC Fund",
-    "current_price": 6545.0,
+    "current_price": 6540.0,
     "total_undervalued_score": 48.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1591,8 +1600,8 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 51.99677052324012,
-    "disparity_value_pct": -7.508596730886985,
+    "rsi_value": 51.924513507906724,
+    "disparity_value_pct": -7.578166401695818,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1603,22 +1612,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0131V0.KS": {
     "ticker": "0131V0.KS",
     "market": "etf",
     "company_name": "Hana 1Q U.S. Aerospace Tech ETF",
-    "current_price": 9960.0,
-    "total_undervalued_score": 47.7,
+    "current_price": 9935.0,
+    "total_undervalued_score": 47.9,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 50.37786340207812,
-    "disparity_value_pct": -5.11725386215327,
+    "rsi_value": 49.94877859206948,
+    "disparity_value_pct": -5.351656465096344,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1629,7 +1638,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0162Y0.KS": {
     "ticker": "0162Y0.KS",
@@ -1655,22 +1664,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "441640.KS": {
     "ticker": "441640.KS",
     "market": "etf",
     "company_name": "Samsung Kodex US Dividend Premium Active ETF",
-    "current_price": 11885.0,
-    "total_undervalued_score": 69.4,
+    "current_price": 11900.0,
+    "total_undervalued_score": 69.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 40.73383411147087,
-    "disparity_value_pct": -3.3065079289748223,
+    "rsi_value": 41.53866730030941,
+    "disparity_value_pct": -3.186440677966096,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1681,22 +1690,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "160580.KS": {
     "ticker": "160580.KS",
     "market": "etf",
     "company_name": "Mirae Asset TIGER Physical Copper ETF",
-    "current_price": 15015.0,
-    "total_undervalued_score": 63.2,
+    "current_price": 15025.0,
+    "total_undervalued_score": 63.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 34.39849551190696,
-    "disparity_value_pct": -5.941679456259596,
+    "rsi_value": 34.71168389413252,
+    "disparity_value_pct": -5.880019210290033,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1707,13 +1716,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0163Y0.KS": {
     "ticker": "0163Y0.KS",
     "market": "etf",
     "company_name": "Samsungactive Koact Kosdaq Active Etf",
-    "current_price": 8485.0,
+    "current_price": 8480.0,
     "total_undervalued_score": 47.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1721,8 +1730,8 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 49.41992831363567,
-    "disparity_value_pct": -6.513395890335483,
+    "rsi_value": 49.36908345158322,
+    "disparity_value_pct": -6.567627372306339,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1733,13 +1742,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "161510.KS": {
     "ticker": "161510.KS",
     "market": "etf",
     "company_name": "ARIRANG Dividend ETF",
-    "current_price": 21970.0,
+    "current_price": 21975.0,
     "total_undervalued_score": 68.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1747,8 +1756,8 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 38.96372058360137,
-    "disparity_value_pct": -8.424628509104048,
+    "rsi_value": 39.05808241417923,
+    "disparity_value_pct": -8.404105663523165,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1759,22 +1768,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0052D0.KS": {
     "ticker": "0052D0.KS",
     "market": "etf",
     "company_name": "Mirae Asset Tiger Korea Dividend Dow Jones Etf",
-    "current_price": 13995.0,
-    "total_undervalued_score": 67.4,
+    "current_price": 13980.0,
+    "total_undervalued_score": 67.6,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 42.111802636897245,
-    "disparity_value_pct": -6.373347010681707,
+    "rsi_value": 41.746026607033095,
+    "disparity_value_pct": -6.472132865768332,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1785,13 +1794,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0123G0.KS": {
     "ticker": "0123G0.KS",
     "market": "etf",
     "company_name": "Mirae Asset Tiger Us Ai Electricity Smr ETF",
-    "current_price": 4625.0,
+    "current_price": 4630.0,
     "total_undervalued_score": 60.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1799,8 +1808,8 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 43.875872082140575,
-    "disparity_value_pct": -18.035207939508513,
+    "rsi_value": 43.98922605356654,
+    "disparity_value_pct": -17.9478091356165,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1811,22 +1820,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "229200.KS": {
     "ticker": "229200.KS",
     "market": "etf",
     "company_name": "KODEX KOSDAQ 150",
-    "current_price": 11965.0,
-    "total_undervalued_score": 63.8,
+    "current_price": 11900.0,
+    "total_undervalued_score": 64.0,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 47.19302509574491,
-    "disparity_value_pct": -10.996224871217898,
+    "rsi_value": 46.62902854833748,
+    "disparity_value_pct": -11.472604862807334,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1837,22 +1846,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "245710.KS": {
     "ticker": "245710.KS",
     "market": "etf",
     "company_name": "KINDEX Vietnam VN30 ETF(Synth)",
-    "current_price": 26635.0,
-    "total_undervalued_score": 66.2,
+    "current_price": 26650.0,
+    "total_undervalued_score": 66.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 43.85604502828681,
-    "disparity_value_pct": -3.670015099594026,
+    "rsi_value": 44.13561779254556,
+    "disparity_value_pct": -3.616636528028938,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1863,13 +1872,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0023A0.KS": {
     "ticker": "0023A0.KS",
     "market": "etf",
     "company_name": "Shinhan Sol US Quantum Computing Top10 ETF",
-    "current_price": 17535.0,
+    "current_price": 17530.0,
     "total_undervalued_score": 67.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1877,8 +1886,8 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 39.78269858351149,
-    "disparity_value_pct": -18.85888804053585,
+    "rsi_value": 39.75804864036898,
+    "disparity_value_pct": -18.881712137279482,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1889,22 +1898,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "452360.KS": {
     "ticker": "452360.KS",
     "market": "etf",
     "company_name": "Shinhan SOL US Dividend US Bond Mix 50 ETF [Bond Mix]",
-    "current_price": 14045.0,
-    "total_undervalued_score": 4.8,
+    "current_price": 14040.0,
+    "total_undervalued_score": 5.0,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 61.08119228515518,
-    "disparity_value_pct": 4.071727612908016,
+    "rsi_value": 60.88919457567329,
+    "disparity_value_pct": 4.035320633548434,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1915,22 +1924,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "487240.KS": {
     "ticker": "487240.KS",
     "market": "etf",
     "company_name": "Samsung Kodex Ai Electric Power Core Facilities Etf",
-    "current_price": 23870.0,
-    "total_undervalued_score": 66.5,
+    "current_price": 23745.0,
+    "total_undervalued_score": 66.6,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 41.78747317563659,
-    "disparity_value_pct": -24.797185539132027,
+    "rsi_value": 41.34369222789753,
+    "disparity_value_pct": -25.186089559292668,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1941,7 +1950,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "486290.KS": {
     "ticker": "486290.KS",
@@ -1967,13 +1976,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "433500.KS": {
     "ticker": "433500.KS",
     "market": "etf",
     "company_name": "Kim Kindex Nuclear Power Theme ETF",
-    "current_price": 37740.0,
+    "current_price": 37715.0,
     "total_undervalued_score": 67.6,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -1981,8 +1990,8 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 36.77965967292031,
-    "disparity_value_pct": -25.866025857186358,
+    "rsi_value": 36.70101196509937,
+    "disparity_value_pct": -25.914527843847246,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -1993,22 +2002,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "307520.KS": {
     "ticker": "307520.KS",
     "market": "etf",
     "company_name": "Mirae Asset Management - Tiger Holding Company",
-    "current_price": 18700.0,
-    "total_undervalued_score": 52.8,
+    "current_price": 18710.0,
+    "total_undervalued_score": 52.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 47.761802580792974,
-    "disparity_value_pct": -9.257072610517126,
+    "rsi_value": 47.84991736690031,
+    "disparity_value_pct": -9.209281260362157,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2019,22 +2028,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "494670.KS": {
     "ticker": "494670.KS",
     "market": "etf",
     "company_name": "Mirae Asset Tiger Shipbuilding Top10 ETF",
-    "current_price": 14855.0,
-    "total_undervalued_score": 67.6,
+    "current_price": 14930.0,
+    "total_undervalued_score": 67.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 37.80752597692469,
-    "disparity_value_pct": -22.43731154303019,
+    "rsi_value": 38.650454836815534,
+    "disparity_value_pct": -22.050800114861513,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2045,13 +2054,13 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "487230.KS": {
     "ticker": "487230.KS",
     "market": "etf",
     "company_name": "Samsung Kodex Us Ai Electric Power Core Infrastructure Etf",
-    "current_price": 15265.0,
+    "current_price": 15250.0,
     "total_undervalued_score": 65.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
@@ -2059,8 +2068,8 @@
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 43.449420419130334,
-    "disparity_value_pct": -15.759944814899974,
+    "rsi_value": 43.34730868048735,
+    "disparity_value_pct": -15.841561391971371,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2071,22 +2080,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0144L0.KS": {
     "ticker": "0144L0.KS",
     "market": "etf",
     "company_name": "Samsung Kodex Us Growth Covered Call Active Etf",
-    "current_price": 8820.0,
-    "total_undervalued_score": 58.8,
+    "current_price": 8815.0,
+    "total_undervalued_score": 58.9,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 43.8145734880073,
-    "disparity_value_pct": -4.736188367446125,
+    "rsi_value": 43.59246688131534,
+    "disparity_value_pct": -4.789335829560482,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2097,22 +2106,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "426030.KS": {
     "ticker": "426030.KS",
     "market": "etf",
     "company_name": "Timefolio Timefolio Us Nasdaq100 Active Etf",
-    "current_price": 37735.0,
-    "total_undervalued_score": 66.7,
+    "current_price": 37700.0,
+    "total_undervalued_score": 66.8,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 38.91846388699206,
-    "disparity_value_pct": -13.752185622697722,
+    "rsi_value": 38.74950198788667,
+    "disparity_value_pct": -13.831033399045744,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2123,22 +2132,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "0172V0.KS": {
     "ticker": "0172V0.KS",
     "market": "etf",
     "company_name": "Hana 1Q Silver Active ETF",
-    "current_price": 6355.0,
-    "total_undervalued_score": 63.3,
+    "current_price": 6330.0,
+    "total_undervalued_score": 63.4,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 32.86155659144025,
-    "disparity_value_pct": -17.665349485003567,
+    "rsi_value": 32.3863146835957,
+    "disparity_value_pct": -17.984819201658443,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2149,22 +2158,22 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "396500.KS": {
     "ticker": "396500.KS",
     "market": "etf",
     "company_name": "Mirae Asset Maps Management  - Tiger FN Semiconductor Top 10 ETF",
-    "current_price": 28510.0,
-    "total_undervalued_score": 59.2,
+    "current_price": 28335.0,
+    "total_undervalued_score": 59.4,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 44.94351994209148,
-    "disparity_value_pct": -15.340930180765378,
+    "rsi_value": 44.38719110720834,
+    "disparity_value_pct": -15.853296376955061,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2175,7 +2184,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "139220.KS": {
     "ticker": "139220.KS",
@@ -2201,7 +2210,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "CRWD": {
     "ticker": "CRWD",
@@ -2227,7 +2236,7 @@
       "beta": 1.15,
       "market_cap": 235371905024
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "PANW": {
     "ticker": "PANW",
@@ -2253,7 +2262,7 @@
       "beta": 0.97,
       "market_cap": 264078868480
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "CRWV": {
     "ticker": "CRWV",
@@ -2279,7 +2288,7 @@
       "beta": null,
       "market_cap": 31216969728
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "NBIS": {
     "ticker": "NBIS",
@@ -2296,16 +2305,16 @@
     "rsi_value": 45.58236762397798,
     "disparity_value_pct": null,
     "metrics": {
-      "forward_per": -36.986347,
+      "forward_per": -36.95925,
       "trailing_per": 100.5,
       "reported_eps_ttm": 1.28,
       "target_mean_price": 278.05,
       "target_upside_pct": null,
       "recommendation_key": "buy",
       "beta": 1.539,
-      "market_cap": 32661463040
+      "market_cap": 34971455488
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "DELL": {
     "ticker": "DELL",
@@ -2331,7 +2340,7 @@
       "beta": 1.436,
       "market_cap": 235994628096
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "VRT": {
     "ticker": "VRT",
@@ -2357,7 +2366,7 @@
       "beta": 2.108,
       "market_cap": 80724066304
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "GLW": {
     "ticker": "GLW",
@@ -2383,7 +2392,7 @@
       "beta": 1.225,
       "market_cap": 102937427968
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "INTC": {
     "ticker": "INTC",
@@ -2409,7 +2418,7 @@
       "beta": 2.426,
       "market_cap": 325278007296
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "STX": {
     "ticker": "STX",
@@ -2435,7 +2444,7 @@
       "beta": 2.201,
       "market_cap": 125142941696
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "TEM": {
     "ticker": "TEM",
@@ -2461,7 +2470,7 @@
       "beta": 3.613,
       "market_cap": 13842459648
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "WDC": {
     "ticker": "WDC",
@@ -2487,7 +2496,7 @@
       "beta": 2.344,
       "market_cap": 116493139968
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "MU": {
     "ticker": "MU",
@@ -2513,7 +2522,7 @@
       "beta": 2.398,
       "market_cap": 903373586432
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "SOFI": {
     "ticker": "SOFI",
@@ -2539,7 +2548,7 @@
       "beta": 2.241,
       "market_cap": 20285245440
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "SLDP": {
     "ticker": "SLDP",
@@ -2565,7 +2574,7 @@
       "beta": 1.977,
       "market_cap": 426290304
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ASTS": {
     "ticker": "ASTS",
@@ -2591,7 +2600,7 @@
       "beta": 2.847,
       "market_cap": 13458783232
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "PLTR": {
     "ticker": "PLTR",
@@ -2608,7 +2617,7 @@
     "rsi_value": 42.402929757737745,
     "disparity_value_pct": null,
     "metrics": {
-      "forward_per": 67.67855,
+      "forward_per": 67.58391,
       "trailing_per": 120.83099,
       "reported_eps_ttm": 1.42,
       "target_mean_price": 222.25357,
@@ -2617,7 +2626,7 @@
       "beta": 1.61,
       "market_cap": 413421600768
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "META": {
     "ticker": "META",
@@ -2643,22 +2652,22 @@
       "beta": 1.279,
       "market_cap": 1594466631680
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ETH-USD": {
     "ticker": "ETH-USD",
     "market": "us",
     "company_name": "Ethereum USD",
-    "current_price": 2001.4599609375,
-    "total_undervalued_score": 61.6,
+    "current_price": 1995.18994140625,
+    "total_undervalued_score": 81.8,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 27.972879066135192,
-    "disparity_value_pct": -18.477838917614164,
+    "rsi_value": 27.701859596627784,
+    "disparity_value_pct": -18.729766043690578,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2667,9 +2676,9 @@
       "target_upside_pct": null,
       "recommendation_key": "N/A",
       "beta": null,
-      "market_cap": 244266385408
+      "market_cap": 244227653632
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ONDS": {
     "ticker": "ONDS",
@@ -2695,7 +2704,7 @@
       "beta": 3.082,
       "market_cap": 3097850624
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ARM": {
     "ticker": "ARM",
@@ -2721,7 +2730,7 @@
       "beta": 3.939,
       "market_cap": 213764603904
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "PGY": {
     "ticker": "PGY",
@@ -2747,7 +2756,7 @@
       "beta": 5.69,
       "market_cap": 1417547008
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "MSFT": {
     "ticker": "MSFT",
@@ -2773,7 +2782,7 @@
       "beta": 1.045,
       "market_cap": 3883899813888
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "CIEN": {
     "ticker": "CIEN",
@@ -2799,7 +2808,7 @@
       "beta": 1.351,
       "market_cap": 41690288128
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "APP": {
     "ticker": "APP",
@@ -2825,7 +2834,7 @@
       "beta": 2.498,
       "market_cap": 130434834432
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "CLS": {
     "ticker": "CLS",
@@ -2851,22 +2860,22 @@
       "beta": 1.345,
       "market_cap": 32036182016
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "BTC-USD": {
     "ticker": "BTC-USD",
     "market": "us",
     "company_name": "Bitcoin USD",
-    "current_price": 70508.109375,
-    "total_undervalued_score": 95.9,
+    "current_price": 70338.9375,
+    "total_undervalued_score": 96.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": true,
     "mdd_check": false,
     "sigma_check": true,
-    "rsi_value": 28.536120393201074,
-    "disparity_value_pct": -12.75228543217607,
+    "rsi_value": 28.26427558239952,
+    "disparity_value_pct": -12.958584250111382,
     "metrics": {
       "forward_per": null,
       "trailing_per": null,
@@ -2875,9 +2884,9 @@
       "target_upside_pct": null,
       "recommendation_key": "N/A",
       "beta": null,
-      "market_cap": 1417244573696
+      "market_cap": 1416968142848
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "TSLA": {
     "ticker": "TSLA",
@@ -2903,7 +2912,7 @@
       "beta": 1.743,
       "market_cap": 1571023749120
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "LLY": {
     "ticker": "LLY",
@@ -2929,7 +2938,7 @@
       "beta": 0.389,
       "market_cap": 1271342563328
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "IONQ": {
     "ticker": "IONQ",
@@ -2955,7 +2964,7 @@
       "beta": 3.409,
       "market_cap": 14340516864
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "IREN": {
     "ticker": "IREN",
@@ -2981,7 +2990,7 @@
       "beta": 4.335,
       "market_cap": 8266481664
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "LITE": {
     "ticker": "LITE",
@@ -3007,7 +3016,7 @@
       "beta": 1.645,
       "market_cap": 56646332416
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "RKLB": {
     "ticker": "RKLB",
@@ -3033,7 +3042,7 @@
       "beta": 3.176,
       "market_cap": 43117326336
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "GEV": {
     "ticker": "GEV",
@@ -3059,7 +3068,7 @@
       "beta": 1.058,
       "market_cap": 216635539456
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "PL": {
     "ticker": "PL",
@@ -3085,7 +3094,7 @@
       "beta": 2.27,
       "market_cap": 5057486848
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "COHR": {
     "ticker": "COHR",
@@ -3111,7 +3120,7 @@
       "beta": 2.234,
       "market_cap": 45710168064
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "BE": {
     "ticker": "BE",
@@ -3137,7 +3146,7 @@
       "beta": 3.618,
       "market_cap": 59701956608
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "NVDA": {
     "ticker": "NVDA",
@@ -3163,7 +3172,7 @@
       "beta": 2.247,
       "market_cap": 4012989743104
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "SOXL": {
     "ticker": "SOXL",
@@ -3189,7 +3198,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "AVGO": {
     "ticker": "AVGO",
@@ -3215,7 +3224,7 @@
       "beta": 1.508,
       "market_cap": 1739319803904
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "GOOGL": {
     "ticker": "GOOGL",
@@ -3241,7 +3250,7 @@
       "beta": 1.226,
       "market_cap": 3672217747456
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "AMD": {
     "ticker": "AMD",
@@ -3267,7 +3276,7 @@
       "beta": 2.542,
       "market_cap": 959943081984
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "COIN": {
     "ticker": "COIN",
@@ -3293,7 +3302,7 @@
       "beta": 3.353,
       "market_cap": 34596634624
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "TSEM": {
     "ticker": "TSEM",
@@ -3319,7 +3328,7 @@
       "beta": 0.964,
       "market_cap": 17919897600
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "QCOM": {
     "ticker": "QCOM",
@@ -3345,7 +3354,7 @@
       "beta": 1.762,
       "market_cap": 189539794944
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ASML": {
     "ticker": "ASML",
@@ -3365,13 +3374,13 @@
       "forward_per": 23.614145,
       "trailing_per": 36.838585,
       "reported_eps_ttm": 40.64,
-      "target_mean_price": 2121.8826,
+      "target_mean_price": 2121.413,
       "target_upside_pct": null,
       "recommendation_key": "strong_buy",
       "beta": 1.333,
       "market_cap": 577016561664
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "TSM": {
     "ticker": "TSM",
@@ -3397,7 +3406,7 @@
       "beta": 1.233,
       "market_cap": 2103062822912
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "LUNR": {
     "ticker": "LUNR",
@@ -3423,7 +3432,7 @@
       "beta": 1.907,
       "market_cap": 2103210880
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "KORU": {
     "ticker": "KORU",
@@ -3449,7 +3458,7 @@
       "beta": null,
       "market_cap": null
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "AAOI": {
     "ticker": "AAOI",
@@ -3475,7 +3484,7 @@
       "beta": 3.991,
       "market_cap": 4797233152
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "CRDO": {
     "ticker": "CRDO",
@@ -3501,371 +3510,371 @@
       "beta": 3.292,
       "market_cap": 26277558272
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ORCL": {
     "ticker": "ORCL",
     "market": "us",
     "company_name": "Oracle Corporation",
     "current_price": 127.11,
-    "total_undervalued_score": 36.4,
+    "total_undervalued_score": 60.4,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 49.360715111974926,
-    "disparity_value_pct": null,
+    "rsi_value": 48.43143779493683,
+    "disparity_value_pct": -8.396121512265953,
     "metrics": {
       "forward_per": 11.494003,
       "trailing_per": 19.923197,
       "reported_eps_ttm": 6.38,
       "target_mean_price": 236.184,
-      "target_upside_pct": null,
+      "target_upside_pct": 85.81071423641052,
       "recommendation_key": "strong_buy",
       "beta": 1.778,
       "market_cap": 396291866624
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "TER": {
     "ticker": "TER",
     "market": "us",
     "company_name": "Teradyne, Inc.",
     "current_price": 263.75,
-    "total_undervalued_score": 32.5,
+    "total_undervalued_score": 56.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 40.699762599261064,
-    "disparity_value_pct": null,
+    "rsi_value": 40.26784765286913,
+    "disparity_value_pct": -24.015587781468973,
     "metrics": {
       "forward_per": 21.913664,
       "trailing_per": 30.316093,
       "reported_eps_ttm": 8.7,
       "target_mean_price": 415.875,
-      "target_upside_pct": null,
+      "target_upside_pct": 57.677725118483416,
       "recommendation_key": "buy",
       "beta": 1.747,
       "market_cap": 41177903104
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ALAB": {
     "ticker": "ALAB",
     "market": "us",
     "company_name": "Astera Labs, Inc.",
     "current_price": 227.79,
-    "total_undervalued_score": 33.6,
+    "total_undervalued_score": 57.6,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 41.788224498744434,
-    "disparity_value_pct": null,
+    "rsi_value": 41.120912328535724,
+    "disparity_value_pct": -22.541616746329996,
     "metrics": {
       "forward_per": 31.8501,
       "trailing_per": 90.03557,
       "reported_eps_ttm": 2.53,
       "target_mean_price": 344.1467,
-      "target_upside_pct": null,
+      "target_upside_pct": 51.080692806250084,
       "recommendation_key": "buy",
       "beta": 3.86,
       "market_cap": 39813607424
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "AMAT": {
     "ticker": "AMAT",
     "market": "us",
     "company_name": "Applied Materials, Inc.",
     "current_price": 380.95,
-    "total_undervalued_score": 33.9,
+    "total_undervalued_score": 57.9,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 47.61215001740672,
-    "disparity_value_pct": null,
+    "rsi_value": 44.67097979916973,
+    "disparity_value_pct": -14.316592883648404,
     "metrics": {
       "forward_per": 15.824744,
       "trailing_per": 32.868855,
       "reported_eps_ttm": 11.59,
       "target_mean_price": 623.30554,
-      "target_upside_pct": null,
+      "target_upside_pct": 63.61872162410066,
       "recommendation_key": "strong_buy",
       "beta": 1.673,
       "market_cap": 302320943104
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "LRCX": {
     "ticker": "LRCX",
     "market": "us",
     "company_name": "Lam Research Corporation",
     "current_price": 233.78,
-    "total_undervalued_score": 32.2,
+    "total_undervalued_score": 56.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 45.037455533586844,
-    "disparity_value_pct": null,
+    "rsi_value": 44.386597773581336,
+    "disparity_value_pct": -17.55037602219295,
     "metrics": {
       "forward_per": 19.105402,
       "trailing_per": 34.840538,
       "reported_eps_ttm": 6.71,
       "target_mean_price": 362.1,
-      "target_upside_pct": null,
+      "target_upside_pct": 54.889212888500936,
       "recommendation_key": "strong_buy",
       "beta": 2.01,
       "market_cap": 292031168512
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "KLAC": {
     "ticker": "KLAC",
     "market": "us",
     "company_name": "KLA Corporation",
     "current_price": 157.3,
-    "total_undervalued_score": 33.6,
+    "total_undervalued_score": 51.6,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 49.661988987913126,
-    "disparity_value_pct": null,
+    "rsi_value": 47.5911480390115,
+    "disparity_value_pct": -9.829519109632201,
     "metrics": {
       "forward_per": 22.15855,
       "trailing_per": 39.42356,
       "reported_eps_ttm": 3.99,
       "target_mean_price": 219.61539,
-      "target_upside_pct": null,
+      "target_upside_pct": 39.61562984060337,
       "recommendation_key": "buy",
       "beta": 1.497,
       "market_cap": 204955992064
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "DDOG": {
     "ticker": "DDOG",
     "market": "us",
     "company_name": "Datadog, Inc.",
     "current_price": 184.46,
-    "total_undervalued_score": 32.1,
+    "total_undervalued_score": 56.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 31.535756115880176,
-    "disparity_value_pct": null,
+    "rsi_value": 31.580116660556058,
+    "disparity_value_pct": -23.680671824858557,
     "metrics": {
       "forward_per": 57.95344,
       "trailing_per": 256.19446,
       "reported_eps_ttm": 0.72,
       "target_mean_price": 269.65457,
-      "target_upside_pct": null,
+      "target_upside_pct": 46.18592658856718,
       "recommendation_key": "strong_buy",
       "beta": 1.509,
       "market_cap": 66597912576
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "SNDK": {
     "ticker": "SNDK",
     "market": "us",
     "company_name": "Sandisk Corporation",
     "current_price": 937.46,
-    "total_undervalued_score": 36.6,
+    "total_undervalued_score": 60.6,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 37.415458984450254,
-    "disparity_value_pct": null,
+    "rsi_value": 35.88033653773964,
+    "disparity_value_pct": -36.11008276493284,
     "metrics": {
       "forward_per": 3.2432008,
       "trailing_per": 7.4924874,
       "reported_eps_ttm": 125.12,
       "target_mean_price": 2047.375,
-      "target_upside_pct": null,
+      "target_upside_pct": 118.39597977648135,
       "recommendation_key": "strong_buy",
       "beta": null,
       "market_cap": 133390589952
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "SIMO": {
     "ticker": "SIMO",
     "market": "us",
     "company_name": "Silicon Motion Technology Corporation",
     "current_price": 179.5,
-    "total_undervalued_score": 34.9,
+    "total_undervalued_score": 58.9,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 42.48370011184616,
-    "disparity_value_pct": null,
+    "rsi_value": 41.3583895079536,
+    "disparity_value_pct": -24.617048000044804,
     "metrics": {
       "forward_per": 8.329266,
       "trailing_per": 19.301075,
       "reported_eps_ttm": 9.3,
       "target_mean_price": 361.27274,
-      "target_upside_pct": null,
+      "target_upside_pct": 101.26615041782729,
       "recommendation_key": "strong_buy",
       "beta": 1.768,
       "market_cap": 6086528512
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "MRVL": {
     "ticker": "MRVL",
     "market": "us",
     "company_name": "Marvell Technology, Inc.",
     "current_price": 164.45,
-    "total_undervalued_score": 33.2,
+    "total_undervalued_score": 57.2,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 38.26951055249238,
-    "disparity_value_pct": null,
+    "rsi_value": 37.17142767764926,
+    "disparity_value_pct": -28.50927287969872,
     "metrics": {
       "forward_per": 22.374454,
       "trailing_per": 54.095394,
       "reported_eps_ttm": 3.04,
       "target_mean_price": 310.31824,
-      "target_upside_pct": null,
+      "target_upside_pct": 88.70066631723158,
       "recommendation_key": "strong_buy",
       "beta": 2.327,
       "market_cap": 147966492672
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "CRCL": {
     "ticker": "CRCL",
     "market": "us",
     "company_name": "Circle Internet Group",
     "current_price": 63.82,
-    "total_undervalued_score": 38.1,
+    "total_undervalued_score": 68.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
-    "ma_check": false,
+    "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 35.97075450963709,
-    "disparity_value_pct": null,
+    "rsi_value": 32.91621252269617,
+    "disparity_value_pct": -24.492436157352515,
     "metrics": {
       "forward_per": 44.78785,
       "trailing_per": 38.445786,
       "reported_eps_ttm": 1.66,
       "target_mean_price": 102.3675,
-      "target_upside_pct": null,
+      "target_upside_pct": 60.400345486529325,
       "recommendation_key": "buy",
       "beta": null,
       "market_cap": 16373219328
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "MSTR": {
     "ticker": "MSTR",
     "market": "us",
     "company_name": "Strategy Inc",
     "current_price": 114.41,
-    "total_undervalued_score": 51.0,
+    "total_undervalued_score": 81.0,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
-    "ma_check": false,
+    "ma_check": true,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 38.17509833821235,
-    "disparity_value_pct": null,
+    "rsi_value": 33.93655752599764,
+    "disparity_value_pct": -18.727793435150243,
     "metrics": {
       "forward_per": 6.636311,
       "trailing_per": null,
       "reported_eps_ttm": -52.33,
       "target_mean_price": 233.26666,
-      "target_upside_pct": null,
+      "target_upside_pct": 103.88659429547235,
       "recommendation_key": "strong_buy",
       "beta": 3.611,
       "market_cap": 48427651072
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "SPCX": {
     "ticker": "SPCX",
     "market": "us",
     "company_name": "Space Exploration Technologies Corp.",
     "current_price": 139.94,
-    "total_undervalued_score": 27.7,
+    "total_undervalued_score": 45.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 46.75454156083885,
-    "disparity_value_pct": null,
+    "rsi_value": 46.90887253911734,
+    "disparity_value_pct": -5.108375851405134,
     "metrics": {
-      "forward_per": 52.539692,
+      "forward_per": 51.0296,
       "trailing_per": 608.43475,
       "reported_eps_ttm": 0.23,
       "target_mean_price": 256.41406,
-      "target_upside_pct": null,
+      "target_upside_pct": 83.23142455807957,
       "recommendation_key": "buy",
       "beta": null,
       "market_cap": 1900534169600
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "FTNT": {
     "ticker": "FTNT",
     "market": "us",
     "company_name": "Fortinet, Inc.",
     "current_price": 129.54,
-    "total_undervalued_score": 34.4,
+    "total_undervalued_score": 58.4,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 32.56905683032849,
-    "disparity_value_pct": null,
+    "rsi_value": 34.015261220532366,
+    "disparity_value_pct": -21.066502105711326,
     "metrics": {
       "forward_per": 33.203293,
       "trailing_per": 42.333332,
       "reported_eps_ttm": 3.06,
       "target_mean_price": 145.03432,
-      "target_upside_pct": null,
+      "target_upside_pct": 11.961037144445996,
       "recommendation_key": "hold",
       "beta": 1.04,
       "market_cap": 95174295552
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "AMZN": {
     "ticker": "AMZN",
@@ -3879,71 +3888,71 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 57.34313119384008,
-    "disparity_value_pct": null,
+    "rsi_value": 58.17824008319413,
+    "disparity_value_pct": 4.691423842624176,
     "metrics": {
       "forward_per": 24.52759,
       "trailing_per": 21.620049,
       "reported_eps_ttm": 12.37,
       "target_mean_price": 326.99017,
-      "target_upside_pct": null,
+      "target_upside_pct": 22.266739087261506,
       "recommendation_key": "strong_buy",
       "beta": 1.503,
       "market_cap": 2891865653248
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "SNOW": {
     "ticker": "SNOW",
     "market": "us",
     "company_name": "Snowflake Inc.",
     "current_price": 298.7,
-    "total_undervalued_score": 13.8,
+    "total_undervalued_score": 31.8,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 45.526978770431235,
-    "disparity_value_pct": null,
+    "rsi_value": 44.579634570486725,
+    "disparity_value_pct": -8.238890297819712,
     "metrics": {
       "forward_per": 98.10845,
       "trailing_per": null,
       "reported_eps_ttm": -3.18,
       "target_mean_price": 427.33353,
-      "target_upside_pct": null,
+      "target_upside_pct": 43.06445012925272,
       "recommendation_key": "strong_buy",
       "beta": 1.322,
       "market_cap": 105381363712
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "OKTA": {
     "ticker": "OKTA",
     "market": "us",
     "company_name": "Okta, Inc.",
     "current_price": 182.54,
-    "total_undervalued_score": 25.8,
+    "total_undervalued_score": 43.8,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 43.12770281325591,
-    "disparity_value_pct": null,
+    "rsi_value": 43.30522597336721,
+    "disparity_value_pct": -3.921680406229444,
     "metrics": {
       "forward_per": 41.692455,
       "trailing_per": 109.96385,
       "reported_eps_ttm": 1.66,
       "target_mean_price": 214.7165,
-      "target_upside_pct": null,
+      "target_upside_pct": 17.627099757492743,
       "recommendation_key": "buy",
       "beta": 0.72,
       "market_cap": 31911811072
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "DG": {
     "ticker": "DG",
@@ -3957,71 +3966,71 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 56.87361914169055,
-    "disparity_value_pct": null,
+    "rsi_value": 53.05356509983368,
+    "disparity_value_pct": 5.37274992576815,
     "metrics": {
       "forward_per": 16.22869,
       "trailing_per": 17.48182,
       "reported_eps_ttm": 7.7,
       "target_mean_price": 141.51724,
-      "target_upside_pct": null,
+      "target_upside_pct": 5.131297346652901,
       "recommendation_key": "buy",
       "beta": 0.191,
       "market_cap": 29697224704
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "UNH": {
     "ticker": "UNH",
     "market": "us",
     "company_name": "UnitedHealth Group Incorporated",
     "current_price": 405.13,
-    "total_undervalued_score": 10.5,
+    "total_undervalued_score": 16.5,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 52.20815651342396,
-    "disparity_value_pct": null,
+    "rsi_value": 53.708701203888566,
+    "disparity_value_pct": 3.3952524934675266,
     "metrics": {
       "forward_per": 17.364658,
       "trailing_per": 23.123857,
       "reported_eps_ttm": 17.52,
       "target_mean_price": 476.16,
-      "target_upside_pct": null,
+      "target_upside_pct": 17.532642426159867,
       "recommendation_key": "buy",
       "beta": 0.52,
       "market_cap": 363005640704
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "ACN": {
     "ticker": "ACN",
     "market": "us",
     "company_name": "Accenture plc",
     "current_price": 249.95,
-    "total_undervalued_score": 9.4,
-    "total_overvalued_score": 0,
+    "total_undervalued_score": 15.4,
+    "total_overvalued_score": 3.6,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 59.39759348699072,
-    "disparity_value_pct": null,
+    "rsi_value": 56.63048294449774,
+    "disparity_value_pct": 18.63579608875774,
     "metrics": {
       "forward_per": 15.712427,
       "trailing_per": 18.43289,
       "reported_eps_ttm": 13.56,
       "target_mean_price": 233.21208,
-      "target_upside_pct": null,
+      "target_upside_pct": -6.696506162273795,
       "recommendation_key": "buy",
       "beta": 1.004,
       "market_cap": 147654836224
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "KO": {
     "ticker": "KO",
@@ -4035,19 +4044,19 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 69.64136654776205,
-    "disparity_value_pct": null,
+    "rsi_value": 68.82512828482301,
+    "disparity_value_pct": 7.678423427571612,
     "metrics": {
-      "forward_per": 27.620691,
+      "forward_per": 27.611614,
       "trailing_per": 28.743362,
       "reported_eps_ttm": 3.39,
       "target_mean_price": 98.43478,
-      "target_upside_pct": null,
+      "target_upside_pct": 1.0209129040118248,
       "recommendation_key": "buy",
       "beta": 0.269,
       "market_cap": 419177365504
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "AAPL": {
     "ticker": "AAPL",
@@ -4061,19 +4070,19 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 60.421147221530596,
-    "disparity_value_pct": null,
+    "rsi_value": 59.688619149462475,
+    "disparity_value_pct": 6.043431388659437,
     "metrics": {
       "forward_per": 33.652397,
       "trailing_per": 39.518932,
       "reported_eps_ttm": 8.98,
       "target_mean_price": 344.6155,
-      "target_upside_pct": null,
+      "target_upside_pct": -2.892387494810258,
       "recommendation_key": "buy",
       "beta": 1.089,
       "market_cap": 5157180932096
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "TXN": {
     "ticker": "TXN",
@@ -4087,19 +4096,19 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 59.059824064250385,
-    "disparity_value_pct": null,
+    "rsi_value": 60.17263482335799,
+    "disparity_value_pct": 11.941688670140316,
     "metrics": {
       "forward_per": 26.86258,
       "trailing_per": 40.529182,
       "reported_eps_ttm": 7.71,
       "target_mean_price": 336.86206,
-      "target_upside_pct": null,
+      "target_upside_pct": 7.802754786365725,
       "recommendation_key": "none",
       "beta": 1.388,
       "market_cap": 285534945280
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "NEE": {
     "ticker": "NEE",
@@ -4113,19 +4122,19 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 62.15120581989715,
-    "disparity_value_pct": null,
+    "rsi_value": 58.752491204351344,
+    "disparity_value_pct": 4.988675696576328,
     "metrics": {
       "forward_per": 19.493654,
       "trailing_per": 15.367567,
       "reported_eps_ttm": 5.55,
       "target_mean_price": 94.0,
-      "target_upside_pct": null,
+      "target_upside_pct": 10.212215958467613,
       "recommendation_key": "buy",
       "beta": 0.6,
       "market_cap": 178879234048
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "XEL": {
     "ticker": "XEL",
@@ -4139,96 +4148,96 @@
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 67.26627381035449,
-    "disparity_value_pct": null,
+    "rsi_value": 68.57649132154076,
+    "disparity_value_pct": 7.847742123966062,
     "metrics": {
       "forward_per": 17.839123,
       "trailing_per": 18.99767,
       "reported_eps_ttm": 4.29,
       "target_mean_price": 89.81579,
-      "target_upside_pct": null,
+      "target_upside_pct": 10.203423312883444,
       "recommendation_key": "strong_buy",
       "beta": 0.345,
       "market_cap": 52312764416
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "NTAP": {
     "ticker": "NTAP",
     "market": "us",
     "company_name": "NetApp, Inc.",
     "current_price": 186.08,
-    "total_undervalued_score": 30.3,
+    "total_undervalued_score": 48.3,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 40.592672102906135,
-    "disparity_value_pct": null,
+    "rsi_value": 42.658803827291656,
+    "disparity_value_pct": -7.538500794139824,
     "metrics": {
       "forward_per": 16.65609,
       "trailing_per": 26.245417,
       "reported_eps_ttm": 7.09,
       "target_mean_price": 211.6875,
-      "target_upside_pct": null,
+      "target_upside_pct": 13.761553050818867,
       "recommendation_key": "buy",
       "beta": 1.514,
       "market_cap": 36549648384
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "GTLB": {
     "ticker": "GTLB",
     "market": "us",
     "company_name": "GitLab Inc.",
     "current_price": 47.28,
-    "total_undervalued_score": 12.7,
+    "total_undervalued_score": 30.7,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 37.04564631319894,
-    "disparity_value_pct": null,
+    "rsi_value": 36.9500186945247,
+    "disparity_value_pct": -5.085494505426613,
     "metrics": {
       "forward_per": 45.53378,
       "trailing_per": null,
       "reported_eps_ttm": -0.32,
       "target_mean_price": 56.125,
-      "target_upside_pct": null,
+      "target_upside_pct": 18.707701880432797,
       "recommendation_key": "buy",
       "beta": 0.943,
       "market_cap": 7877557248
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   },
   "NTRA": {
     "ticker": "NTRA",
     "market": "us",
     "company_name": "Natera, Inc.",
     "current_price": 322.94,
-    "total_undervalued_score": 36.1,
+    "total_undervalued_score": 54.1,
     "total_overvalued_score": 0,
     "is_undervalued": false,
     "is_overvalued": false,
     "ma_check": false,
     "mdd_check": false,
     "sigma_check": false,
-    "rsi_value": 33.71942096695197,
-    "disparity_value_pct": null,
+    "rsi_value": 34.93153999975691,
+    "disparity_value_pct": -13.05592590485658,
     "metrics": {
       "forward_per": -955.4438,
       "trailing_per": null,
       "reported_eps_ttm": -1.12,
       "target_mean_price": 410.0238,
-      "target_upside_pct": null,
+      "target_upside_pct": 26.965936985274563,
       "recommendation_key": "strong_buy",
       "beta": 1.515,
       "market_cap": 46827761664
     },
-    "updated_at": "2026-11-13 11:22 KST"
+    "updated_at": "2026-11-13 11:32 KST"
   }
 }
