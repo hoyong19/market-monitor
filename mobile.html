@@ -230,7 +230,7 @@
           <div id="sheetUpside" class="text-[11px] font-bold text-emerald-500 mt-0.5">--</div>
         </div>
         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-          <div class="text-slate-400 text-[10px]">밸류에이션 (PER)</div>
+          <div class="text-slate-400 text-[10px]">밸류에이션 (PER · PBR)</div>
           <div id="sheetPer" class="text-xs font-mono font-bold text-slate-900 dark:text-white mt-0.5">--</div>
           <div id="sheetMarketCap" class="text-[10px] text-slate-400 mt-0.5">--</div>
         </div>
@@ -1280,7 +1280,9 @@
         : '상승 여력 데이터 없음';
 
       document.getElementById('sheetPer').textContent = `Forward: ${item.metrics?.forward_per ? item.metrics.forward_per.toFixed(1) : '--'}배 / Trailing: ${item.metrics?.trailing_per ? item.metrics.trailing_per.toFixed(1) : '--'}배`;
-      document.getElementById('sheetMarketCap').textContent = item.metrics?.market_cap ? `시총: ${formatNumber(item.metrics.market_cap / 1e8, 0)}억원` : '';
+      const pbrText = item.metrics?.pbr ? `PBR: ${item.metrics.pbr.toFixed(2)}배` : 'PBR: --배';
+      const capText = item.metrics?.market_cap ? `시총: ${formatNumber(item.metrics.market_cap / 1e8, 0)}억원` : '';
+      document.getElementById('sheetMarketCap').textContent = capText ? `${pbrText} · ${capText}` : pbrText;
 
       document.getElementById('sheetRecoKey').textContent = (item.metrics?.recommendation_key || 'N/A').toUpperCase();
 
