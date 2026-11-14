@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import json
+import re
 import sys
 import traceback
 import urllib.request
@@ -392,6 +393,96 @@ def check_overvalued(ticker: str, indicators: Dict[str, Any], stock_name: str) -
     results['is_overvalued'] = results['rsi_over_check'] and results['disparity_over_check'] and results['sigma_upper_over_check']
     return results
 
+def _parse_naver_float(val: Any) -> float:
+    if val is None:
+        return np.nan
+    s = str(val).strip()
+    if not s or s in ('N/A', '-', '--', 'null', 'None'):
+        return np.nan
+    s = re.sub(r'[^0-9.-]', '', s)
+    try:
+        return float(s) if s and s not in ('-', '.') else np.nan
+    except ValueError:
+        return np.nan
+
+def _parse_naver_market_cap(val: Any) -> float:
+    """네이버 시총 문자열('1조 8,770억', '1,877억' 등)을 원(KRW) 단위 float로 변환"""
+    if val is None:
+        return np.nan
+    s = str(val).replace(',', '').strip()
+    if not s or s in ('N/A', '-', '--'):
+        return np.nan
+    total_won = 0.0
+    m_jo = re.search(r'([0-9.]+)\s*조', s)
+    m_eok = re.search(r'([0-9.]+)\s*억', s)
+    if m_jo:
+        total_won += float(m_jo.group(1)) * 1e12
+    if m_eok:
+        total_won += float(m_eok.group(1)) * 1e8
+    if total_won > 0:
+        return total_won
+    num = _parse_naver_float(s)
+    return num * 1e8 if not np.isnan(num) else np.nan
+
+def fetch_naver_fundamentals(ticker: str) -> Dict[str, Any]:
+    """
+    국내 주식(.KS / .KQ)의 경우 네이버 증권 모바일 API(KRX + FnGuide 제공)에서
+    PER, 추정PER, EPS, 시가총액, 목표주가 및 투자의견 컨센서스를 실시간 조회합니다.
+    """
+    result = {}
+    if not (ticker.upper().endswith('.KS') or ticker.upper().endswith('.KQ')):
+        return result
+
+    item_code = ticker.split('.')[0]
+    url = f"https://m.stock.naver.com/api/stock/{item_code}/integration"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Referer': f'https://m.stock.naver.com/domestic/stock/{item_code}/total'
+    }
+
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read().decode('utf-8'))
+
+        if data.get('stockName'):
+            result['stock_name'] = data['stockName']
+
+        for info in data.get('totalInfos', []):
+            c = info.get('code')
+            v = info.get('value')
+            if c == 'per':
+                result['trailing_per'] = _parse_naver_float(v)
+            elif c == 'cnsPer':
+                result['forward_per'] = _parse_naver_float(v)
+            elif c == 'eps':
+                result['reported_eps_ttm'] = _parse_naver_float(v)
+            elif c == 'marketValue':
+                result['market_cap'] = _parse_naver_market_cap(v)
+
+        cns = data.get('consensusInfo') or {}
+        if isinstance(cns, dict):
+            target_mean = _parse_naver_float(cns.get('priceTargetMean'))
+            if not np.isnan(target_mean) and target_mean > 0:
+                result['target_mean_price'] = target_mean
+
+            recomm_val = _parse_naver_float(cns.get('recommMean'))
+            if not np.isnan(recomm_val):
+                if recomm_val >= 4.5:
+                    result['recommendation_key'] = 'strong_buy'
+                elif recomm_val >= 3.5:
+                    result['recommendation_key'] = 'buy'
+                elif recomm_val >= 2.5:
+                    result['recommendation_key'] = 'hold'
+                elif recomm_val >= 1.5:
+                    result['recommendation_key'] = 'underperform'
+                else:
+                    result['recommendation_key'] = 'sell'
+    except Exception as ex:
+        print(f"  ⚠️ {ticker} 네이버 증권 API 조회 건너뜀 ({ex})")
+
+    return result
+
 def get_fundamental_indicators(ticker: str, stock_info: Dict[str, Any], df: pd.DataFrame) -> Dict[str, Any]:
     fundamental_indicators = {
         'forward_per': np.nan, 'trailing_per': np.nan, 'reported_eps_ttm': np.nan,
@@ -414,6 +505,24 @@ def get_fundamental_indicators(ticker: str, stock_info: Dict[str, Any], df: pd.D
     fundamental_indicators['beta'] = stock_info.get('beta', np.nan)
     fundamental_indicators['market_cap'] = stock_info.get('marketCap', np.nan)
 
+    # 국내 주식(.KS / .KQ)은 야후 파이낸스 누락 보완을 위해 네이버 증권(KRX/FnGuide) 데이터 병합
+    if ticker.upper().endswith('.KS') or ticker.upper().endswith('.KQ'):
+        naver_data = fetch_naver_fundamentals(ticker)
+        for key in ['trailing_per', 'forward_per', 'reported_eps_ttm', 'target_mean_price', 'market_cap']:
+            n_val = naver_data.get(key, np.nan)
+            if not np.isnan(n_val):
+                fundamental_indicators[key] = n_val
+
+        if naver_data.get('recommendation_key'):
+            fundamental_indicators['recommendation_key'] = naver_data['recommendation_key']
+
+        if naver_data.get('stock_name'):
+            fundamental_indicators['naver_stock_name'] = naver_data['stock_name']
+
+        t_price = fundamental_indicators['target_mean_price']
+        if not np.isnan(t_price) and not np.isnan(current_price) and current_price != 0:
+            fundamental_indicators['target_upside_pct'] = ((t_price - current_price) / current_price) * 100
+
     return fundamental_indicators
 
 def run_analysis(stock_list: List[str], market_name: str) -> List[Dict[str, Any]]:
@@ -434,6 +543,11 @@ def run_analysis(stock_list: List[str], market_name: str) -> List[Dict[str, Any]
             undervalued_results = check_undervalued(ticker, indicators, stock_name)
             overvalued_results = check_overvalued(ticker, indicators, stock_name)
             fundamental_results = get_fundamental_indicators(ticker, stock_info, df)
+
+            if fundamental_results.get('naver_stock_name'):
+                stock_name = fundamental_results['naver_stock_name']
+                undervalued_results['stock_name'] = stock_name
+                overvalued_results['stock_name'] = stock_name
 
             results = {**undervalued_results, **overvalued_results, **fundamental_results}
             results['total_undervalued_score'] = round(undervalued_results['ma_score'] + undervalued_results['mdd_score'] + undervalued_results['sigma_score'], 1)
@@ -624,15 +738,15 @@ def main_execution():
     macro_data = fetch_macro_data()
 
     # 2-1. 국내 순수 개별 주식 리스트 (총 47개)
-    stock_tickers_kr = [
+    stock_tickers_kr = list(dict.fromkeys([
         '005930.KS', '005935.KS', '000660.KS', '005387.KS', '316140.KS', '004540.KS',
         '900290.KQ', '092780.KS', '054540.KQ', '016380.KS', '196700.KQ', '035600.KQ',
         '017390.KS', '023410.KQ', '009200.KS', '126720.KS', '013580.KS', '347740.KQ',
         '036190.KQ', '033270.KS', '007700.KS', '060720.KQ', '007280.KS', '071670.KQ',
         '000230.KS', '248170.KS', '025770.KQ', '000910.KS', '089980.KQ', '014790.KS',
-        '099410.KQ', '009200.KS,  '014940.KQ', '227950.KQ', '016380.KS', '289930.KQ',
-        '189690.KQ', '014790.KS,  '003100.KS', '071670.KQ', '008490.KS', '004980.KS'
-    ]
+        '099410.KQ', '014940.KQ', '227950.KQ', '289930.KQ', '189690.KQ', '003100.KS',
+        '008490.KS', '004980.KS'
+    ]))
 
     # 2-2. 국내 상장 테마 및 지수 ETF 리스트 (총 29개)
     stock_tickers_etf = [
