@@ -838,7 +838,7 @@
                 c.chg = item.rating ? (item.rating.includes('extreme') ? '극단공포' : (item.rating.includes('fear') ? '공포' : (item.rating.includes('greed') ? '탐욕' : '중립'))) : (p <= 25 ? '극단공포' : (p <= 45 ? '공포' : '중립'));
                 c.isUp = p > 50; // 50 초과는 탐욕(빨강), 50 이하는 공포(파랑)
               } else {
-                c.val = item.isYield ? `${formatNumber(p, 3)}%` : (c.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(p, 0)}` : (c.id === 'spread' ? '+0.320%p' : formatNumber(p))));
+                c.val = item.isYield ? `${formatNumber(p, 3)}%` : (c.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(p, 0)}` : (c.id === 'spread' ? `${p >= 0 ? '+' : ''}${formatNumber(p, 3)}%p` : formatNumber(p))));
                 if (chgVal !== undefined) {
                   const baseChg = `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, item.isYield ? 3 : 2)}${item.isYield ? '%p' : ''}`;
                   if (!item.isYield && c.id !== 'spread') {
@@ -851,6 +851,9 @@
                   } else {
                     c.chg = baseChg;
                   }
+                } else if (c.id === 'spread') {
+                  c.chg = p >= 0 ? '정상화' : '역전';
+                  c.isUp = p >= 0;
                 } else {
                   c.chg = '정상화';
                 }
@@ -871,8 +874,8 @@
                 let chgVal = mItem.change;
                 if (mItem.isYield && chgVal && Math.abs(chgVal) < 0.02) chgVal = chgVal * 10;
 
-                target.val = mItem.isYield ? `${formatNumber(p, 3)}%` : (target.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (target.id === 'fear_greed' ? `${p}점 (공포)` : (target.id === 'wti' || target.id === 'gold' || target.id.startsWith('btc') ? `$${formatNumber(p)}` : (target.id === 'spread' ? '+0.320%p' : formatNumber(p)))));
-                target.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, mItem.isYield ? 3 : 2)}${mItem.isYield ? '%p' : ''}${mItem.changePct ? ` (${mItem.changePct > 0 ? '+' : ''}${mItem.changePct}%)` : ''}` : '정상 곡선';
+                target.val = mItem.isYield ? `${formatNumber(p, 3)}%` : (target.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (target.id === 'fear_greed' ? `${p}점 (공포)` : (target.id === 'wti' || target.id === 'gold' || target.id.startsWith('btc') ? `$${formatNumber(p)}` : (target.id === 'spread' ? `${p >= 0 ? '+' : ''}${formatNumber(p, 3)}%p` : formatNumber(p)))));
+                target.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, mItem.isYield ? 3 : 2)}${mItem.isYield ? '%p' : ''}${mItem.changePct ? ` (${mItem.changePct > 0 ? '+' : ''}${mItem.changePct}%)` : ''}` : (target.id === 'spread' ? (p >= 0 ? '정상 곡선' : '장단기 역전') : '정상 곡선');
                 target.isUp = (mItem.change || 0) >= 0;
                 if (mItem.desc) target.desc = mItem.desc;
                 if (mItem.insight) target.insight = mItem.insight;
