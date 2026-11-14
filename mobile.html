@@ -190,6 +190,30 @@
       <div id="aiBriefingKeyPoints" class="space-y-1 pt-1.5 border-t border-indigo-500/20 text-[10.5px] text-slate-200"></div>
     </div>
 
+    <!-- 세종제일부동산 스폰서 광고 배너 (클릭 시 전화 연결) -->
+    <a href="tel:01058010636" class="touch-press block p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-emerald-500/15 dark:from-amber-500/20 dark:via-slate-900 dark:to-emerald-500/20 border border-amber-500/35 shadow-sm transition">
+      <div class="flex items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-lg flex-shrink-0">
+            🏠
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-500 text-slate-950">AD</span>
+              <span class="text-[11px] font-bold text-amber-600 dark:text-amber-400">세종시 부동산 전문 상담</span>
+            </div>
+            <div class="text-xs font-black text-slate-900 dark:text-white truncate mt-0.5">
+              세종시 부동산이 궁금하면 세종 제일 부동산!!
+            </div>
+          </div>
+        </div>
+        <div class="flex-shrink-0 px-2.5 py-1.5 rounded-xl bg-emerald-500 text-white text-[11px] font-black font-mono shadow-xs flex items-center gap-1">
+          <span>📞</span>
+          <span>전화연결</span>
+        </div>
+      </div>
+    </a>
+
     <!-- Main List Container -->
     <div id="mobileListContainer" class="space-y-1.5">
       <!-- Rendered dynamically by JS -->
@@ -1281,7 +1305,7 @@
 
       document.getElementById('sheetPer').textContent = `Forward: ${item.metrics?.forward_per ? item.metrics.forward_per.toFixed(1) : '--'}배 / Trailing: ${item.metrics?.trailing_per ? item.metrics.trailing_per.toFixed(1) : '--'}배`;
       const pbrText = item.metrics?.pbr ? `PBR: ${item.metrics.pbr.toFixed(2)}배` : 'PBR: --배';
-      const capText = item.metrics?.market_cap ? `시총: ${formatNumber(item.metrics.market_cap / 1e8, 0)}억원` : '';
+      const capText = item.metrics?.market_cap ? `시총: ${formatNumber(item.metrics.market_cap / 1e8, 0)}${isKr ? '억원' : '억달러'}` : '';
       document.getElementById('sheetMarketCap').textContent = capText ? `${pbrText} · ${capText}` : pbrText;
 
       document.getElementById('sheetRecoKey').textContent = (item.metrics?.recommendation_key || 'N/A').toUpperCase();
