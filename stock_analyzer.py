@@ -455,6 +455,8 @@ def fetch_naver_fundamentals(ticker: str) -> Dict[str, Any]:
                 result['trailing_per'] = _parse_naver_float(v)
             elif c == 'cnsPer':
                 result['forward_per'] = _parse_naver_float(v)
+            elif c == 'pbr':
+                result['pbr'] = _parse_naver_float(v)
             elif c == 'eps':
                 result['reported_eps_ttm'] = _parse_naver_float(v)
             elif c == 'marketValue':
@@ -485,13 +487,14 @@ def fetch_naver_fundamentals(ticker: str) -> Dict[str, Any]:
 
 def get_fundamental_indicators(ticker: str, stock_info: Dict[str, Any], df: pd.DataFrame) -> Dict[str, Any]:
     fundamental_indicators = {
-        'forward_per': np.nan, 'trailing_per': np.nan, 'reported_eps_ttm': np.nan,
+        'forward_per': np.nan, 'trailing_per': np.nan, 'pbr': np.nan, 'reported_eps_ttm': np.nan,
         'target_mean_price': np.nan, 'target_upside_pct': np.nan,
         'recommendation_key': 'N/A', 'beta': np.nan, 'market_cap': np.nan
     }
 
     fundamental_indicators['forward_per'] = stock_info.get('forwardPE', np.nan)
     fundamental_indicators['trailing_per'] = stock_info.get('trailingPE', np.nan)
+    fundamental_indicators['pbr'] = stock_info.get('priceToBook', np.nan)
     fundamental_indicators['reported_eps_ttm'] = stock_info.get('trailingEps', np.nan)
 
     current_price = df['Close'].iloc[-1] if not df.empty else np.nan
@@ -508,7 +511,7 @@ def get_fundamental_indicators(ticker: str, stock_info: Dict[str, Any], df: pd.D
     # 국내 주식(.KS / .KQ)은 야후 파이낸스 누락 보완을 위해 네이버 증권(KRX/FnGuide) 데이터 병합
     if ticker.upper().endswith('.KS') or ticker.upper().endswith('.KQ'):
         naver_data = fetch_naver_fundamentals(ticker)
-        for key in ['trailing_per', 'forward_per', 'reported_eps_ttm', 'target_mean_price', 'market_cap']:
+        for key in ['trailing_per', 'forward_per', 'pbr', 'reported_eps_ttm', 'target_mean_price', 'market_cap']:
             n_val = naver_data.get(key, np.nan)
             if not np.isnan(n_val):
                 fundamental_indicators[key] = n_val
@@ -820,6 +823,7 @@ def main_execution():
             "metrics": {
                 "forward_per": clean(res['forward_per']),
                 "trailing_per": clean(res['trailing_per']),
+                "pbr": clean(res['pbr']),
                 "reported_eps_ttm": clean(res['reported_eps_ttm']),
                 "target_mean_price": clean(res['target_mean_price']),
                 "target_upside_pct": clean(res['target_upside_pct']),
