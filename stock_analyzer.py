@@ -112,8 +112,37 @@ def fetch_macro_data() -> Dict[str, Any]:
             'updated_at': get_kst_now()
         }
 
-    # 미국채 2년물 금리 산출 (5년물 연동 추정)
-    if 'us05y' in results:
+    # 미국채 2년물 금리 실시간 조회 (세인트루이스 연준 FRED DGS2 우선, 실패 시 5년물 연동 추정)
+    try:
+        fred_req = urllib.request.Request(
+            'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2',
+            headers={'User-Agent': 'Mozilla/5.0'}
+        )
+        with urllib.request.urlopen(fred_req, timeout=5) as resp:
+            lines = [ln.strip() for ln in resp.read().decode('utf-8').splitlines() if ln.strip() and not ln.startswith('observation_date')]
+            valid_vals = []
+            for ln in lines[-10:]:
+                parts = ln.split(',')
+                if len(parts) == 2 and parts[1] not in ('', '.'):
+                    valid_vals.append(float(parts[1]))
+            if valid_vals:
+                u02_price = round(valid_vals[-1], 3)
+                u02_prev = round(valid_vals[-2], 3) if len(valid_vals) >= 2 else u02_price
+                u02_chg = round(u02_price - u02_prev, 3)
+                u02_pct = round((u02_chg / u02_prev) * 100.0, 2) if u02_prev else 0.0
+                results['us02y'] = {
+                    'id': 'us02y',
+                    'price': u02_price,
+                    'change': u02_chg,
+                    'changePct': u02_pct,
+                    'isYield': True,
+                    'updated_at': get_kst_now()
+                }
+                print(f"✓ 미국채 2년물(FRED DGS2) 실시간 수집 성공: {u02_price}%")
+    except Exception as ex:
+        print(f"  ⚠️ FRED DGS2 조회 건너뜀 ({ex})")
+
+    if 'us02y' not in results and 'us05y' in results:
         u5 = results['us05y']['price']
         u02_price = round(u5 - 0.13, 3)
         results['us02y'] = {
