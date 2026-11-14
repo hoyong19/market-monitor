@@ -839,7 +839,21 @@
                 c.isUp = p > 50; // 50 초과는 탐욕(빨강), 50 이하는 공포(파랑)
               } else {
                 c.val = item.isYield ? `${formatNumber(p, 3)}%` : (c.id === 'usdkrw' ? `${formatNumber(p, 1)}원` : (c.id.startsWith('btc') || c.id.startsWith('eth') ? `$${formatNumber(p, 0)}` : (c.id === 'spread' ? '+0.320%p' : formatNumber(p))));
-                c.chg = chgVal !== undefined ? `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, item.isYield ? 3 : 2)}${item.isYield ? '%p' : ''}` : '정상화';
+                if (chgVal !== undefined) {
+                  const baseChg = `${chgVal > 0 ? '+' : ''}${formatNumber(chgVal, item.isYield ? 3 : 2)}${item.isYield ? '%p' : ''}`;
+                  if (!item.isYield && c.id !== 'spread') {
+                    let pctVal = item.changePct;
+                    if (pctVal === undefined || pctVal === null || isNaN(pctVal)) {
+                      const prevP = p - chgVal;
+                      pctVal = prevP ? (chgVal / prevP) * 100 : 0;
+                    }
+                    c.chg = `${baseChg} (${pctVal > 0 ? '+' : ''}${formatNumber(pctVal, 2)}%)`;
+                  } else {
+                    c.chg = baseChg;
+                  }
+                } else {
+                  c.chg = '정상화';
+                }
                 c.isUp = (item.change || 0) >= 0;
               }
             }
