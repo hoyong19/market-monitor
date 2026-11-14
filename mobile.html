@@ -49,6 +49,18 @@
       transform: scale(0.97);
       opacity: 0.85;
     }
+
+    /* Smooth continuous left-scrolling marquee for ad banner */
+    @keyframes marqueeLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ad-marquee-track {
+      display: inline-flex;
+      white-space: nowrap;
+      will-change: transform;
+      animation: marqueeLeft 12s linear infinite;
+    }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 min-h-screen antialiased flex flex-col font-sans select-none pb-20">
@@ -202,8 +214,11 @@
               <span class="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-500 text-slate-950">AD</span>
               <span class="text-[11px] font-bold text-amber-600 dark:text-amber-400">세종시 부동산 전문 상담</span>
             </div>
-            <div class="text-xs font-black text-slate-900 dark:text-white truncate mt-0.5">
-              세종시 부동산이 궁금하면 세종 제일 부동산!!
+            <div class="overflow-hidden mt-0.5 w-full">
+              <div class="ad-marquee-track text-xs font-black text-slate-900 dark:text-white">
+                <span class="pr-8">세종시 부동산이 궁금하면 세종 제일 부동산!!</span>
+                <span class="pr-8" aria-hidden="true">세종시 부동산이 궁금하면 세종 제일 부동산!!</span>
+              </div>
             </div>
           </div>
         </div>
