@@ -777,7 +777,7 @@ def main_execution():
         '036190.KQ', '033270.KS', '007700.KS', '060720.KQ', '007280.KS', '071670.KQ',
         '000230.KS', '248170.KS', '025770.KQ', '000910.KS', '089980.KQ', '014790.KS',
         '099410.KQ', '014940.KQ', '227950.KQ', '289930.KQ', '189690.KQ', '003100.KS',
-        '008490.KS', '004980.KS', '005380.KS'
+        '008490.KS', '004980.KS', '005380.KS', '009150.KS'
     ]))
 
     # 2-2. 국내 상장 테마 및 지수 ETF 리스트 (총 29개)
@@ -802,7 +802,7 @@ def main_execution():
         'AAOI', 'CRDO', 'ORCL', 'TER', 'ALAB', 'AMAT', 'LRCX', 'KLAC',
         'DDOG', 'SNDK', 'SIMO', 'MRVL', 'CRCL', 'MSTR', 'SPCX', 'FTNT',
         'AMZN', 'SNOW', 'OKTA', 'DG', 'UNH', 'ACN', 'KO', 'AAPL',
-        'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA',
+        'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA', 'ANT',
     ]
 
     all_results_kr = run_analysis(stock_tickers_kr, "국내 주식")
