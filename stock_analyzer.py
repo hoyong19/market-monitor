@@ -802,7 +802,7 @@ def main_execution():
         'AAOI', 'CRDO', 'ORCL', 'TER', 'ALAB', 'AMAT', 'LRCX', 'KLAC',
         'DDOG', 'SNDK', 'SIMO', 'MRVL', 'CRCL', 'MSTR', 'SPCX', 'FTNT',
         'AMZN', 'SNOW', 'OKTA', 'DG', 'UNH', 'ACN', 'KO', 'AAPL',
-        'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA', 'ANT',
+        'TXN', 'NEE', 'XEL', 'NTAP', 'GTLB', 'NTRA', 'ANT', 'TQQQ'
     ]
 
     all_results_kr = run_analysis(stock_tickers_kr, "국내 주식")
